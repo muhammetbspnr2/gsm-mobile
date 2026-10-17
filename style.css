@@ -7,3 +7,17 @@
 .site-form input:focus,.site-form textarea:focus{border-color:#6e94f1;box-shadow:0 0 0 3px #2558d818;outline:none}
 .site-form .actions{align-items:center;justify-content:flex-start;padding-top:5px}
 @media(max-width:760px){.form-divider{margin-top:5px}.site-form .actions{display:grid;grid-template-columns:1fr}.site-form .actions .btn{width:100%}}
+
+/* Form controls: consistent styling across the personnel dashboard */
+.site-form input,.site-form textarea,#passwordNotice input{width:100%;min-width:0;border:1px solid #d6deea;background:#fff;border-radius:11px;padding:12px 13px;font:inherit;color:var(--ink);outline:none}
+.site-form input[readonly]{background:#f7f9fc;color:#647189}
+.site-form label,.site-form .actions{min-width:0}
+#passwordNotice label{display:grid;gap:7px;max-width:460px;margin:16px 0;font-size:13px;font-weight:700;color:#34435a}
+#passwordNotice .btn{margin-top:2px}
+#passwordNotice h2{margin-bottom:8px}
+#passwordNotice .message{max-width:620px}
+#siteArea>.panel{padding:clamp(20px,3vw,30px)}
+.site-form{row-gap:16px;column-gap:18px}
+.site-form .form-divider:first-child{margin-top:0}
+.site-form .actions .btn{min-height:42px}
+@media(max-width:760px){#passwordNotice label{max-width:none}.site-form{row-gap:13px}#siteArea>.panel{padding:18px}}
