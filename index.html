@@ -40,13 +40,23 @@
                 <p class="text-center text-slate-400 pt-2">Hesabınız yok mu? <a href="#" onclick="toggleAuthMode('register')" class="text-indigo-600 font-bold">Kayıt Ol</a></p>
             </form>
 
-            <!-- Kayıt Formu -->
+            <!-- Kayıt Formu (Random Benzersiz Kullanıcı Adı ve Kopyala Butonu) -->
             <form id="registerForm" onsubmit="handleRegister(event)" class="hidden space-y-3 text-xs">
                 <div class="grid grid-cols-2 gap-2">
                     <input type="text" id="regName" placeholder="Ad" required class="px-3 py-2 border rounded-xl dark:bg-gray-800 dark:border-gray-700">
                     <input type="text" id="regSurname" placeholder="Soyad" required class="px-3 py-2 border rounded-xl dark:bg-gray-800 dark:border-gray-700">
                 </div>
-                <input type="text" id="regUsername" placeholder="Kullanıcı Adı" required class="w-full px-3 py-2 border rounded-xl dark:bg-gray-800 dark:border-gray-700">
+                
+                <!-- Otomatik Üretilen Kullanıcı Adı ve Kopyalama Alanı -->
+                <div>
+                    <label class="block font-semibold mb-1 text-slate-500">Size Özel Kullanıcı Adınız</label>
+                    <div class="flex gap-1.5">
+                        <input type="text" id="regUsername" readonly class="flex-1 px-3.5 py-2.5 border rounded-xl bg-slate-100 dark:bg-gray-800 font-mono font-bold text-indigo-600 dark:text-indigo-400 outline-none">
+                        <button type="button" onclick="copyUsername()" class="px-3.5 py-2.5 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 rounded-xl font-bold border border-indigo-200 hover:bg-indigo-100 transition" title="Kullanıcı Adını Kopyala">📋 Kopyala</button>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">Giriş yaparken bu kullanıcı adını kullanacaksınız.</p>
+                </div>
+
                 <input type="password" id="regPassword" placeholder="Şifre" required class="w-full px-3 py-2 border rounded-xl dark:bg-gray-800 dark:border-gray-700">
                 <input type="text" id="regCompany" placeholder="Firma" value="Mikrolink" required class="w-full px-3 py-2 border rounded-xl dark:bg-gray-800 dark:border-gray-700">
                 <input type="tel" id="regPhone" placeholder="Telefon" required class="w-full px-3 py-2 border rounded-xl dark:bg-gray-800 dark:border-gray-700">
@@ -247,7 +257,7 @@
                 </form>
             </div>
 
-            <!-- 3. SAHALAR (VERİTABANINDAN ORTAK ÇEKİLİR) -->
+            <!-- 3. SAHALAR -->
             <div id="tab-sites" class="hidden space-y-5">
                 <div class="bg-white dark:bg-gray-900 p-5 rounded-2xl shadow-sm border dark:border-gray-800 space-y-4">
                     <h3 class="font-bold text-sm border-b pb-2">Yeni Saha Tanımla</h3>
@@ -271,7 +281,7 @@
                 </div>
             </div>
 
-            <!-- 4. RAPORLARIM (YALNIZCA KENDİ RAPORLARI) -->
+            <!-- 4. RAPORLARIM -->
             <div id="tab-reports" class="hidden space-y-5">
                 <div class="bg-white dark:bg-gray-900 p-5 rounded-2xl shadow-sm border dark:border-gray-800 space-y-4">
                     <h3 class="font-bold text-sm border-b pb-2">📋 Ziyaret Raporlarım</h3>
@@ -341,8 +351,26 @@
                 document.getElementById('authScreen').classList.add('hidden');
                 document.getElementById('appContainer').classList.remove('hidden');
                 initAppSession();
+            } else {
+                generateRandomUsername();
             }
         };
+
+        // GSM + 5 Haneli Random Benzersiz Kullanıcı Adı Üretme
+        function generateRandomUsername() {
+            const randomNum = Math.floor(10000 + Math.random() * 90000);
+            const generatedUser = "GSM" + randomNum;
+            document.getElementById('regUsername').value = generatedUser;
+        }
+
+        // Kullanıcı Adını Panoya Kopyalama
+        function copyUsername() {
+            const usernameInput = document.getElementById('regUsername');
+            usernameInput.select();
+            usernameInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(usernameInput.value);
+            alert("Kullanıcı adınız kopyalandı: " + usernameInput.value);
+        }
 
         function toggleTheme() {
             const html = document.getElementById('htmlTag');
@@ -356,6 +384,7 @@
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('registerForm').classList.remove('hidden');
                 document.getElementById('authTitle').textContent = "Kayıt Ol";
+                generateRandomUsername(); // Kayıt ekranı açıldığında yeni random kullanıcı adı üret
             } else {
                 document.getElementById('registerForm').classList.add('hidden');
                 document.getElementById('loginForm').classList.remove('hidden');
@@ -376,6 +405,7 @@
                 });
 
                 if(!found) { alert("Kullanıcı adı veya şifre hatalı!"); return; }
+                if(found.isBanned) { alert("Hesabınız Admin tarafından ENGELLENMİŞTİR."); return; }
                 if(!found.isApproved) { alert("Hesabınız henüz Admin tarafından onaylanmamıştır."); return; }
 
                 currentUser = found;
@@ -389,8 +419,13 @@
         function handleRegister(e) {
             e.preventDefault();
             const u = document.getElementById('regUsername').value.trim();
+            
             db.ref('users').orderByChild('username').equalTo(u).once('value', snapshot => {
-                if(snapshot.exists()) { alert("Bu kullanıcı adı zaten kullanımda!"); return; }
+                if(snapshot.exists()) { 
+                    alert("Bu kullanıcı adı sistemde kayıtlı. Lütfen tekrar deneyin."); 
+                    generateRandomUsername();
+                    return; 
+                }
 
                 const newUserRef = db.ref('users').push();
                 const userData = {
@@ -401,11 +436,12 @@
                     password: document.getElementById('regPassword').value,
                     company: document.getElementById('regCompany').value,
                     phone: document.getElementById('regPhone').value,
-                    isApproved: false
+                    isApproved: false,
+                    isBanned: false
                 };
 
                 newUserRef.set(userData).then(() => {
-                    alert("Kayıt başvurunuz alındı! Admin onayından sonra giriş yapabilirsiniz.");
+                    alert("Kayıt başvurunuz alındı! Kullanıcı adınız (" + u + ") ile admin onayından sonra giriş yapabilirsiniz.");
                     toggleAuthMode('login');
                 });
             });
@@ -549,7 +585,6 @@
             alert("Profil güncellendi!");
         }
 
-        // SAHALARI FIREBASE'DEN ORTAK ÇEKME
         function loadSitesList() {
             db.ref('sites').once('value', snapshot => {
                 let container = document.getElementById('sitesListContainer');
@@ -568,7 +603,6 @@
             });
         }
 
-        // RAPORLARI YALNIZCA GİRİŞ YAPAN PERSONELE ÖZEL ÇEKME
         function loadMyReports() {
             db.ref('inspections').once('value', snapshot => {
                 let container = document.getElementById('myVisitsContainer');
@@ -618,7 +652,6 @@
             });
         }
 
-        // YENİ SAHAYI FIREBASE'E KAYDETME (ORTAK)
         function addNewSite(e) {
             e.preventDefault();
             let siteId = document.getElementById('newSiteId').value.toUpperCase().trim();
@@ -646,7 +679,6 @@
             });
         }
 
-        // ZİYARET RAPORUNU FIREBASE'E GÖNDERME
         function saveInspection(e) {
             e.preventDefault();
             let siteId = document.getElementById('inputSiteId').value.toUpperCase().trim();
