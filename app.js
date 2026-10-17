@@ -5,7 +5,7 @@
   const hide=(id,yes)=>{const e=$(id);if(e)e.classList.toggle("hidden",yes);};
   const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   if(!cfg.apiKey||String(cfg.apiKey).startsWith("BURAYA_")||!cfg.projectId||String(cfg.projectId).startsWith("BURAYA_")){msg("authMessage","Firebase ayarları eksik. firebase-config.js dosyasındaki BURAYA_ alanlarını doldurun.","error");return;}
-  firebase.initializeApp(cfg);const auth=firebase.auth(),db=firebase.database();let profile=null,siteListener=null,creatingAccount=false;
+  firebase.initializeApp(cfg);const auth=firebase.auth(),db=firebase.database();auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(err=>console.warn("Oturum ayarı uygulanamadı:",err));let profile=null,siteListener=null,creatingAccount=false;
   const newUsername=()=>"GSM"+String(Math.floor(10000+Math.random()*90000));
   $("regUsername").value=newUsername();
   $("copyUsername").addEventListener("click",async()=>{try{await navigator.clipboard.writeText($("regUsername").value);msg("authMessage","Kullanıcı adı kopyalandı: "+$("regUsername").value,"success");}catch(e){msg("authMessage","Kullanıcı adınız: "+$("regUsername").value);}});
