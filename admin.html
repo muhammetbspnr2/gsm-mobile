@@ -3,73 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSM Takip - Admin Paneli</title>
+    <title>GSM Takip - Gelişmiş Admin Paneli</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <style>
+        body { -webkit-tap-highlight-color: transparent; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex">
 
     <!-- ADMIN GİRİŞ MODALİ -->
-    <div id="adminLoginModal" class="fixed inset-0 z-50 bg-slate-900/90 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl space-y-4">
-            <h2 class="text-2xl font-black text-slate-900 text-center">Admin Yönetim Girişi</h2>
-            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+    <div id="adminLoginModal" class="fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl space-y-5 border border-slate-100">
+            <div class="text-center space-y-2">
+                <div class="w-14 h-14 bg-indigo-600 text-white font-black text-2xl rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-indigo-600/30">A</div>
+                <h2 class="text-2xl font-black text-slate-900">Admin Panel Girişi</h2>
+                <p class="text-xs text-slate-400">Sadece yetkili yöneticiler erişebilir</p>
+            </div>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-xs">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Kullanıcı Adı</label>
-                    <input type="text" id="adminUserInp" value="admin" required class="w-full px-4 py-2.5 border rounded-xl font-bold">
+                    <label class="block font-bold text-slate-600 mb-1">Kullanıcı Adı</label>
+                    <input type="text" id="adminUserInp" value="admin" required class="w-full px-4 py-3 border rounded-xl font-bold bg-slate-50 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-600">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Şifre</label>
-                    <input type="password" id="adminPassInp" value="admin" required class="w-full px-4 py-2.5 border rounded-xl">
+                    <label class="block font-bold text-slate-600 mb-1">Şifre</label>
+                    <input type="password" id="adminPassInp" value="admin" required class="w-full px-4 py-3 border rounded-xl bg-slate-50 focus:bg-white outline-none focus:ring-2 focus:ring-indigo-600">
                 </div>
-                <button type="submit" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800">Panele Giriş Yap</button>
+                <button type="submit" class="w-full bg-slate-900 text-white py-3.5 rounded-xl font-bold text-sm shadow-xl hover:bg-slate-800 active:scale-95 transition">Panele Giriş Yap</button>
             </form>
         </div>
     </div>
 
-    <!-- ADMIN DASHBOARD -->
-    <div id="adminDashboard" class="hidden flex-1 flex">
-        <aside class="w-64 bg-slate-900 text-white p-6 space-y-8 flex flex-col justify-between">
+    <!-- MAIN DASHBOARD LAYOUT -->
+    <div id="adminDashboard" class="hidden flex-1 flex w-full">
+        <!-- SOL SIDEBAR -->
+        <aside class="w-64 bg-slate-900 text-white p-5 space-y-6 flex flex-col justify-between shrink-0 min-h-screen">
             <div class="space-y-6">
                 <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-lg">A</div>
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-lg shadow-md">A</div>
                     <div>
-                        <h1 class="font-bold text-sm">GSM Takip Admin</h1>
-                        <p class="text-[10px] text-slate-400">Firebase Veritabanı</p>
+                        <h1 class="font-bold text-sm leading-tight">GSM Admin</h1>
+                        <p class="text-[10px] text-slate-400">Yönetim Paneli</p>
                     </div>
                 </div>
-                <nav class="space-y-2 text-xs font-semibold">
-                    <button class="w-full text-left px-4 py-3 bg-slate-800 rounded-xl">📊 Üye Onayları ve Yönetim</button>
+
+                <!-- NAVİGASYON MENÜSÜ -->
+                <nav id="adminNavMenu" class="space-y-1 text-xs font-semibold">
+                    <button onclick="switchAdminTab('dashboard')" id="nav-dashboard" class="w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 bg-indigo-600 text-white">📊 Dashboard</button>
+                    <button onclick="switchAdminTab('users')" id="nav-users" class="w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white">👥 Üye Yönetimi</button>
+                    <button onclick="switchAdminTab('sites')" id="nav-sites" class="w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white">🏢 Saha Yönetimi</button>
+                    <button onclick="switchAdminTab('companies')" id="nav-companies" class="w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white">🏬 Firmalar</button>
+                    <button onclick="switchAdminTab('reports')" id="nav-reports" class="w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white">📋 Saha Ziyaretleri</button>
+                    <button onclick="switchAdminTab('pages')" id="nav-pages" class="w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white">⚙️ Menü / Sayfa Yönetimi</button>
                 </nav>
             </div>
-            <button onclick="location.reload()" class="w-full bg-red-600/20 text-red-400 py-2.5 rounded-xl font-bold text-xs">Çıkış Yap</button>
+
+            <button onclick="location.reload()" class="w-full bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white py-3 rounded-xl font-bold text-xs transition">Güvenli Çıkış Yap</button>
         </aside>
 
-        <main class="flex-1 p-8 space-y-6 overflow-y-auto">
-            <h2 class="text-2xl font-black">Kayıtlı Kullanıcılar ve Onay Bekleyenler</h2>
-            <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
-                <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 border-b font-bold text-slate-500">
-                        <tr>
-                            <th class="p-4">Ad Soyad</th>
-                            <th class="p-4">Kullanıcı Adı</th>
-                            <th class="p-4">Firma</th>
-                            <th class="p-4">Telefon</th>
-                            <th class="p-4">Durum</th>
-                            <th class="p-4">İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminUsersTable"></tbody>
-                </table>
+        <!-- İÇERİK ALANI -->
+        <main class="flex-1 p-8 space-y-6 overflow-y-auto custom-scrollbar">
+
+            <!-- 1. DASHBOARD İSTATİSTİKLERİ -->
+            <div id="sec-dashboard" class="space-y-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Sistem Genel Özeti</h2>
+                    <p class="text-xs text-slate-500">Canlı veritabanı durum analizi ve personel performansları</p>
+                </div>
+
+                <!-- METRİK KARTLARI -->
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-1">
+                        <div class="text-xs font-bold text-slate-400">Toplam Üye</div>
+                        <div id="dashTotalUsers" class="text-3xl font-black text-slate-900">0</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-1">
+                        <div class="text-xs font-bold text-amber-500">Onay Bekleyenler</div>
+                        <div id="dashPendingUsers" class="text-3xl font-black text-amber-600">0</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-1">
+                        <div class="text-xs font-bold text-indigo-500">Kayıtlı Sahalar</div>
+                        <div id="dashTotalSites" class="text-3xl font-black text-indigo-600">0</div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-1">
+                        <div class="text-xs font-bold text-emerald-500">Toplam Ziyaret</div>
+                        <div id="dashTotalVisits" class="text-3xl font-black text-emerald-600">0</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- EN ÇOK SAHAYA GİDEN PERSONELLER -->
+                    <div class="bg-white p-6 rounded-2xl border shadow-sm space-y-4">
+                        <h3 class="font-bold text-sm text-slate-800 border-b pb-3 flex justify-between items-center">
+                            <span>🏆 En Çok Sahaya Giden Personeller</span>
+                            <span class="text-[10px] text-slate-400 font-normal">Saha Ziyaret Sayısı</span>
+                        </h3>
+                        <div id="topUsersList" class="space-y-2 text-xs"></div>
+                    </div>
+
+                    <!-- FİRMA BAZLI PERSONEL DAĞILIMI -->
+                    <div class="bg-white p-6 rounded-2xl border shadow-sm space-y-4">
+                        <h3 class="font-bold text-sm text-slate-800 border-b pb-3">🏬 Firma Bazlı Üye Dağılımı</h3>
+                        <div id="companyDistList" class="space-y-2 text-xs"></div>
+                    </div>
+                </div>
             </div>
+
+            <!-- 2. ÜYE YÖNETİMİ & ENGELLEME -->
+            <div id="sec-users" class="hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Üye Yönetimi</h2>
+                        <p class="text-xs text-slate-500">Kullanıcıları onaylayın, düzenleyin veya engelleyin</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 border-b font-bold text-slate-500">
+                            <tr>
+                                <th class="p-4">Ad Soyad</th>
+                                <th class="p-4">Kullanıcı Adı</th>
+                                <th class="p-4">Firma</th>
+                                <th class="p-4">Telefon</th>
+                                <th class="p-4">Görev</th>
+                                <th class="p-4">Durum</th>
+                                <th class="p-4">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. SAHA YÖNETİMİ -->
+            <div id="sec-sites" class="hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Saha Yönetimi</h2>
+                        <p class="text-xs text-slate-500">Tüm sahaları listeleyin, düzenleyin veya yeni saha ekleyin</p>
+                    </div>
+                    <button onclick="openSiteModal()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md">+ Yeni Saha Ekle</button>
+                </div>
+
+                <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 border-b font-bold text-slate-500">
+                            <tr>
+                                <th class="p-4">Saha ID</th>
+                                <th class="p-4">Saha No</th>
+                                <th class="p-4">İl / İlçe</th>
+                                <th class="p-4">Koordinatlar</th>
+                                <th class="p-4">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sitesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4. FİRMA YÖNETİMİ -->
+            <div id="sec-companies" class="hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Firma Yönetimi</h2>
+                        <p class="text-xs text-slate-500">Sistemdeki yetkili alt ve ana firmaları yönetin</p>
+                    </div>
+                    <button onclick="openCompanyModal()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md">+ Yeni Firma Ekle</button>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4" id="companiesGrid"></div>
+            </div>
+
+            <!-- 5. SAHA ZİYARETLERİ / RAPORLAR -->
+            <div id="sec-reports" class="hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Tüm Saha Ziyaret Raporları</h2>
+                    <p class="text-xs text-slate-500">Personeller tarafından girilen tüm canlı saha verileri</p>
+                </div>
+
+                <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 border-b font-bold text-slate-500">
+                            <tr>
+                                <th class="p-4">Tarih</th>
+                                <th class="p-4">Saha ID</th>
+                                <th class="p-4">Personel</th>
+                                <th class="p-4">Giriş Nedeni</th>
+                                <th class="p-4">Ekipman Özeti</th>
+                                <th class="p-4">Barkod</th>
+                                <th class="p-4">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 6. SAYFA / MENÜ YÖNETİMİ -->
+            <div id="sec-pages" class="hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Menü ve Modül Yönetimi</h2>
+                    <p class="text-xs text-slate-500">Admin panelindeki sekmeleri ve modülleri yönetin</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border shadow-sm space-y-4 max-w-lg">
+                    <h3 class="font-bold text-sm border-b pb-2">Aktif Modüller</h3>
+                    <div class="space-y-3 text-xs" id="moduleToggleList"></div>
+                </div>
+            </div>
+
         </main>
+    </div>
+
+    <!-- MODALLAR (Ekle/Düzenle) -->
+    <!-- SAHA MODAL -->
+    <div id="siteModal" class="hidden fixed inset-0 z-50 bg-slate-900/80 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md p-6 rounded-2xl space-y-4">
+            <h3 id="siteModalTitle" class="font-black text-lg">Saha Düzenle / Ekle</h3>
+            <form onsubmit="saveSiteForm(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="siteEditKey">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="modalSiteId" placeholder="Saha ID" required class="p-3 border rounded-xl uppercase font-bold">
+                    <input type="text" id="modalSiteNo" placeholder="Saha No" required class="p-3 border rounded-xl">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="modalCity" placeholder="İl" required class="p-3 border rounded-xl">
+                    <input type="text" id="modalDistrict" placeholder="İlçe" required class="p-3 border rounded-xl">
+                </div>
+                <input type="text" id="modalCoords" placeholder="Koordinat (Enlem, Boylam)" class="w-full p-3 border rounded-xl font-mono">
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeSiteModal()" class="px-4 py-2 bg-slate-100 rounded-xl font-bold">İptal</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold">Kaydet</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
         const firebaseConfig = { databaseURL: "https://spu-personal-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+
+        let allUsers = {}, allSites = {}, allReports = {}, allCompanies = {};
 
         function handleAdminLogin(e) {
             e.preventDefault();
@@ -79,49 +259,198 @@
             if(u === "admin" && p === "admin") {
                 document.getElementById('adminLoginModal').classList.add('hidden');
                 document.getElementById('adminDashboard').classList.remove('hidden');
-                loadUsersFromFirebase();
+                initAdminData();
+            } else { alert("Hatalı Admin bilgileri!"); }
+        }
+
+        function switchAdminTab(tab) {
+            ['dashboard', 'users', 'sites', 'companies', 'reports', 'pages'].forEach(t => {
+                document.getElementById(`sec-${t}`).classList.add('hidden');
+                let btn = document.getElementById(`nav-${t}`);
+                if(btn) btn.className = "w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-slate-400 hover:bg-slate-800 hover:text-white";
+            });
+
+            document.getElementById(`sec-${tab}`).classList.remove('hidden');
+            let activeBtn = document.getElementById(`nav-${tab}`);
+            if(activeBtn) activeBtn.className = "w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 bg-indigo-600 text-white font-bold";
+        }
+
+        function initAdminData() {
+            // Canlı Dinleyiciler
+            db.ref('users').on('value', snapshot => { allUsers = snapshot.val() || {}; renderUsers(); renderDashboard(); renderCompanies(); });
+            db.ref('sites').on('value', snapshot => { allSites = snapshot.val() || {}; renderSites(); renderDashboard(); });
+            db.ref('inspections').on('value', snapshot => { allReports = snapshot.val() || {}; renderReports(); renderDashboard(); });
+            db.ref('companies').on('value', snapshot => { allCompanies = snapshot.val() || {}; renderCompanies(); });
+        }
+
+        function renderDashboard() {
+            let userList = Object.values(allUsers);
+            let siteList = Object.values(allSites);
+            let reportList = Object.values(allReports);
+
+            document.getElementById('dashTotalUsers').textContent = userList.length;
+            document.getElementById('dashPendingUsers').textContent = userList.filter(u => !u.isApproved).length;
+            document.getElementById('dashTotalSites').textContent = siteList.length;
+            document.getElementById('dashTotalVisits').textContent = reportList.length;
+
+            // En çok sahaya giden personeller
+            let visitCounts = {};
+            reportList.forEach(r => {
+                let name = r.memberName || r.username || 'Bilinmeyen';
+                visitCounts[name] = (visitCounts[name] || 0) + 1;
+            });
+
+            let sortedUsers = Object.entries(visitCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            let topListDiv = document.getElementById('topUsersList');
+            topListDiv.innerHTML = sortedUsers.length ? '' : '<p class="text-slate-400">Henüz ziyaret verisi yok.</p>';
+            sortedUsers.forEach(([name, count], index) => {
+                let div = document.createElement('div');
+                div.className = "flex justify-between items-center p-3 bg-slate-50 rounded-xl font-medium";
+                div.innerHTML = `<div class="flex items-center gap-2.5"><span class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-[10px]">${index+1}</span><span class="font-bold text-slate-800">${name}</span></div><span class="font-extrabold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg">${count} Ziyaret</span>`;
+                topListDiv.appendChild(div);
+            });
+        }
+
+        function renderUsers() {
+            let tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            Object.entries(allUsers).forEach(([key, u]) => {
+                let tr = document.createElement('tr');
+                tr.className = "border-b hover:bg-slate-50";
+                tr.innerHTML = `
+                    <td class="p-4 font-bold">${u.name} ${u.surname}</td>
+                    <td class="p-4 font-mono">${u.username}</td>
+                    <td class="p-4">${u.company || 'Mikrolink'}</td>
+                    <td class="p-4">${u.phone || '-'}</td>
+                    <td class="p-4">${u.role || 'Teknisyen'}</td>
+                    <td class="p-4">
+                        ${u.isBanned ? '<span class="px-2.5 py-1 bg-red-100 text-red-600 font-bold rounded-full">Engelli</span>' : 
+                          u.isApproved ? '<span class="px-2.5 py-1 bg-emerald-100 text-emerald-600 font-bold rounded-full">Onaylı</span>' : 
+                          '<span class="px-2.5 py-1 bg-amber-100 text-amber-600 font-bold rounded-full">Onay Bekliyor</span>'}
+                    </td>
+                    <td class="p-4 flex gap-1.5">
+                        ${!u.isApproved ? `<button onclick="approveUser('${key}')" class="px-2.5 py-1 bg-emerald-600 text-white rounded-lg font-bold">Onayla</button>` : ''}
+                        <button onclick="toggleBanUser('${key}', ${!u.isBanned})" class="px-2.5 py-1 ${u.isBanned ? 'bg-indigo-600' : 'bg-amber-600'} text-white rounded-lg font-bold">${u.isBanned ? 'Engeli Kaldır' : 'Engelle'}</button>
+                        <button onclick="deleteUser('${key}')" class="px-2.5 py-1 bg-red-600 text-white rounded-lg font-bold">Sil</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function approveUser(key) { db.ref('users/' + key).update({ isApproved: true }); }
+        function toggleBanUser(key, banStatus) { db.ref('users/' + key).update({ isBanned: banStatus }); }
+        function deleteUser(key) { if(confirm("Kullanıcı silinsin mi?")) db.ref('users/' + key).remove(); }
+
+        function renderSites() {
+            let tbody = document.getElementById('sitesTableBody');
+            tbody.innerHTML = '';
+            Object.entries(allSites).forEach(([key, s]) => {
+                let tr = document.createElement('tr');
+                tr.className = "border-b hover:bg-slate-50";
+                tr.innerHTML = `
+                    <td class="p-4 font-black text-indigo-600">${s.siteId}</td>
+                    <td class="p-4 font-bold">${s.siteNo}</td>
+                    <td class="p-4">${s.city} / ${s.district}</td>
+                    <td class="p-4 font-mono text-[11px]">${s.coordinates || '-'}</td>
+                    <td class="p-4 flex gap-1.5">
+                        <button onclick="openSiteModal('${key}')" class="px-2.5 py-1 bg-slate-800 text-white rounded-lg font-bold">Düzenle</button>
+                        <button onclick="deleteSite('${key}')" class="px-2.5 py-1 bg-red-600 text-white rounded-lg font-bold">Sil</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openSiteModal(key = null) {
+            document.getElementById('siteModal').classList.remove('hidden');
+            document.getElementById('siteEditKey').value = key || '';
+            if(key && allSites[key]) {
+                let s = allSites[key];
+                document.getElementById('modalSiteId').value = s.siteId;
+                document.getElementById('modalSiteNo').value = s.siteNo;
+                document.getElementById('modalCity').value = s.city;
+                document.getElementById('modalDistrict').value = s.district;
+                document.getElementById('modalCoords').value = s.coordinates || '';
             } else {
-                alert("Hatalı Admin bilgileri!");
+                document.getElementById('modalSiteId').value = '';
+                document.getElementById('modalSiteNo').value = '';
+                document.getElementById('modalCity').value = '';
+                document.getElementById('modalDistrict').value = '';
+                document.getElementById('modalCoords').value = '';
             }
         }
 
-        function loadUsersFromFirebase() {
-            db.ref('users').on('value', snapshot => {
-                let tbody = document.getElementById('adminUsersTable');
-                tbody.innerHTML = '';
-                
-                if(!snapshot.exists()) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Kayıtlı kullanıcı bulunmuyor.</td></tr>`;
-                    return;
-                }
+        function closeSiteModal() { document.getElementById('siteModal').classList.add('hidden'); }
 
-                snapshot.forEach(child => {
-                    let user = child.val();
-                    let key = child.key;
+        function saveSiteForm(e) {
+            e.preventDefault();
+            let key = document.getElementById('siteEditKey').value;
+            let data = {
+                siteId: document.getElementById('modalSiteId').value.toUpperCase(),
+                siteNo: document.getElementById('modalSiteNo').value,
+                city: document.getElementById('modalCity').value,
+                district: document.getElementById('modalDistrict').value,
+                coordinates: document.getElementById('modalCoords').value
+            };
 
-                    let tr = document.createElement('tr');
-                    tr.className = "border-b hover:bg-slate-50";
-                    tr.innerHTML = `
-                        <td class="p-4 font-bold">${user.name} ${user.surname}</td>
-                        <td class="p-4">${user.username}</td>
-                        <td class="p-4">${user.company}</td>
-                        <td class="p-4">${user.phone}</td>
-                        <td class="p-4">${user.isApproved ? '<span class="text-emerald-600 font-bold">Onaylı</span>' : '<span class="text-amber-500 font-bold">Onay Bekliyor</span>'}</td>
-                        <td class="p-4">
-                            ${!user.isApproved ? `<button onclick="approveUser('${key}')" class="bg-emerald-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold">Onayla</button>` : '<span class="text-slate-400">-</span>'}
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+            if(key) { db.ref('sites/' + key).update(data); }
+            else { db.ref('sites').push(data); }
+            closeSiteModal();
+        }
+
+        function deleteSite(key) { if(confirm("Saha silinsin mi?")) db.ref('sites/' + key).remove(); }
+
+        function renderReports() {
+            let tbody = document.getElementById('reportsTableBody');
+            tbody.innerHTML = '';
+            Object.entries(allReports).forEach(([key, r]) => {
+                let eqSummary = Object.entries(r.equipment || {}).map(([k,v]) => `${k}:${v}`).join(', ');
+                let tr = document.createElement('tr');
+                tr.className = "border-b hover:bg-slate-50";
+                tr.innerHTML = `
+                    <td class="p-4 text-[11px]">${r.date}</td>
+                    <td class="p-4 font-extrabold text-indigo-600">${r.siteId}</td>
+                    <td class="p-4 font-bold">${r.memberName || r.username}</td>
+                    <td class="p-4">${r.entryReason}</td>
+                    <td class="p-4 text-[11px]">${eqSummary || 'Yok'}</td>
+                    <td class="p-4 font-mono text-[11px]">${r.scannedCode || '-'}</td>
+                    <td class="p-4"><button onclick="deleteReport('${key}')" class="px-2.5 py-1 bg-red-600 text-white rounded-lg font-bold">Sil</button></td>
+                `;
+                tbody.appendChild(tr);
             });
         }
 
-        function approveUser(userKey) {
-            db.ref('users/' + userKey).update({ isApproved: true }, (error) => {
-                if (!error) {
-                    alert("Kullanıcı başarıyla onaylandı!");
-                }
+        function deleteReport(key) { if(confirm("Rapor kaydı silinsin mi?")) db.ref('inspections/' + key).remove(); }
+
+        function renderCompanies() {
+            let grid = document.getElementById('companiesGrid');
+            grid.innerHTML = '';
+            let companyCounts = {};
+            Object.values(allUsers).forEach(u => {
+                let c = u.company || 'Mikrolink';
+                companyCounts[c] = (companyCounts[c] || 0) + 1;
             });
+
+            let distDiv = document.getElementById('companyDistList');
+            distDiv.innerHTML = '';
+
+            Object.entries(companyCounts).forEach(([comp, count]) => {
+                let card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl border shadow-sm space-y-2";
+                card.innerHTML = `<h4 class="font-extrabold text-indigo-600">${comp}</h4><p class="text-xs text-slate-400">Aktif Personel: <strong class="text-slate-800">${count}</strong></p>`;
+                grid.appendChild(card);
+
+                let d = document.createElement('div');
+                d.className = "flex justify-between items-center p-3 bg-slate-50 rounded-xl font-medium";
+                d.innerHTML = `<span class="font-bold text-slate-800">${comp}</span><span class="font-extrabold text-indigo-600">${count} Personel</span>`;
+                distDiv.appendChild(d);
+            });
+        }
+
+        function openCompanyModal() {
+            let cName = prompt("Yeni Firma Adı:");
+            if(cName) { db.ref('companies').push({ name: cName }); }
         }
     </script>
 </body>
