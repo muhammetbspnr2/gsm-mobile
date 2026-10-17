@@ -21,3 +21,19 @@
 .site-form .form-divider:first-child{margin-top:0}
 .site-form .actions .btn{min-height:42px}
 @media(max-width:760px){#passwordNotice label{max-width:none}.site-form{row-gap:13px}#siteArea>.panel{padding:18px}}
+
+/* Personel workspace navigation and dashboard */
+.person-nav{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 24px;padding:7px;background:#e9eef6;border-radius:15px}
+.person-tab{border:0;background:transparent;color:#53627a;border-radius:10px;padding:11px 15px;font:700 13px inherit;cursor:pointer}
+.person-tab.active{background:#fff;color:#2456d8;box-shadow:0 2px 8px #17243b0d}
+.person-page{margin:0 0 24px}.dash-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:4px 0 22px}
+.dash-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 30px #20304a08;display:grid;gap:8px}
+.dash-card span,.profile-panel span{font-size:11px;font-weight:800;letter-spacing:.07em;color:var(--muted)}
+.dash-card strong{font-size:32px;line-height:1.2;color:var(--ink)}.dash-card small{font-size:12px;color:var(--muted)}.dash-card .dash-status{font-size:22px;color:#15805d}
+.dash-welcome{display:flex;justify-content:space-between;align-items:center;gap:18px;background:linear-gradient(120deg,#14233c,#244b8f);color:#fff;border-radius:20px;padding:26px;margin-bottom:24px}
+.dash-welcome h2{margin:8px 0;font-size:23px}.dash-welcome p{margin:0;color:#d1dbee;font-size:13px}.dash-welcome .eyebrow{color:#9fbcff}
+.dash-subtitle{font-size:17px;margin:0 0 14px}.recent-sites{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.recent-site{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}.recent-site strong{display:block;overflow-wrap:anywhere}.recent-site small{display:block;color:var(--muted);margin-top:7px}
+.equip-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}.equip-info-grid>div{background:#f5f7fb;border:1px solid var(--line);padding:15px;border-radius:12px;display:grid;gap:7px}.equip-info-grid span{font-size:12px;color:var(--muted)}
+.profile-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.profile-panel>div{display:grid;gap:7px}.profile-panel strong{overflow-wrap:anywhere}
+@media(max-width:760px){.person-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.person-tab{padding:10px 7px}.dash-grid{grid-template-columns:1fr}.dash-card{padding:16px}.dash-welcome{align-items:flex-start;flex-direction:column;padding:21px}.recent-sites,.equip-info-grid,.profile-panel{grid-template-columns:1fr}}
