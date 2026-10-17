@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSM Takip - Admin Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex">
+
+    <!-- ADMIN GİRİŞ MODALİ -->
+    <div id="adminLoginModal" class="fixed inset-0 z-50 bg-slate-900/90 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl space-y-4">
+            <h2 class="text-2xl font-black text-slate-900 text-center">Admin Yönetim Girişi</h2>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Kullanıcı Adı</label>
+                    <input type="text" id="adminUserInp" value="admin" required class="w-full px-4 py-2.5 border rounded-xl font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">Şifre</label>
+                    <input type="password" id="adminPassInp" value="admin" required class="w-full px-4 py-2.5 border rounded-xl">
+                </div>
+                <button type="submit" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800">Panele Giriş Yap</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminDashboard" class="hidden flex-1 flex">
+        <aside class="w-64 bg-slate-900 text-white p-6 space-y-8 flex flex-col justify-between">
+            <div class="space-y-6">
+                <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-lg">A</div>
+                    <div>
+                        <h1 class="font-bold text-sm">GSM Takip Admin</h1>
+                        <p class="text-[10px] text-slate-400">Firebase Veritabanı</p>
+                    </div>
+                </div>
+                <nav class="space-y-2 text-xs font-semibold">
+                    <button class="w-full text-left px-4 py-3 bg-slate-800 rounded-xl">📊 Üye Onayları ve Yönetim</button>
+                </nav>
+            </div>
+            <button onclick="location.reload()" class="w-full bg-red-600/20 text-red-400 py-2.5 rounded-xl font-bold text-xs">Çıkış Yap</button>
+        </aside>
+
+        <main class="flex-1 p-8 space-y-6 overflow-y-auto">
+            <h2 class="text-2xl font-black">Kayıtlı Kullanıcılar ve Onay Bekleyenler</h2>
+            <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 border-b font-bold text-slate-500">
+                        <tr>
+                            <th class="p-4">Ad Soyad</th>
+                            <th class="p-4">Kullanıcı Adı</th>
+                            <th class="p-4">Firma</th>
+                            <th class="p-4">Telefon</th>
+                            <th class="p-4">Durum</th>
+                            <th class="p-4">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUsersTable"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const firebaseConfig = { databaseURL: "https://spu-personal-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('adminUserInp').value;
+            const p = document.getElementById('adminPassInp').value;
+
+            if(u === "admin" && p === "admin") {
+                document.getElementById('adminLoginModal').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                loadUsersFromFirebase();
+            } else {
+                alert("Hatalı Admin bilgileri!");
+            }
+        }
+
+        function loadUsersFromFirebase() {
+            db.ref('users').on('value', snapshot => {
+                let tbody = document.getElementById('adminUsersTable');
+                tbody.innerHTML = '';
+                
+                if(!snapshot.exists()) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">Kayıtlı kullanıcı bulunmuyor.</td></tr>`;
+                    return;
+                }
+
+                snapshot.forEach(child => {
+                    let user = child.val();
+                    let key = child.key;
+
+                    let tr = document.createElement('tr');
+                    tr.className = "border-b hover:bg-slate-50";
+                    tr.innerHTML = `
+                        <td class="p-4 font-bold">${user.name} ${user.surname}</td>
+                        <td class="p-4">${user.username}</td>
+                        <td class="p-4">${user.company}</td>
+                        <td class="p-4">${user.phone}</td>
+                        <td class="p-4">${user.isApproved ? '<span class="text-emerald-600 font-bold">Onaylı</span>' : '<span class="text-amber-500 font-bold">Onay Bekliyor</span>'}</td>
+                        <td class="p-4">
+                            ${!user.isApproved ? `<button onclick="approveUser('${key}')" class="bg-emerald-600 text-white px-3 py-1 rounded-lg text-[10px] font-bold">Onayla</button>` : '<span class="text-slate-400">-</span>'}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            });
+        }
+
+        function approveUser(userKey) {
+            db.ref('users/' + userKey).update({ isApproved: true }, (error) => {
+                if (!error) {
+                    alert("Kullanıcı başarıyla onaylandı!");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
