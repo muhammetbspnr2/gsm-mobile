@@ -2,11 +2,11 @@
    Replace every BURAYA_ value with the matching Firebase Web App config.
    Never put a service-account private key in this file. */
 window.GSM_FIREBASE_CONFIG = {
-  apiKey: "fd8c754583f0e50e9be7b9beb25047955cfcad47",
-  authDomain: "googleapis.com",
-  databaseURL: "https://spu-personal-default-rtdb.firebaseio.com/",
+  apiKey: "AIzaSyBfRdWCv1dk--8WknSHiBBdBUi83eEyAso",
+  authDomain: "spu-personal.firebaseapp.com",
+  databaseURL: "https://spu-personal-default-rtdb.firebaseio.com",
   projectId: "spu-personal",
   storageBucket: "spu-personal.firebasestorage.app",
-  messagingSenderId: "spu-personal",
-  appId: "spu-personal"
+  messagingSenderId: "269176278840",
+  appId: "1:269176278840:web:f57601d105f42e89ea7bcd"
 };
