@@ -1,7 +1,5 @@
 {
   "rules": {
-    ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
-    ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
     "admins": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
@@ -9,14 +7,12 @@
       }
     },
     "profiles": {
-      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && !data.exists()))"
       }
     },
     "access": {
-      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && !data.exists() && newData.child('active').val() === false))"
@@ -81,7 +77,8 @@
     "notifications": {
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
-        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true",
+        "write": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)"
       }
     },
     "sentNotifications": {
@@ -99,9 +96,9 @@
       }
     },
     "openVisits": {
-      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$uid": {
-        ".write": "auth != null && auth.uid === $uid && root.child('access').child(auth.uid).child('active').val() === true"
+        ".write": "auth != null && auth.uid === $uid && root.child('access').child(auth.uid).child('active').val() === true",
+        "read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)"
       }
     },
     "visitHistory": {
@@ -111,7 +108,6 @@
       }
     },
     "equipmentChangeRequests": {
-      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$requestId": {
         ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || data.child('ownerUid').val() === auth.uid)",
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('ownerUid').val() === auth.uid && newData.child('status').val() === 'pending' && root.child('access').child(auth.uid).child('active').val() === true))"
