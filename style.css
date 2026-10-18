@@ -48,3 +48,12 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 #adminAppView .admin-content{gap:22px}
 @media(max-width:850px){#adminAppView .stats-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}#adminAppView .stat-card{min-height:122px;padding:16px 14px}#adminAppView .stat-card>strong{font-size:29px}#adminAppView .stat-card>span{font-size:9px;letter-spacing:.08em}}
 @media(max-width:560px){#adminAppView .stats-grid{grid-template-columns:1fr;gap:10px}#adminAppView .stat-card{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:12px;row-gap:3px;padding:15px 18px}#adminAppView .stat-card>span{grid-column:1;grid-row:1}#adminAppView .stat-card>strong{grid-column:2;grid-row:1/3;font-size:30px}#adminAppView .stat-card>small{grid-column:1;grid-row:2}}
+
+/* Site metadata controls and live visit tables */
+#section-sites select{max-width:150px;min-width:118px;padding:8px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink)}
+#section-sites .btn{white-space:nowrap}
+#section-openSites td,#section-equipmentChanges td{vertical-align:top}
+#section-openSites [data-duration]{font-weight:800;color:#1b8c6b;white-space:nowrap}
+#section-openSites .table-wrap,#section-equipmentChanges .table-wrap{overflow-x:auto}
+#section-equipmentChanges table{min-width:900px}
+#section-sites table{min-width:980px}
