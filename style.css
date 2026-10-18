@@ -13,3 +13,22 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 .profile-edit-block input{width:100%;border:1px solid #d8e0eb;border-radius:10px;padding:12px 13px;background:white;color:var(--ink)}
 @media(min-width:901px){.person-nav.bottom-nav{bottom:18px}}
 @media(max-width:650px){.person-nav.bottom-nav{bottom:max(9px,env(safe-area-inset-bottom));width:calc(100% - 18px);padding:6px;gap:2px;border-radius:18px}.person-nav.bottom-nav .person-tab{padding:8px 2px;gap:4px}.person-nav.bottom-nav .person-tab svg{width:20px;height:20px}.person-nav.bottom-nav .person-tab span{font-size:9px}body:has(#appView:not(.hidden)){padding-bottom:96px}}
+
+/* Admin workspace: fixed left navigation and polished notification center */
+.admin-shell{max-width:1500px;margin:0 auto;padding:28px clamp(14px,2.5vw,34px) 55px}
+#adminAppView .welcome-row{margin-bottom:22px}
+#adminAppView .stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:24px}
+#adminAppView .admin-content{display:grid;grid-template-columns:240px minmax(0,1fr);gap:22px;align-items:start}
+#adminAppView .sidebar.admin-sidebar{position:sticky;top:18px;min-height:calc(100vh - 150px);padding:18px 12px;border-radius:18px}
+#adminAppView .admin-sidebar button{display:flex;align-items:center;gap:12px;text-align:left;border:0;border-radius:11px;background:transparent;color:#c1cce0;padding:13px 14px;font-weight:700;font-size:13px}
+#adminAppView .admin-sidebar button.active{background:#253957;color:#fff;box-shadow:inset 3px 0 #7295ff}
+#adminAppView .content-panel{min-width:0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(16px,2vw,26px);box-shadow:0 12px 40px #15254408}
+#adminAppView .content-panel .section-title:first-child{margin-top:0}
+.notify-form{max-width:700px;padding:20px;border:1px solid var(--line);border-radius:14px;background:#f9fbfe}
+.notify-form textarea{font:inherit;border:1px solid #d8e0eb;border-radius:10px;padding:12px;resize:vertical}
+.notification-panel{margin-bottom:18px}
+.notification-item{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.notification-item p{margin:5px 0;color:#53647c;font-size:13px;white-space:pre-wrap}
+.notification-item small{color:var(--muted);font-size:11px}
+@media(max-width:850px){#adminAppView .admin-content{grid-template-columns:1fr}#adminAppView .sidebar.admin-sidebar{position:static;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}#adminAppView .side-label{grid-column:1/-1}#adminAppView .stats-grid{grid-template-columns:1fr}}
+@media(max-width:500px){#adminAppView .sidebar.admin-sidebar{grid-template-columns:1fr 1fr}#adminAppView .admin-sidebar button{padding:10px;font-size:12px}}
