@@ -192,3 +192,22 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 .admin-tab-badge.hidden{display:none}
 @keyframes adminBadgePulse{0%,100%{box-shadow:0 0 0 2px #ffffff12,0 0 8px #dc262633}50%{box-shadow:0 0 0 3px #dc262633,0 0 15px #dc262677}}
 @media(prefers-reduced-motion:reduce){.admin-tab-badge{animation:none}}
+
+
+/* Admin site creation form v1.0.668 */
+.admin-sites-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.admin-sites-heading h2{margin:0}
+.admin-sites-heading .muted{margin:5px 0 0;font-size:13px}
+.admin-site-form-panel{margin:0 0 22px;padding:clamp(16px,2vw,24px);border:1px solid #dce5f2;background:linear-gradient(160deg,#fbfdff,#f5f8ff)}
+.admin-site-form-panel .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px}
+.admin-site-form-panel .section-title h3{margin:0}
+.admin-site-form{max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.admin-site-form label{display:grid;gap:7px;font-size:12px;font-weight:750;color:#34435a;min-width:0}
+.admin-site-form input,.admin-site-form select,.admin-site-form textarea{width:100%;min-width:0;border:1px solid #d8e0eb;border-radius:10px;padding:11px 12px;background:#fff;color:var(--ink);font:inherit}
+.admin-site-form textarea{resize:vertical}
+.admin-site-form input:focus,.admin-site-form select:focus,.admin-site-form textarea:focus{outline:0;border-color:#5578f5;box-shadow:0 0 0 3px #5578f51c}
+.admin-site-form-actions{display:flex;justify-content:flex-end}
+.admin-site-address{min-width:220px;max-width:330px;white-space:normal;overflow-wrap:anywhere;line-height:1.5}
+#section-sites .admin-site-form-panel.hidden{display:none}
+#section-sites .admin-sites-heading .btn{white-space:nowrap}
+@media(max-width:650px){.admin-sites-heading{align-items:flex-start;flex-direction:column}.admin-site-form{grid-template-columns:1fr}.admin-site-form-actions .btn{width:100%}.admin-site-address{min-width:180px}}
