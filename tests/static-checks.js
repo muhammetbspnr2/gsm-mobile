@@ -25,6 +25,16 @@ assert.ok(app.includes('historyId=auth.currentUser.uid+"_"+String(checkInAt)'), 
 assert.ok(app.includes("historySnap.exists()"), "Duplicate checkout protection is missing");
 assert.ok(admin.includes("backup-restore"), "Restore audit log is missing");
 assert.ok(admin.includes("JSON.parse(await file.text())"), "Restore JSON validation is missing");
+assert.ok(adminHtml.includes('id="adminAddSiteBtn"'), "Admin site creation button is missing");
+assert.ok(adminHtml.includes('id="adminSiteForm"'), "Admin site creation form is missing");
+assert.ok(adminHtml.includes('id="adminSiteAddress" required'), "Admin site address must be required");
+assert.ok(!adminHtml.includes('id="adminSiteLat"') && !adminHtml.includes('id="adminSiteLng"'), "Admin site form must not request GPS coordinates");
+assert.ok(admin.includes('site-create-admin') && admin.includes('approved:true'), "Admin-created sites must be audited and approved");
+assert.ok(app.includes('orderByChild("approved").equalTo(true)'), "Personnel approved-site directory query is missing");
+assert.ok(app.includes('/^[A-Z0-9]{5}$/'), "Personnel site ID must be exactly five characters");
+assert.ok(rules.rules.sites[".indexOn"].includes("approved"), "Approved sites query must be indexed");
+assert.ok(rules.rules.sites[".read"].includes("query.orderByChild === \'approved\'"), "Database rules must authorize approved-site queries");
+
 assert.ok(admin.includes('\\r\\n'), "CSV export should use CRLF line endings");
 assert.ok(rules.rules.visitHistory["$visitId"][".write"].includes("openVisits"), "Visit history must be tied to an active visit");
 assert.ok(rules.rules.visitHistory["$visitId"][".write"].includes("checkOutAt"), "Visit history must validate checkout time");
