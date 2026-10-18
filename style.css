@@ -81,3 +81,11 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 .site-entry-controls .btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(48,78,180,.22)}
 .site-entry-controls .btn:active{transform:translateY(0)}
 @media(max-width:520px){.site-entry-form{gap:15px}.reason-select-wrap{min-height:58px}.reason-select-wrap select{height:56px}.site-entry-controls .btn{width:100%;justify-content:center}}
+
+/* Saha ID canlı eşleşme önerileri */
+.site-id-suggestions{display:grid;gap:6px;margin-top:8px;padding:7px;border:1px solid #dce5f3;border-radius:15px;background:rgba(255,255,255,.97);box-shadow:0 14px 32px rgba(24,43,82,.11);max-height:260px;overflow-y:auto}
+.site-id-suggestion{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:11px 12px;border:1px solid transparent;border-radius:10px;background:#f7f9fd;color:#17243a;text-align:left;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+.site-id-suggestion:hover,.site-id-suggestion:focus-visible{background:#eef3ff;border-color:#cbd8ff;outline:none}
+.site-id-suggestion-main{display:grid;gap:3px;min-width:0}.site-id-suggestion-main strong{font-size:14px;letter-spacing:.04em}.site-id-suggestion-main small{font-size:11px;color:#748198;overflow-wrap:anywhere}
+.site-id-suggestion-status{flex-shrink:0;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}.site-id-suggestion-status.approved{background:#e5f7ed;color:#167447}.site-id-suggestion-status.pending{background:#fff2d8;color:#8c5b00}
+.site-id-suggestion-empty{padding:12px;color:#748198;font-size:12px;line-height:1.5}
