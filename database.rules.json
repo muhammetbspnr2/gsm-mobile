@@ -105,7 +105,7 @@
     },
     "openVisits": {
       "$uid": {
-        ".write": "auth != null && auth.uid === $uid && root.child('access').child(auth.uid).child('active').val() === true",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && root.child('access').child(auth.uid).child('active').val() === true))",
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
         ".validate": "!newData.exists() || (newData.child('uid').val() === $uid && newData.child('checkInAt').isNumber() && newData.child('siteRecordId').isString())"
       },
@@ -114,7 +114,7 @@
     "visitHistory": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$visitId": {
-        ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid && root.child('access').child(auth.uid).child('active').val() === true && root.child('openVisits').child(auth.uid).child('siteRecordId').val() === newData.child('siteRecordId').val() && root.child('openVisits').child(auth.uid).child('checkInAt').val() === newData.child('checkInAt').val() && newData.child('checkOutAt').isNumber() && newData.child('durationMs').isNumber()"
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('uid').val() === auth.uid && root.child('access').child(auth.uid).child('active').val() === true && root.child('openVisits').child(auth.uid).child('siteRecordId').val() === newData.child('siteRecordId').val() && root.child('openVisits').child(auth.uid).child('checkInAt').val() === newData.child('checkInAt').val() && newData.child('checkOutAt').isNumber() && newData.child('durationMs').isNumber()))"
       }
     },
     "equipmentChangeRequests": {
