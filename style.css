@@ -181,3 +181,6 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 }
 
 .connection-status{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding:9px 12px;border-radius:10px;font-size:12px;font-weight:700;background:#f3f4f6;color:#475569;border:1px solid #e2e8f0}.connection-status::before{content:"";width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:currentColor}.connection-status.is-connected{background:#ecfdf5;color:#047857;border-color:#a7f3d0}.connection-status.is-disconnected{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+
+
+.app-version{display:inline-flex;align-items:center;margin-left:8px;padding:3px 7px;border:1px solid #dbe3ef;border-radius:999px;background:#f8fafc;color:#64748b;font-size:10px;font-weight:800;letter-spacing:.04em;vertical-align:middle}
