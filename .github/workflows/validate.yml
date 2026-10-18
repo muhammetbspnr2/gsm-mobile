@@ -1,0 +1,30 @@
+name: GSM Takip validation
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check admin.js
+          node --check firebase-config.js
+      - name: Validate rules JSON
+        run: node -e "JSON.parse(require('node:fs').readFileSync('database.rules.json','utf8')); console.log('Firebase rules JSON is valid')"
+      - name: Run static regression checks
+        run: node tests/static-checks.js
