@@ -59,3 +59,13 @@ assert.ok(admin.includes("data-delete-news") && admin.includes("news-delete"), "
 assert.ok(app.includes("data:image"), "Personnel news must support embedded uploaded image data");
 
 console.log("Static checks passed: HTML IDs, version, email verification, connection status, equipment gate, duplicate checkout protection, restore safeguards, CSV formatting, RTDB visit-history rules, and client config secret scan.");
+
+assert.ok(index.includes("data-news-like") && index.includes("data-news-comment-form"), "Personnel news must support reactions and comments");
+assert.ok(app.includes("newsReactions") && app.includes("newsComments") && app.includes("news-comment-form"), "Personnel news interactions must update from Firebase");
+assert.ok(adminHtml.includes('id="adminNewsCommentRows"'), "Admin must have a live comment monitoring table");
+assert.ok(admin.includes("renderAdminNewsInteractions") && admin.includes("data-delete-news-comment"), "Admin must monitor and moderate news comments");
+assert.ok(admin.includes('db.ref("newsReactions").on("value"') && admin.includes('db.ref("newsComments").on("value"'), "Admin engagement data must be realtime");
+assert.ok(rules.rules.newsReactions && rules.rules.newsComments, "Realtime Database rules must protect reactions and comments");
+assert.ok(rules.rules.newsReactions["$newsId"]["$uid"][".write"].includes("auth.uid === $uid"), "Personnel may only write their own reaction");
+assert.ok(rules.rules.newsComments["$newsId"]["$commentId"][".write"].includes("newData.child('uid').val() === auth.uid"), "Personnel may only create comments as themselves");
+assert.ok(index.includes("1.0.671") && adminHtml.includes("1.0.671"), "Both panels must use version 1.0.671");
