@@ -60,7 +60,7 @@ assert.ok(app.includes("data:image"), "Personnel news must support embedded uplo
 
 console.log("Static checks passed: HTML IDs, version, email verification, connection status, equipment gate, duplicate checkout protection, restore safeguards, CSV formatting, RTDB visit-history rules, and client config secret scan.");
 
-assert.ok(index.includes("data-news-like") && index.includes("data-news-comment-form"), "Personnel news must support reactions and comments");
+assert.ok(app.includes("data-news-like") && app.includes("data-news-comment-form"), "Personnel news must support reactions and comments");
 assert.ok(app.includes("newsReactions") && app.includes("newsComments") && app.includes("news-comment-form"), "Personnel news interactions must update from Firebase");
 assert.ok(adminHtml.includes('id="adminNewsCommentRows"'), "Admin must have a live comment monitoring table");
 assert.ok(admin.includes("renderAdminNewsInteractions") && admin.includes("data-delete-news-comment"), "Admin must monitor and moderate news comments");
