@@ -184,3 +184,11 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 
 
 .app-version{display:inline-flex;align-items:center;margin-left:8px;padding:3px 7px;border:1px solid #dbe3ef;border-radius:999px;background:#f8fafc;color:#64748b;font-size:10px;font-weight:800;letter-spacing:.04em;vertical-align:middle}
+
+
+/* Admin approval badges: persistent red counters for pending review tabs */
+#adminAppView .admin-sidebar button{position:relative;justify-content:space-between}
+.admin-tab-badge{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-width:22px;height:22px;padding:0 6px;margin-left:auto;border-radius:999px;background:#dc2626;color:#fff;font-size:11px;font-weight:900;line-height:1;box-shadow:0 0 0 2px #ffffff12,0 0 12px #dc262655;animation:adminBadgePulse 1.8s ease-in-out infinite}
+.admin-tab-badge.hidden{display:none}
+@keyframes adminBadgePulse{0%,100%{box-shadow:0 0 0 2px #ffffff12,0 0 8px #dc262633}50%{box-shadow:0 0 0 3px #dc262633,0 0 15px #dc262677}}
+@media(prefers-reduced-motion:reduce){.admin-tab-badge{animation:none}}
