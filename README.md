@@ -16,3 +16,12 @@ Yönetici: https://muhammetbspnr2.github.io/gsm-mobile/admin.html
 - Personel e-posta ile giriş yapar; GSM kodu profil bilgisi olarak üretilir.
 - GPS için HTTPS ve tarayıcı izni gerekir. İl/ilçe otomatik coğrafi kodlama bu sürümde yoktur.
 - Altı aylık şifre yenileme uyarısı istemci tarafındadır; katı uygulama için güvenilir sunucu mantığı gerekir.
+
+
+## Sürüm 2.0.0 — Büyük güncelleme
+- Personel ve yönetici panelleri yüklenebilir web uygulaması (PWA) olarak yapılandırıldı.
+- Uygulama kabuğu önbelleğe alınır; internet yokken arayüz yeniden açılabilir. Firebase üzerinden canlı kayıt işlemleri için bağlantı gerekir.
+- Çevrimdışı/çevrimiçi durum bilgilendirmesi ve desteklenen tarayıcılarda uygulama yükleme istemi eklendi.
+- Sürüm numarası, önbellek stratejisi ve statik doğrulama kontrolleri birlikte güncellendi.
+
+Firebase Realtime Database kuralları bu statik sürümle otomatik yayınlanmaz; bu sürüm kuralları değiştirmez.

@@ -213,7 +213,7 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 @media(max-width:650px){.admin-sites-heading{align-items:flex-start;flex-direction:column}.admin-site-form{grid-template-columns:1fr}.admin-site-form-actions .btn{width:100%}.admin-site-address{min-width:180px}}
 
 
-/* Instagram-style field news feed v1.0.669 */
+/* Instagram-style field news feed v2.0.0 */
 .news-home-section{margin-top:26px}
 .news-home-section>.section-title{align-items:center;margin-bottom:14px}
 .news-home-section .section-title h2{margin:0}
@@ -280,3 +280,6 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 .news-comment-form button:disabled{opacity:.5}
 .admin-news-interaction-title{margin-top:26px}
 .admin-news-comment-text{max-width:360px;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* v2.0.0 PWA status and installation */
+.pwa-status{position:fixed;z-index:1000;right:16px;bottom:calc(14px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;max-width:min(92vw,440px);padding:10px 12px;background:#101c31;color:#fff;border:1px solid #ffffff20;border-radius:14px;box-shadow:0 12px 35px #101c3133;font-size:12px}.pwa-status[hidden]{display:none!important}.pwa-status-text{line-height:1.35}.pwa-status-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#37c88a}.pwa-install-btn{border:0;border-radius:9px;padding:8px 10px;background:#fff;color:#14223a;font-size:12px;font-weight:800;white-space:nowrap}.pwa-install-btn[hidden]{display:none!important}.pwa-status.is-offline{background:#492f14}.pwa-status.is-offline .pwa-status-dot{background:#ffb84d}.pwa-status.is-offline .pwa-install-btn{display:none}@media(max-width:520px){.pwa-status{right:10px;left:10px;bottom:calc(10px + env(safe-area-inset-bottom));max-width:none;justify-content:space-between}.pwa-status-text{flex:1}}

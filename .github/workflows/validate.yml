@@ -24,6 +24,8 @@ jobs:
           node --check app.js
           node --check admin.js
           node --check firebase-config.js
+          node --check pwa.js
+          node --check sw.js
       - name: Validate rules JSON
         run: node -e "JSON.parse(require('node:fs').readFileSync('database.rules.json','utf8')); console.log('Firebase rules JSON is valid')"
       - name: Run static regression checks
