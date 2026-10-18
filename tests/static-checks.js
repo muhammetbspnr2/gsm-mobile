@@ -41,4 +41,17 @@ assert.ok(rules.rules.visitHistory["$visitId"][".write"].includes("checkOutAt"),
 assert.ok(rules.rules.visitHistory["$visitId"][".write"].includes("durationMs"), "Visit history must validate duration");
 assert.doesNotMatch(config, /BEGIN [A-Z ]*PRIVATE KEY|private_key/i, "Firebase web config must not contain a service-account private key");
 
+
+assert.ok(index.includes('id="homeNewsFeed"') && index.includes('id="viewAllNewsBtn"'), "Dashboard news feed and all-news button are required");
+assert.ok(index.includes('id="newsArea"') && index.includes('data-page="newsArea"'), "Personnel all-news page and navigation tab are required");
+assert.ok(index.includes('id="dashSiteCount"') && index.includes('id="dashMonthCount"') && index.includes('id="recentSiteCards"'), "Site summaries must remain available in Reports");
+assert.ok(app.includes("function renderNews(data)") && app.includes("rows.slice(0,5)"), "Personnel news feed must render the latest five posts");
+assert.ok(app.includes('db.ref("news").on("value"'), "Personnel news must update from Firebase");
+assert.ok(adminHtml.includes('id="section-news"') && adminHtml.includes('data-admin-tab="news"'), "Admin news management section is missing");
+assert.ok(adminHtml.includes('id="adminNewsForm"') && adminHtml.includes('id="adminNewsTitle"') && adminHtml.includes('id="adminNewsBody"'), "Admin news publishing form is incomplete");
+assert.ok(admin.includes("function renderAdminNews()") && admin.includes('db.ref("news").on("value"'), "Admin news list and realtime listener are required");
+assert.ok(admin.includes('logAudit("news-create"') && admin.includes('logAudit("news-update"') && admin.includes('logAudit("news-delete"'), "News create, update and delete actions must be audited");
+assert.ok(rules.rules.news[".read"].includes("access") && rules.rules.news[".write"].includes("admins"), "News must be readable by active staff and writable only by admins");
+assert.ok(index.includes("1.0.669") && adminHtml.includes("1.0.669"), "Both panels must use version 1.0.669");
+
 console.log("Static checks passed: HTML IDs, version, email verification, connection status, equipment gate, duplicate checkout protection, restore safeguards, CSV formatting, RTDB visit-history rules, and client config secret scan.");
