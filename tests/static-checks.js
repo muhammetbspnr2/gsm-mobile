@@ -16,7 +16,7 @@ function uniqueIds(html, name) {
 uniqueIds(index, "Personnel");
 uniqueIds(adminHtml, "Admin");
 
-assert.match(index, /v2\.0\.0/, "Personnel version marker is missing");
+assert.match(index, /v2\.0\.1/, "Personnel version marker is missing");
 assert.ok(app.includes("sendEmailVerification"), "Email verification flow is missing");
 assert.ok(app.includes("emailVerified"), "Unverified-email gate is missing");
 assert.ok(app.includes(".info/connected"), "Firebase connection status is missing");
@@ -81,3 +81,9 @@ assert.equal(manifest.name, "GSM Takip");
 assert.equal(manifest.start_url, "./");
 assert.ok(manifest.icons.some(icon => icon.sizes === "192x192") && manifest.icons.some(icon => icon.sizes === "512x512"), "PWA must declare 192px and 512px icons");
 console.log("Major release checks passed: PWA metadata, offline shell, install prompt, and release version 2.0.0.");
+
+assert.ok(app.includes('https://nominatim.openstreetmap.org/reverse?format=jsonv2'), "GPS reverse geocoding is missing");
+assert.ok(app.includes('siteProvince").value=province') && app.includes('siteDistrict").value=district') && app.includes('siteAddress").value=address.slice'), "GPS reverse geocoding must populate province, district, and address");
+assert.ok(app.includes('$("equipmentSerial").value=found[0].rawValue'), "Scanned barcode must populate the serial number");
+assert.ok(!index.includes('id="equipmentBarcode"') && !index.includes('<th>Barkod / QR</th>'), "Equipment UI must not have a separate barcode field or column");
+assert.ok(app.includes('x.serial||x.barcode||""'), "Legacy equipment barcode values must remain visible as serial numbers");
