@@ -52,7 +52,7 @@ assert.ok(adminHtml.includes('id="adminNewsForm"') && adminHtml.includes('id="ad
 assert.ok(admin.includes("function renderAdminNews()") && admin.includes('db.ref("news").on("value"'), "Admin news list and realtime listener are required");
 assert.ok(admin.includes('logAudit("news-create"') && admin.includes('logAudit("news-update"') && admin.includes('logAudit("news-delete"'), "News create, update and delete actions must be audited");
 assert.ok(rules.rules.news[".read"].includes("access") && rules.rules.news[".write"].includes("admins"), "News must be readable by active staff and writable only by admins");
-assert.ok(index.includes("1.0.670") && adminHtml.includes("1.0.670"), "Both panels must use version 1.0.670");
+assert.ok(index.includes("1.0.671") && adminHtml.includes("1.0.671"), "Both panels must use version 1.0.671");
 assert.ok(adminHtml.includes('id="adminNewsImageFile"') && adminHtml.includes('id="adminNewsImagePreview"'), "Admin must support direct image file selection and preview");
 assert.ok(admin.includes("function compressNewsImage(file)") && admin.includes("350*1024"), "Selected news images must be compressed before saving");
 assert.ok(admin.includes("data-delete-news") && admin.includes("news-delete"), "Admin must be able to delete news posts with audit logging");
