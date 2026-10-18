@@ -255,3 +255,28 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 @media(max-width:600px){.admin-news-form{grid-template-columns:1fr}.admin-news-form .wide{grid-column:auto}.admin-news-form-actions .btn{width:100%}.news-home-section>.section-title{align-items:flex-start;flex-direction:column}.news-home-section>.section-title .btn{width:100%}}
 
 .admin-news-image-preview-wrap{grid-column:1/-1;min-width:0}.admin-news-image-preview{display:block;max-width:100%;max-height:300px;object-fit:contain;border:1px solid var(--line);border-radius:12px;background:#eef1f6}.admin-news-form input[type=file]{padding:9px;background:#f8faff}
+
+/* News engagement controls */
+.news-reaction-bar{display:flex;align-items:center;gap:14px;padding:10px 0 7px;border-top:1px solid #edf0f5}
+.news-like-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:#334155;font:inherit;font-size:13px;font-weight:750;padding:4px 0;cursor:pointer}
+.news-like-btn:disabled{opacity:.55;cursor:wait}
+.news-heart{font-size:25px;line-height:1;color:#64748b;transition:transform .15s ease}
+.news-like-btn.is-liked,.news-like-btn.is-liked .news-heart{color:#e04462}
+.news-like-btn.is-liked .news-heart{transform:scale(1.05)}
+.news-reaction-count{font-size:12px;color:#65738a;font-weight:700}
+.news-liked-by{font-size:11px;color:#6b778b;padding:0 0 9px;overflow-wrap:anywhere}
+.news-comments{border-top:1px solid #edf0f5;padding-top:10px}
+.news-comments-heading{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#34435a;margin-bottom:8px}
+.news-comments-heading span{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#eef2f8;color:#526078;font-size:10px}
+.news-comment{display:flex;align-items:baseline;gap:7px;padding:4px 0;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.news-comment strong{flex:0 0 auto;max-width:38%;font-weight:800;color:#34435a}
+.news-comment span{min-width:0;color:#4b586c;white-space:pre-wrap;overflow-wrap:anywhere}
+.news-no-comments{font-size:12px;color:#8490a3;margin:5px 0 10px}
+.news-show-comments{border:0;background:transparent;padding:4px 0 8px;color:#536ca8;font-size:11px;font-weight:800;cursor:pointer}
+.news-comment-form{display:flex;align-items:center;gap:8px;padding-top:8px}
+.news-comment-form input{flex:1;min-width:0;border:0;border-bottom:1px solid #e4e9f1;border-radius:0;background:transparent;padding:9px 2px;color:#253247;font:inherit;font-size:12px;outline:none}
+.news-comment-form input:focus{border-bottom-color:#647fea}
+.news-comment-form button{flex:0 0 auto;border:0;background:transparent;color:#4164c5;font-size:12px;font-weight:850;padding:8px 2px;cursor:pointer}
+.news-comment-form button:disabled{opacity:.5}
+.admin-news-interaction-title{margin-top:26px}
+.admin-news-comment-text{max-width:360px;white-space:pre-wrap;overflow-wrap:anywhere}
