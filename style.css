@@ -89,3 +89,7 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 .site-id-suggestion-main{display:grid;gap:3px;min-width:0}.site-id-suggestion-main strong{font-size:14px;letter-spacing:.04em}.site-id-suggestion-main small{font-size:11px;color:#748198;overflow-wrap:anywhere}
 .site-id-suggestion-status{flex-shrink:0;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}.site-id-suggestion-status.approved{background:#e5f7ed;color:#167447}.site-id-suggestion-status.pending{background:#fff2d8;color:#8c5b00}
 .site-id-suggestion-empty{padding:12px;color:#748198;font-size:12px;line-height:1.5}
+
+/* Ekipman sekmesi saha girişi doğrulanana kadar görsel ve etkileşimsel olarak kilitlidir. */
+.person-tab.tab-locked{opacity:.48;cursor:not-allowed;filter:saturate(.45);}
+.person-tab.tab-locked:focus-visible{outline:2px solid var(--accent,#f59e0b);outline-offset:2px;}
