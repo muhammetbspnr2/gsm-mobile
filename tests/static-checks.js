@@ -16,7 +16,7 @@ function uniqueIds(html, name) {
 uniqueIds(index, "Personnel");
 uniqueIds(adminHtml, "Admin");
 
-assert.match(index, /v2\.0\.1/, "Personnel version marker is missing");
+assert.match(index, /v2\.0\.2/, "Personnel version marker is missing");
 assert.ok(app.includes("sendEmailVerification"), "Email verification flow is missing");
 assert.ok(app.includes("emailVerified"), "Unverified-email gate is missing");
 assert.ok(app.includes(".info/connected"), "Firebase connection status is missing");
