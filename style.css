@@ -303,3 +303,11 @@ body:has(#appView:not(.hidden)){padding-bottom:105px}
 
 /* Google Maps import panel */
 .site-import-preview{margin-top:16px;overflow-x:auto}.site-import-preview table{min-width:780px}.site-import-preview input,#siteImportExistingRows input{min-width:100px;width:100%;box-sizing:border-box}.site-import-preview .import-status{font-size:12px;color:var(--muted)}.site-import-preview .import-invalid{background:rgba(180,35,24,.06)}.site-import-preview .import-valid{background:rgba(22,163,74,.04)}@media(max-width:700px){.site-import-preview table{min-width:720px}}
+
+
+.site-directory-search{position:relative;display:grid;gap:7px;margin-top:12px;max-width:760px}
+.site-directory-search>label{font-size:13px;font-weight:800;color:var(--ink)}
+.site-directory-search>input{width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:13px;background:var(--surface,#fff);color:var(--ink);font:inherit;outline:none;box-shadow:0 4px 14px #15254408}
+.site-directory-search>input:focus{border-color:#819df8;box-shadow:0 0 0 3px #4e76ed1c}
+.site-directory-search>.muted{margin:0;font-size:12px}
+.site-directory-search .site-id-suggestions{position:relative;z-index:2;margin-top:0;max-height:320px}
