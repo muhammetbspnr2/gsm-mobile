@@ -1,5 +1,12 @@
 # GSM Takip sürüm notları
 
+## 2.0.11 — Aktarım doğrulaması ve önbellek tutarlılığı
+- CSV/KML/KMZ saha aktarımında 5 karakterli benzersiz Saha ID doğrulaması korunur.
+- Dolu Saha No alanları yalnızca rakamlardan oluşur; mevcut kayıtlarda veya aynı aktarım dosyasında tekrar eden numaralar aktarılmaz. Saha No boş bırakılabilir.
+- Aktarım önizlemesi hata nedenini gösterir; aktarım öncesinde Firebase'deki güncel saha kayıtları tekrar kontrol edilir.
+- Personel/yönetici paneli ve PWA önbellek sürümleri eşitlendi; HTML varlık bağlantıları güncellendi.
+- CI, `site-import.js` JavaScript sözdizimini de doğrular.
+
 ## 2.0.0 — Büyük sürüm
 - Personel ve yönetici ekranları için PWA manifesti ve yükleme desteği.
 - Çevrimdışı uygulama kabuğu önbelleği; ağ yokken son alınan statik arayüzü açabilme.
