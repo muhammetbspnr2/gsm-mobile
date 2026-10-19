@@ -38,6 +38,8 @@ assert.ok(siteImport.includes("!/^\\\\d+$/.test(no)"), "Site import must accept 
 assert.ok(siteImport.includes("await db.ref().update(updates)"), "Site import must add records without replacing the existing database");
 assert.ok(siteImport.includes("const importedIndexes=new Set(batch.map(r=>r._sourceIndex))") && siteImport.includes("!importedIndexes.has(index)"), "Partial imports must keep skipped rows visible for correction");
 assert.ok(rules.rules.sites[".indexOn"].includes("approved"), "Approved sites query must be indexed");
+assert.ok(rules.rules.equipment["$siteId"][".read"].includes("openVisits"), "Active staff must be able to read equipment for an approved site they are visiting or own");
+assert.ok(rules.rules.equipment["$siteId"]["$equipmentId"][".write"].includes("openVisits") && rules.rules.equipment["$siteId"]["$equipmentId"][".write"].includes("ownerUid"), "Equipment writes must require an active visit and protect record ownership");
 assert.ok(rules.rules.sites[".read"].includes("query.orderByChild === \'approved\'"), "Database rules must authorize approved-site queries");
 
 assert.ok(admin.includes('\\r\\n'), "CSV export should use CRLF line endings");
