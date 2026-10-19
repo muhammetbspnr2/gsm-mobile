@@ -43,11 +43,12 @@ function showPage(id){if(id==="equipmentArea"&&!(equipmentAccessGranted&&auth.cu
   const latText=String(site.latitude??"").trim(),lngText=String(site.longitude??"").trim();
   const lat=Number(latText),lng=Number(lngText);
   const hasCoordinates=latText!==""&&lngText!==""&&Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180;
-  const destination=hasCoordinates?lat+","+lng:destinationAddress;
+  const mapsUrl=String(site.mapsUrl||"").trim();
+  const destination=mapsUrl||(hasCoordinates?lat+","+lng:destinationAddress);
   const modal=$("siteDetailModal"),content=$("siteDetailContent"),go=$("siteGoBtn"),mapNote=$("siteMapNote");
-  const details=[["SAHA ID",site.siteId||site.siteCode],["SAHA NO",site.siteNo],["Firma",site.company],["Operatör",site.operator],["Saha türü",site.siteType],["İl",site.province],["İlçe",site.district],["Adres",site.address],["Notlar",site.notes],["Koordinatlar",hasCoordinates?latText+", "+lngText:"Koordinat kaydı bulunmuyor"]];
+  const details=[["SAHA ID",site.siteId||site.siteCode],["SAHA NO",site.siteNo],["Firma",site.company],["Operatör",site.operator],["Saha türü",site.siteType],["İl",site.province],["İlçe",site.district],["Adres",site.address],["Maps bağlantısı",mapsUrl],["Notlar",site.notes],["Koordinatlar",hasCoordinates?latText+", "+lngText:"Koordinat kaydı bulunmuyor"]];
   content.innerHTML=details.filter(([label,v])=>String(v??"").trim()!==""||label==="Koordinatlar").map(([label,v])=>'<div class="site-detail-field"><span>'+esc(label)+'</span><strong>'+esc(value(v,label==="Koordinatlar"?"Koordinat kaydı bulunmuyor":"Belirtilmemiş"))+'</strong></div>').join("");
-  if(destination){go.href="https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(destination);go.classList.remove("hidden");mapNote.textContent=hasCoordinates?"Navigasyon kayıtlı koordinatlara göre açılacak.":"Koordinat olmadığı için kayıtlı adres üzerinden yönlendirileceksin."}
+  if(destination){go.href=mapsUrl&&/^https?:\/\//i.test(mapsUrl)?mapsUrl:"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(destination);go.classList.remove("hidden");mapNote.textContent=mapsUrl?"Kayıtlı Google Maps bağlantısı açılacak.":hasCoordinates?"Navigasyon kayıtlı koordinatlara göre açılacak.":"Koordinat olmadığı için kayıtlı adres üzerinden yönlendirileceksin."}
   else{go.removeAttribute("href");go.classList.add("hidden");mapNote.textContent="Bu saha için adres veya koordinat kaydı bulunmuyor."}
   modal.classList.remove("hidden");modal.setAttribute("aria-hidden","false");document.body.classList.add("site-modal-open");$("siteDetailClose").focus();
  }
