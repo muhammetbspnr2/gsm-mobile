@@ -35,15 +35,27 @@ $("adminRepublishReleaseBtn")?.addEventListener("click",async()=>{const user=aut
 $("adminCancelNewsBtn")?.addEventListener("click",resetAdminNewsForm);
 $("adminNewsImageFile")?.addEventListener("change",()=>{const file=$("adminNewsImageFile").files?.[0],preview=$("adminNewsImagePreview");if(!file){preview.removeAttribute("src");preview.classList.add("hidden");return}if(!file.type.startsWith("image/")){msg("adminNewsMessage","Lütfen görsel dosyası seçin.","error");$("adminNewsImageFile").value="";return}const url=URL.createObjectURL(file);preview.onload=()=>URL.revokeObjectURL(url);preview.onerror=()=>URL.revokeObjectURL(url);preview.src=url;preview.classList.remove("hidden");$("adminNewsImage").value=""});
 $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const title=$("adminNewsTitle").value.trim(),body=$("adminNewsBody").value.trim(),category=$("adminNewsCategory").value,siteLabel=$("adminNewsSite").value.trim(),imageField=$("adminNewsImage").value.trim(),file=$("adminNewsImageFile").files?.[0];if(!title||!body){msg("adminNewsMessage","Başlık ve haber metni zorunludur.","error");return}if(imageField&&!/^https?:\/\//i.test(imageField)){msg("adminNewsMessage","Görsel bağlantısı http:// veya https:// ile başlamalıdır.","error");return}const btn=$("adminSaveNewsBtn"),original=btn.textContent;btn.disabled=true;btn.textContent="Görsel hazırlanıyor…";try{const now=Date.now(),uid=auth.currentUser?.uid;if(!uid)throw new Error("Yönetici oturumu bulunamadı.");const old=editingNewsId?newsPosts[editingNewsId]:null;let imageUrl=imageField;if(file){imageUrl=await compressNewsImage(file)}else if(!imageUrl&&old&&/^data:image\/(?:jpeg|png|webp);base64,/i.test(old.imageUrl||"")){imageUrl=old.imageUrl}const payload={title,body,category,siteLabel,imageUrl,authorName:"GSM Takip Yönetimi",authorUid:uid,createdAt:old?.createdAt||now,updatedAt:now};btn.textContent="Kaydediliyor…";if(editingNewsId){await db.ref("news/"+editingNewsId).update(payload);await logAudit("news-update","Haber güncellendi: "+title)}else{const ref=db.ref("news").push();await ref.set({...payload,createdAt:now});await logAudit("news-create","Yeni haber paylaşıldı: "+title)}resetAdminNewsForm();msg("adminNewsMessage","Haber başarıyla kaydedildi ve personel panelinde yayımlandı.","success");hide("adminNewsFormPanel",false)}catch(err){msg("adminNewsMessage","Haber kaydedilemedi: "+(err.message||"Bilinmeyen hata"),"error")}finally{btn.disabled=false;btn.textContent=editingNewsId?"Değişiklikleri kaydet":"Haber paylaş"}});
+  let googleMapsApiPromise=null;
+  async function loadGoogleMapsApi(){
+   if(window.google?.maps?.Geocoder)return;
+   if(googleMapsApiPromise)return googleMapsApiPromise;
+   const apiKey=String(cfg.apiKey||"").trim();if(!apiKey)throw new Error("Google Maps API anahtarı bulunamadı.");
+   googleMapsApiPromise=new Promise((resolve,reject)=>{
+    const script=document.createElement("script");script.src="https://maps.googleapis.com/maps/api/js?key="+encodeURIComponent(apiKey)+"&language=tr&region=TR";script.async=true;
+    script.onload=()=>window.google?.maps?.Geocoder?resolve():reject(new Error("Google Maps JavaScript API yüklenemedi."));
+    script.onerror=()=>reject(new Error("Google Maps API yüklenemedi. Maps JavaScript API ve faturalandırma ayarlarını kontrol edin."));
+    document.head.appendChild(script);
+   });
+   return googleMapsApiPromise;
+  }
   async function reverseGeocodeGoogle(latitude,longitude){
-   const apiKey=String(cfg.apiKey||"").trim();
-   if(!apiKey)throw new Error("Google Maps API anahtarı bulunamadı.");
-   const url="https://maps.googleapis.com/maps/api/geocode/json?latlng="+encodeURIComponent(latitude+","+longitude)+"&key="+encodeURIComponent(apiKey)+"&language=tr&region=tr";
-   const response=await fetch(url);if(!response.ok)throw new Error("Google Maps bağlantısı başarısız ("+response.status+").");
-   const data=await response.json();if(data.status!=="OK"||!data.results?.length)throw new Error(data.error_message||"Bu koordinat için Google Maps adres bulamadı ("+data.status+").");
-   const components=data.results[0].address_components||[];
+   await loadGoogleMapsApi();
+   const geocoder=new window.google.maps.Geocoder();
+   const response=await geocoder.geocode({location:{lat:latitude,lng:longitude},language:"tr"});
+   const result=response.results?.[0];if(!result)throw new Error("Bu koordinat için Google Maps adres bulamadı.");
+   const components=result.address_components||[];
    const find=(types)=>{const item=components.find(c=>types.some(t=>c.types.includes(t)));return item?.long_name||""};
-   return {province:find(["administrative_area_level_1"]),district:find(["administrative_area_level_2","locality","sublocality_level_1","administrative_area_level_3"]),formattedAddress:data.results[0].formatted_address||""};
+   return {province:find(["administrative_area_level_1"]),district:find(["administrative_area_level_2","locality","sublocality_level_1","administrative_area_level_3"]),formattedAddress:result.formatted_address||""};
   }
   function validCoordinates(latText,lngText){
    if(String(latText??"").trim()===""&&String(lngText??"").trim()==="")return {valid:true,empty:true};
