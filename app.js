@@ -25,10 +25,10 @@ function showPage(id){if(id==="equipmentArea"&&!(equipmentAccessGranted&&auth.cu
  $("notificationBell").addEventListener("click",()=>{const pop=$("notificationPopover"),open=pop.classList.contains("hidden");hide("notificationPopover",!open);$("notificationBell").setAttribute("aria-expanded",String(open))});$("closeNotifications").addEventListener("click",()=>{hide("notificationPopover",true);$("notificationBell").setAttribute("aria-expanded","false")});document.addEventListener("click",e=>{if(!$("notificationPopover").contains(e.target)&&!$("notificationBell").contains(e.target)){hide("notificationPopover",true);$("notificationBell").setAttribute("aria-expanded","false")}});
  function siteStatus(s){return s.approved===true?"Onaylı":"Onay bekliyor"}
  function normalizeSiteSearch(value){return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("tr-TR").trim()}
- function siteSearchText(site){return [site.siteId,site.siteCode,site.siteNo,site.company,site.address,site.province,site.district,site.operator,site.siteType,site.notes].filter(Boolean).join(" ")}
+ function siteSearchText(site){return [site.siteId,site.siteCode,site.siteNo].filter(Boolean).join(" ")}
  function renderSiteDirectorySearch(rows){
   const input=$("siteDirectorySearch"),box=$("siteDirectorySuggestions"),host=$("siteRows");if(!input||!box||!host)return;
-  const query=normalizeSiteSearch(input.value),matches=query.length>=3?rows.filter(s=>normalizeSiteSearch(siteSearchText(s)).includes(query)).slice(0,8):[];
+  const query=String(input.value||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,5);if(input.value!==query)input.value=query;const matches=query.length>=3?rows.filter(s=>normalizeSiteSearch(siteSearchText(s)).toUpperCase().replace(/[^A-Z0-9]/g,"").includes(query)).slice(0,8):[];
   // Kayıt kartlarını altta topluca göstermiyoruz; arama sonuçları öneri listesinden seçiliyor.
   host.innerHTML="";
   if(query.length<3){box.innerHTML="";box.classList.add("hidden");input.setAttribute("aria-expanded","false");return}
@@ -64,8 +64,8 @@ function showPage(id){if(id==="equipmentArea"&&!(equipmentAccessGranted&&auth.cu
   modal.classList.remove("hidden");modal.setAttribute("aria-hidden","false");document.body.classList.add("site-modal-open");$("siteDetailClose").focus();
  }
  function closeSiteDetails(){const modal=$("siteDetailModal");if(!modal)return;modal.classList.add("hidden");modal.setAttribute("aria-hidden","true");document.body.classList.remove("site-modal-open")}
- $("siteDirectorySearch")?.addEventListener("input",()=>renderSiteDirectorySearch(Object.entries(sites).map(([key,s])=>({...s,_key:key})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0))));
- $("siteDirectorySuggestions")?.addEventListener("click",e=>{const option=e.target.closest("[data-directory-pick]");if(!option)return;const key=option.dataset.directoryPick;const site=sites[key];if(!site)return;$("siteDirectorySearch").value=site.siteId||site.siteCode||site.siteNo||"";renderSiteDirectorySearch(Object.entries(sites).map(([id,s])=>({...s,_key:id})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)));$("siteDirectorySuggestions").classList.add("hidden");$("siteDirectorySearch").setAttribute("aria-expanded","false");openSiteDetails(key)});
+ $("siteDirectorySearch")?.addEventListener("input",()=>{const field=$("siteDirectorySearch");field.value=field.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,5);renderSiteDirectorySearch(Object.entries(sites).map(([key,s])=>({...s,_key:key})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)));});
+ $("siteDirectorySuggestions")?.addEventListener("click",e=>{const option=e.target.closest("[data-directory-pick]");if(!option)return;const key=option.dataset.directoryPick;const site=sites[key];if(!site)return;$("siteDirectorySearch").value=String(site.siteId||site.siteCode||site.siteNo||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,5);renderSiteDirectorySearch(Object.entries(sites).map(([id,s])=>({...s,_key:id})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)));$("siteDirectorySuggestions").classList.add("hidden");$("siteDirectorySearch").setAttribute("aria-expanded","false");openSiteDetails(key)});
  $("siteRows").addEventListener("click",e=>{const card=e.target.closest("[data-site-detail]");if(card)openSiteDetails(card.dataset.siteDetail)});
  $("siteDetailClose").addEventListener("click",closeSiteDetails);
  $("siteDetailCloseSecondary").addEventListener("click",closeSiteDetails);
