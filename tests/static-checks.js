@@ -59,7 +59,7 @@ assert.ok(adminHtml.includes('id="adminNewsForm"') && adminHtml.includes('id="ad
 assert.ok(admin.includes("function renderAdminNews()") && admin.includes('db.ref("news").on("value"'), "Admin news list and realtime listener are required");
 assert.ok(admin.includes('logAudit("news-create"') && admin.includes('logAudit("news-update"') && admin.includes('logAudit("news-delete"'), "News create, update and delete actions must be audited");
 assert.ok(rules.rules.news[".read"].includes("access") && rules.rules.news[".write"].includes("admins"), "News must be readable by active staff and writable only by admins");
-assert.ok(index.includes("2.0.12") && adminHtml.includes("2.0.12"), "Both panels must use version 2.0.12");
+assert.ok(index.includes("2.0.13") && adminHtml.includes("2.0.13"), "Both panels must use version 2.0.13");
 assert.ok(adminHtml.includes('id="adminNewsImageFile"') && adminHtml.includes('id="adminNewsImagePreview"'), "Admin must support direct image file selection and preview");
 assert.ok(admin.includes("function compressNewsImage(file)") && admin.includes("350*1024"), "Selected news images must be compressed before saving");
 assert.ok(admin.includes("data-delete-news") && admin.includes("news-delete"), "Admin must be able to delete news posts with audit logging");
@@ -75,19 +75,19 @@ assert.ok(admin.includes('db.ref("newsReactions").on("value"') && admin.includes
 assert.ok(rules.rules.newsReactions && rules.rules.newsComments, "Realtime Database rules must protect reactions and comments");
 assert.ok(rules.rules.newsReactions["$newsId"]["$uid"][".write"].includes("auth.uid === $uid"), "Personnel may only write their own reaction");
 assert.ok(rules.rules.newsComments["$newsId"]["$commentId"][".write"].includes("newData.child('uid').val() === auth.uid"), "Personnel may only create comments as themselves");
-assert.ok(index.includes("2.0.12") && adminHtml.includes("2.0.12"), "Both panels must use version 2.0.12");
+assert.ok(index.includes("2.0.13") && adminHtml.includes("2.0.13"), "Both panels must use version 2.0.13");
 
 const pwa = read("pwa.js");
 const sw = read("sw.js");
 const manifest = JSON.parse(read("manifest.webmanifest"));
 assert.ok(index.includes('rel="manifest"') && adminHtml.includes('rel="manifest"'), "Both panels must link the PWA manifest");
-assert.ok(index.includes('pwa.js?v=2.0.12') && adminHtml.includes('pwa.js?v=2.0.12'), "Both panels must load the PWA helper");
+assert.ok(index.includes('pwa.js?v=2.0.13') && adminHtml.includes('pwa.js?v=2.0.13'), "Both panels must load the PWA helper");
 assert.ok(pwa.includes('navigator.serviceWorker.register') && pwa.includes('beforeinstallprompt'), "PWA registration and install prompt are required");
 assert.ok(sw.includes("cache.addAll") && sw.includes("ignoreSearch: true"), "Offline shell caching and version-query fallback are required");
 assert.equal(manifest.name, "GSM Takip");
 assert.equal(manifest.start_url, "./");
 assert.ok(manifest.icons.some(icon => icon.sizes === "192x192") && manifest.icons.some(icon => icon.sizes === "512x512"), "PWA must declare 192px and 512px icons");
-console.log("Major release checks passed: PWA metadata, offline shell, install prompt, and release version 2.0.12.");
+console.log("Major release checks passed: PWA metadata, offline shell, install prompt, and release version 2.0.13.");
 
 assert.ok(index.includes('id="siteRows" class="site-directory"'), "Accessible site directory must use compact cards");
 assert.ok(app.includes('class="site-record-card" data-site-detail=') && app.includes('function openSiteDetails(key)'), "Clicking a site must open its details modal");
@@ -102,6 +102,7 @@ assert.ok(app.includes('houseNumber=String(a.house_number||"").trim()') && app.i
 assert.ok(index.includes('id="visitWorkNotes" required') && index.includes('id="visitOutcome" required'), "Visit work notes and outcome must be required");
 assert.ok(app.includes('if(!$("visitWorkNotes").value.trim())') && app.includes('if(!$("visitOutcome").value)'), "Visit notes and outcome must be validated before saving and checkout");
 assert.ok(admin.includes('db.ref("admins/"+auth.currentUser.uid).once("value")') && admin.includes('await db.ref("notifications/"+uid).push(payload)'), "Admin notification sending must verify admin rights and handle each recipient separately");
+assert.ok(admin.includes("Firebase Console > Realtime Database > Rules") && admin.includes("permissionDenied"), "Notification permission errors must explain how to resolve deployed Firebase rules mismatch");
 assert.ok(app.includes('siteProvince").value=province') && app.includes('siteDistrict").value=district') && app.includes('siteAddress").value=address.slice'), "GPS reverse geocoding must populate province, district, and address");
 assert.ok(app.includes('$("equipmentSerial").value=found[0].rawValue'), "Scanned barcode must populate the serial number");
 assert.ok(!index.includes('id="equipmentBarcode"') && !index.includes('<th>Barkod / QR</th>'), "Equipment UI must not have a separate barcode field or column");
