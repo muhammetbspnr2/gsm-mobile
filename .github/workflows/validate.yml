@@ -23,6 +23,7 @@ jobs:
         run: |
           node --check app.js
           node --check admin.js
+          node --check site-import.js
           node --check firebase-config.js
           node --check pwa.js
           node --check sw.js
