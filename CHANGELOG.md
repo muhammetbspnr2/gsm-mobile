@@ -1,5 +1,10 @@
 # GSM Takip sürüm notları
 
+## 2.0.13 — Bildirim izin hatası açıklaması
+- Bildirim gönderimi tüm alıcılarda PERMISSION_DENIED ile başarısız olursa hata mesajı, canlı Firebase kurallarının yayımlanmasını açıkça belirtir.
+- Alıcı bazlı hata kodları görünür; yetki hatası ile diğer gönderim hataları ayrıştırılır.
+- Uygulama ve PWA önbellek sürümü 2.0.13 olarak eşitlendi.
+
 ## 2.0.12 — Kısmi aktarım güvenliği
 - Kısmi içe aktarımdan sonra yalnızca başarıyla eklenen satırlar önizlemeden kaldırılır.
 - Aynı Saha ID'ye sahip aktarılmayan satırlar gizlenmez; kullanıcı hatalı satırları görebilir ve düzeltebilir.
