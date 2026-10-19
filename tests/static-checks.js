@@ -5,6 +5,7 @@ const read = (p) => fs.readFileSync(p, "utf8");
 const index = read("index.html");
 const adminHtml = read("admin.html");
 const app = read("app.js");
+const siteImport = read("site-import.js");
 const admin = read("admin.js");
 const config = read("firebase-config.js");
 const rules = JSON.parse(read("database.rules.json"));
@@ -16,7 +17,7 @@ function uniqueIds(html, name) {
 uniqueIds(index, "Personnel");
 uniqueIds(adminHtml, "Admin");
 
-assert.match(index, /v2\.0\.2/, "Personnel version marker is missing");
+assert.match(index, /v2\.0\.11/, "Personnel version marker is missing");
 assert.ok(app.includes("sendEmailVerification"), "Email verification flow is missing");
 assert.ok(app.includes("emailVerified"), "Unverified-email gate is missing");
 assert.ok(app.includes(".info/connected"), "Firebase connection status is missing");
@@ -32,6 +33,9 @@ assert.ok(!adminHtml.includes('id="adminSiteLat"') && !adminHtml.includes('id="a
 assert.ok(admin.includes('site-create-admin') && admin.includes('approved:true'), "Admin-created sites must be audited and approved");
 assert.ok(app.includes('orderByChild("approved").equalTo(true)'), "Personnel approved-site directory query is missing");
 assert.ok(app.includes('/^[A-Z0-9]{5}$/'), "Personnel site ID must be exactly five characters");
+assert.ok(siteImport.includes("duplicateNo") && siteImport.includes("existingNos"), "Site import must reject duplicate site numbers");
+assert.ok(siteImport.includes("!/^\\\\d+$/.test(no)"), "Site import must accept only numeric site numbers");
+assert.ok(siteImport.includes("await db.ref().update(updates)"), "Site import must add records without replacing the existing database");
 assert.ok(rules.rules.sites[".indexOn"].includes("approved"), "Approved sites query must be indexed");
 assert.ok(rules.rules.sites[".read"].includes("query.orderByChild === \'approved\'"), "Database rules must authorize approved-site queries");
 
@@ -52,7 +56,7 @@ assert.ok(adminHtml.includes('id="adminNewsForm"') && adminHtml.includes('id="ad
 assert.ok(admin.includes("function renderAdminNews()") && admin.includes('db.ref("news").on("value"'), "Admin news list and realtime listener are required");
 assert.ok(admin.includes('logAudit("news-create"') && admin.includes('logAudit("news-update"') && admin.includes('logAudit("news-delete"'), "News create, update and delete actions must be audited");
 assert.ok(rules.rules.news[".read"].includes("access") && rules.rules.news[".write"].includes("admins"), "News must be readable by active staff and writable only by admins");
-assert.ok(index.includes("2.0.3") && adminHtml.includes("2.0.3"), "Both panels must use version 2.0.3");
+assert.ok(index.includes("2.0.11") && adminHtml.includes("2.0.11"), "Both panels must use version 2.0.11");
 assert.ok(adminHtml.includes('id="adminNewsImageFile"') && adminHtml.includes('id="adminNewsImagePreview"'), "Admin must support direct image file selection and preview");
 assert.ok(admin.includes("function compressNewsImage(file)") && admin.includes("350*1024"), "Selected news images must be compressed before saving");
 assert.ok(admin.includes("data-delete-news") && admin.includes("news-delete"), "Admin must be able to delete news posts with audit logging");
@@ -68,19 +72,19 @@ assert.ok(admin.includes('db.ref("newsReactions").on("value"') && admin.includes
 assert.ok(rules.rules.newsReactions && rules.rules.newsComments, "Realtime Database rules must protect reactions and comments");
 assert.ok(rules.rules.newsReactions["$newsId"]["$uid"][".write"].includes("auth.uid === $uid"), "Personnel may only write their own reaction");
 assert.ok(rules.rules.newsComments["$newsId"]["$commentId"][".write"].includes("newData.child('uid').val() === auth.uid"), "Personnel may only create comments as themselves");
-assert.ok(index.includes("2.0.3") && adminHtml.includes("2.0.3"), "Both panels must use version 2.0.3");
+assert.ok(index.includes("2.0.11") && adminHtml.includes("2.0.11"), "Both panels must use version 2.0.11");
 
 const pwa = read("pwa.js");
 const sw = read("sw.js");
 const manifest = JSON.parse(read("manifest.webmanifest"));
 assert.ok(index.includes('rel="manifest"') && adminHtml.includes('rel="manifest"'), "Both panels must link the PWA manifest");
-assert.ok(index.includes('pwa.js?v=2.0.3') && adminHtml.includes('pwa.js?v=2.0.3'), "Both panels must load the PWA helper");
+assert.ok(index.includes('pwa.js?v=2.0.11') && adminHtml.includes('pwa.js?v=2.0.11'), "Both panels must load the PWA helper");
 assert.ok(pwa.includes('navigator.serviceWorker.register') && pwa.includes('beforeinstallprompt'), "PWA registration and install prompt are required");
 assert.ok(sw.includes("cache.addAll") && sw.includes("ignoreSearch: true"), "Offline shell caching and version-query fallback are required");
 assert.equal(manifest.name, "GSM Takip");
 assert.equal(manifest.start_url, "./");
 assert.ok(manifest.icons.some(icon => icon.sizes === "192x192") && manifest.icons.some(icon => icon.sizes === "512x512"), "PWA must declare 192px and 512px icons");
-console.log("Major release checks passed: PWA metadata, offline shell, install prompt, and release version 2.0.3.");
+console.log("Major release checks passed: PWA metadata, offline shell, install prompt, and release version 2.0.11.");
 
 assert.ok(index.includes('id="siteRows" class="site-directory"'), "Accessible site directory must use compact cards");
 assert.ok(app.includes('class="site-record-card" data-site-detail=') && app.includes('function openSiteDetails(key)'), "Clicking a site must open its details modal");
