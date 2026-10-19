@@ -1,7 +1,7 @@
 "use strict";
-const VERSION = "2.0.3";
+const VERSION = "2.0.4";
 const CACHE_NAME = "gsm-takip-" + VERSION;
-const SHELL = ["", "index.html", "admin.html", "style.css", "app.js", "admin.js", "firebase-config.js", "pwa.js", "manifest.webmanifest", "app-icon.svg"];
+const SHELL = ["", "index.html", "admin.html", "style.css", "app.js", "admin.js", "site-import.js", "firebase-config.js", "pwa.js", "manifest.webmanifest", "app-icon.svg"];
 const shellUrl = path => new URL(path, self.registration.scope).href;
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
