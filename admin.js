@@ -60,7 +60,7 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
     if(!coordinates.valid||coordinates.empty)return;
     const cell=document.querySelector('[data-site-location="'+id+'"]');
     try{const location=await reverseGeocodeGoogle(coordinates.latitude,coordinates.longitude);if(cell&&(location.province||location.district))cell.textContent=(location.province||sites[id]?.province||"—")+" / "+(location.district||sites[id]?.district||"—");input.title="Google Maps konumu çözümlendi; kalıcı kaydetmek için Kaydet'e basın"}catch(err){input.title="Google Maps il/ilçe bulunamadı. Kaydet sırasında da tekrar denenir."}
-   });
+   }));
    document.querySelectorAll("[data-save-site]").forEach(b=>b.onclick=async()=>{
     const id=b.dataset.saveSite,siteNo=document.querySelector('[data-site-no="'+id+'"]').value.trim(),address=document.querySelector('[data-site-address="'+id+'"]').value.trim(),latText=document.querySelector('[data-site-latitude="'+id+'"]').value.trim().replace(",", "."),lngText=document.querySelector('[data-site-longitude="'+id+'"]').value.trim().replace(",", ".");
     if(!/^[0-9]+$/.test(siteNo)){alert("Saha No yalnızca rakamlardan oluşmalı ve boş bırakılamaz.");return}
@@ -101,7 +101,8 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
  $("adminSiteForm")?.addEventListener("submit",async e=>{e.preventDefault();const siteId=$("adminSiteId").value.trim().toUpperCase(),siteNo=$("adminSiteNo").value.trim(),company=$("adminSiteCompany").value.trim(),province=$("adminSiteProvince").value.trim(),district=$("adminSiteDistrict").value.trim(),address=$("adminSiteAddress").value.trim(),latitudeText=($("adminSiteLatitude")?.value||"").trim().replace(",", "."),longitudeText=($("adminSiteLongitude")?.value||"").trim().replace(",", "."),operator=$("adminSiteOperator").value,siteType=$("adminSiteType").value;
  if(!/^[A-Z0-9]{5}$/.test(siteId)){msg("adminSiteMessage","Saha ID tam 5 karakter olmalı; yalnızca harf ve rakam kullanın.","error");return}
  if(!/^[0-9]+$/.test(siteNo)){msg("adminSiteMessage","Saha No yalnızca rakamlardan oluşmalıdır.","error");return}
- const coordinates=validCoordinates(latitudeText,longitudeText);if(!coordinates.valid){msg("adminSiteMessage","Enlem ve boylam birlikte girilmeli. Enlem -90 ile 90, boylam -180 ile 180 arasında olmalı.","error");return}\n if(!province||!district||!address||!operator||!siteType){msg("adminSiteMessage","Lütfen tüm zorunlu alanları doldurun.","error");return}
+ const coordinates=validCoordinates(latitudeText,longitudeText);if(!coordinates.valid){msg("adminSiteMessage","Enlem ve boylam birlikte girilmeli. Enlem -90 ile 90, boylam -180 ile 180 arasında olmalı.","error");return}
+ if(!province||!district||!address||!operator||!siteType){msg("adminSiteMessage","Lütfen tüm zorunlu alanları doldurun.","error");return}
  if(Object.values(sites).some(s=>String(s.siteId||s.siteCode||"").toUpperCase()===siteId)||Object.values(requests).some(s=>s.status==="pending"&&String(s.siteId||"").toUpperCase()===siteId)){msg("adminSiteMessage","Bu Saha ID zaten kullanılıyor veya onay bekliyor.","error");return}
  if(Object.values(sites).some(s=>String(s.siteNo||"")===siteNo)||Object.values(requests).some(s=>s.status==="pending"&&String(s.siteNo||"")===siteNo)){msg("adminSiteMessage","Bu Saha No zaten kullanılıyor veya onay bekliyor.","error");return}
  const btn=$("adminSaveSiteBtn");btn.disabled=true;const original=btn.textContent;btn.textContent="Kaydediliyor…";
