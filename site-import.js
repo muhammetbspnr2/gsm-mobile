@@ -25,7 +25,7 @@
     const normalized=headers.map(normalize);
     const coordIndex=normalized.findIndex(k=>["koordinat","koordinatlar","coordinate","coordinates","konum"].includes(k));
     const idIndex=normalized.findIndex(k=>["sahaid","siteid","id","sitecode","sahakodu"].includes(k));
-    const urlIndex=normalized.findIndex(k=>["url","mapsurl","mapslink","googlemapsurl","haritalink"].includes(k));
+    const urlIndex=normalized.findIndex(k=>["url","mapsurl","mapslink","mapsadreslinki","mapsadres","mapsaddresslink","googlemapsurl","googlemapslink","haritalink","haritalinki"].includes(k));
     const coordinateIdUrl=coordIndex===0&&idIndex===1&&urlIndex===2;
     return rows.map(cols=>{
       let obj=Object.fromEntries(headers.map((h,i)=>[h,cols[i]||""]));
