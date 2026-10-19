@@ -1,5 +1,5 @@
 "use strict";
-const VERSION = "2.0.9";
+const VERSION = "2.0.10";
 const CACHE_NAME = "gsm-takip-" + VERSION;
 const SHELL = ["", "index.html", "admin.html", "style.css", "app.js", "admin.js", "site-import.js", "firebase-config.js", "pwa.js", "manifest.webmanifest", "app-icon.svg", "app-icon-tower.svg"];
 const shellUrl = path => new URL(path, self.registration.scope).href;
