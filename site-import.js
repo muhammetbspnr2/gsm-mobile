@@ -10,18 +10,66 @@
   function parseCsv(text){
     const first=(text.split(/\r?\n/)[0]||"");
     const delimiter=(first.match(/;/g)||[]).length>(first.match(/,/g)||[]).length?";":",";
-    const rows=[]; let row=[], cell="", quoted=false;
-    for(let i=0;i<text.length;i++){const c=text[i]; if(c==='"'&&quoted&&text[i+1]==='"'){cell+='"';i++}else if(c==='"'){quoted=!quoted}else if(c===delimiter&&!quoted){row.push(cell);cell=""}else if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&text[i+1]==="\n")i++;row.push(cell);if(row.some(v=>String(v).trim()))rows.push(row);row=[];cell=""}else cell+=c}
+    const rows=[];let row=[],cell="",quoted=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i];
+      if(c==='"'&&quoted&&text[i+1]==='"'){cell+='"';i++}
+      else if(c==='"'){quoted=!quoted}
+      else if(c===delimiter&&!quoted){row.push(cell);cell=""}
+      else if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&text[i+1]==="\n")i++;row.push(cell);if(row.some(v=>String(v).trim()))rows.push(row);row=[];cell=""}
+      else cell+=c;
+    }
     row.push(cell);if(row.some(v=>String(v).trim()))rows.push(row);
     if(rows.length<2)throw new Error("CSV dosyasında başlık ve en az bir kayıt bulunamadı.");
     const headers=rows.shift().map(x=>x.replace(/^\uFEFF/,"").trim());
-    return rows.map(cols=>Object.fromEntries(headers.map((h,i)=>[h,cols[i]||""]))).map(o=>{
-      const id=getField(o,["sahaid","siteid","id","sitecode","sahakodu"]);
-      const address=getField(o,["adres","address","formattedaddress","konumadresi","location"]);
-      const lat=getField(o,["enlem","latitude","lat"]), lng=getField(o,["boylam","longitude","lon","lng"]);
-      const name=getField(o,["name","ad","sahaadi","sitename","title"]);
-      return {siteId:extractId(id||name),siteNo:"",address:address||name,lat:num(lat),lng:num(lng),province:getField(o,["il","province","state"]),district:getField(o,["ilce","district","city"]),sourceName:name};
+    const normalized=headers.map(normalize);
+    const coordIndex=normalized.findIndex(k=>["koordinat","koordinatlar","coordinate","coordinates","konum"].includes(k));
+    const idIndex=normalized.findIndex(k=>["sahaid","siteid","id","sitecode","sahakodu"].includes(k));
+    const urlIndex=normalized.findIndex(k=>["url","mapsurl","mapslink","googlemapsurl","haritalink"].includes(k));
+    const coordinateIdUrl=coordIndex===0&&idIndex===1&&urlIndex===2;
+    return rows.map(cols=>{
+      let obj=Object.fromEntries(headers.map((h,i)=>[h,cols[i]||""]));
+      let coordinate="",id="",mapsUrl="";
+      if(coordinateIdUrl){
+        // Gemini/Sheets CSV may leave the coordinate pair and URL commas unquoted.
+        if(cols.length>=4&&isCoordinateNumber(cols[0])&&isCoordinateNumber(cols[1])&&extractId(cols[2])){
+          coordinate=String(cols[0]).trim()+","+String(cols[1]).trim();
+          id=String(cols[2]||"").trim();
+          mapsUrl=cols.slice(3).join(",");
+        }else{
+          coordinate=String(cols[coordIndex]||"").trim();
+          id=String(cols[idIndex]||"").trim();
+          mapsUrl=cols.slice(urlIndex).join(delimiter===";"?";":",");
+        }
+      }else{
+        coordinate=coordIndex>=0?String(cols[coordIndex]||"").trim():"";
+        id=idIndex>=0?String(cols[idIndex]||"").trim():"";
+        mapsUrl=urlIndex>=0?String(cols[urlIndex]||"").trim():"";
+        if(!mapsUrl)mapsUrl=getField(obj,["mapsurl","mapslink","googlemapsurl","url"]);
+      }
+      const parsed=parseCoordinates(coordinate);
+      const address=getField(obj,["adres","address","formattedaddress","konumadresi","location"]);
+      const latField=getField(obj,["enlem","latitude","lat"]),lngField=getField(obj,["boylam","longitude","lon","lng"]);
+      const name=getField(obj,["name","ad","sahaadi","sitename","title"]);
+      const lat=parsed?.lat??num(latField),lng=parsed?.lng??num(lngField);
+      const coordinateAddress=lat!==null&&lng!==null?"Koordinat: "+lat+", "+lng:"";
+      return {siteId:extractId(id||getField(obj,["sahaid","siteid","id","sitecode","sahakodu"])||name),siteNo:"",address:address||name||mapsUrl||coordinateAddress,lat,lng,mapsUrl,province:getField(obj,["il","province","state"]),district:getField(obj,["ilce","district","city"]),sourceName:name};
     });
+  }
+  function isCoordinateNumber(v){if(String(v??"").trim()==="")return false;const n=Number(String(v).trim().replace(",", "."));return Number.isFinite(n)&&Math.abs(n)<=180}
+  function parseCoordinates(value){
+    const s=String(value||"").trim();
+    if(!s)return null;
+    const dms=[...s.matchAll(/(\d{1,3})\s*°\s*(\d{1,2})\s*['′]\s*([\d.]+)\s*["″]?\s*([NSEW])/gi)];
+    if(dms.length>=2){
+      const decimal=m=>{const v=Number(m[1])+Number(m[2])/60+Number(m[3])/3600;return /[SW]/i.test(m[4])?-v:v};
+      const parts=dms.map(decimal),latPart=dms.findIndex(m=>/[NS]/i.test(m[4])),lngPart=dms.findIndex(m=>/[EW]/i.test(m[4]));
+      const lat=parts[latPart],lng=parts[lngPart];
+      if(Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat)<=90&&Math.abs(lng)<=180)return {lat,lng};
+    }
+    const m=s.match(/^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,;]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/);
+    if(m){const lat=Number(m[1]),lng=Number(m[2]);if(Math.abs(lat)<=90&&Math.abs(lng)<=180)return {lat,lng}}
+    return null;
   }
   function num(v){if(v==="")return null;const n=Number(String(v).replace(",","."));return Number.isFinite(n)&&Math.abs(n)<=180?n:null}
   function extractId(s){const value=String(s||"").toUpperCase();const exact=value.trim().match(/^[A-Z0-9]{5}$/);if(exact)return exact[0];const m=value.match(/(?:^|[^A-Z0-9])([A-Z0-9]{5})(?:$|[^A-Z0-9])/);return m?m[1]:""}
@@ -102,7 +150,7 @@
     const btn=$("siteImportCommitBtn");btn.disabled=true;btn.textContent="Aktarılıyor…";
     try{
       const db=firebase.database(),now=Date.now(),updates={};
-      batch.forEach((r,i)=>{const key=db.ref("sites").push().key;updates["sites/"+key]={id:key,siteId:r.siteId,siteCode:r.siteId,siteNo:String(r.siteNo||""),ownerUid:user.uid,ownerName:"Yönetici",createdBy:"admin",company:"Mikrolink",operator:"",siteType:"",province:r.province||"",district:r.district||"",address:r.address,latitude:r.lat,lng:r.lng,lat:r.lat,notes:"Google Maps içe aktarımı"+(r.sourceName?" · "+r.sourceName:""),approved:true,status:"approved",createdAt:now+i,createdByUid:user.uid,approvedBy:user.uid,approvedAt:now+i,importSource:"google-maps"}});
+      batch.forEach((r,i)=>{const key=db.ref("sites").push().key;updates["sites/"+key]={id:key,siteId:r.siteId,siteCode:r.siteId,siteNo:String(r.siteNo||""),mapsUrl:String(r.mapsUrl||""),ownerUid:user.uid,ownerName:"Yönetici",createdBy:"admin",company:"Mikrolink",operator:"",siteType:"",province:r.province||"",district:r.district||"",address:r.address,latitude:r.lat,lng:r.lng,lat:r.lat,notes:"Google Maps içe aktarımı"+(r.sourceName?" · "+r.sourceName:""),approved:true,status:"approved",createdAt:now+i,createdByUid:user.uid,approvedBy:user.uid,approvedAt:now+i,importSource:"google-maps"}});
       await db.ref().update(updates);
       await db.ref("auditLogs").push({action:"site-import",detail:batch.length+" Google Maps saha kaydı içe aktarıldı",adminUid:user.uid,createdAt:Date.now()});
       const imported=new Set(batch.map(r=>r.siteId));parsedRows=parsedRows.filter(r=>!imported.has(r.siteId));renderPreview();message(batch.length+" saha kaydı eklendi. Saha No alanlarını aşağıdaki listeden daha sonra doldurabilirsiniz.","success");
