@@ -1,5 +1,10 @@
 # GSM Takip sürüm notları
 
+## 2.0.12 — Kısmi aktarım güvenliği
+- Kısmi içe aktarımdan sonra yalnızca başarıyla eklenen satırlar önizlemeden kaldırılır.
+- Aynı Saha ID'ye sahip aktarılmayan satırlar gizlenmez; kullanıcı hatalı satırları görebilir ve düzeltebilir.
+- Sürüm ve önbellek bağlantıları 2.0.12 ile eşitlendi.
+
 ## 2.0.11 — Aktarım doğrulaması ve önbellek tutarlılığı
 - CSV/KML/KMZ saha aktarımında 5 karakterli benzersiz Saha ID doğrulaması korunur.
 - Dolu Saha No alanları yalnızca rakamlardan oluşur; mevcut kayıtlarda veya aynı aktarım dosyasında tekrar eden numaralar aktarılmaz. Saha No boş bırakılabilir.
