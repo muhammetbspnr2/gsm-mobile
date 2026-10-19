@@ -106,20 +106,27 @@
   function renderPreview(){
     const host=$("siteImportPreview");if(!host)return;
     if(!parsedRows.length){host.innerHTML="";$("siteImportCommitBtn").disabled=true;return}
-    const existingIds=new Set(Object.values(sites).map(s=>String(s.siteId||s.siteCode||"").toUpperCase()));
-    const seen=new Set();
+    const existingIds=new Set(Object.values(sites).map(s=>String(s.siteId||s.siteCode||"").trim().toUpperCase()).filter(Boolean));
+    const existingNos=new Set(Object.values(sites).map(s=>String(s.siteNo||"").trim()).filter(Boolean));
+    const seenIds=new Set(),seenNos=new Set();
+    const rowChecks=parsedRows.map(r=>{
+      const id=String(r.siteId||"").trim().toUpperCase(),no=String(r.siteNo||"").trim();
+      const duplicateId=!!id&&(existingIds.has(id)||seenIds.has(id));
+      const duplicateNo=!!no&&(existingNos.has(no)||seenNos.has(no));
+      if(id)seenIds.add(id);if(no)seenNos.add(no);
+      const error=!/^[A-Z0-9]{5}$/.test(id)?"Saha ID tam 5 harf/rakam olmalı":!String(r.address||"").trim()?"Adres eksik":duplicateId?"Saha ID kayıtlı veya dosyada tekrarlı":no&&!/^\\d+$/.test(no)?"Saha No yalnızca rakam olmalı":duplicateNo?"Saha No kayıtlı veya dosyada tekrarlı":"";
+      return {ok:!error,error};
+    });
     host.innerHTML='<div class="table-wrap"><table><thead><tr><th>#</th><th>Saha ID</th><th>Saha No (isteğe bağlı)</th><th>Adres</th><th>Enlem</th><th>Boylam</th><th>Kontrol</th></tr></thead><tbody>'+parsedRows.map((r,i)=>{
-      const duplicate=existingIds.has(r.siteId)||seen.has(r.siteId);if(r.siteId)seen.add(r.siteId);
-      const ok=valid(r)&&!duplicate;
-      return '<tr data-import-row="'+i+'" class="'+(ok?"import-valid":"import-invalid")+'"><td>'+(i+1)+'</td><td><input data-field="siteId" data-index="'+i+'" maxlength="5" value="'+esc(r.siteId)+'" aria-label="Saha ID '+(i+1)+'"></td><td><input data-field="siteNo" data-index="'+i+'" inputmode="numeric" value="'+esc(r.siteNo)+'" placeholder="Sonra eklenebilir" aria-label="Saha No '+(i+1)+'"></td><td><input data-field="address" data-index="'+i+'" maxlength="500" value="'+esc(r.address)+'" aria-label="Adres '+(i+1)+'"></td><td>'+esc(r.lat??"—")+'</td><td>'+esc(r.lng??"—")+'</td><td class="import-status">'+(!r.siteId?"Saha ID girin":!r.address.trim()?"Adres eksik":duplicate?"ID zaten kayıtlı / tekrarlı":"Aktarıma hazır")+'</td></tr>';
-    }).join("")+'</tbody></table></div><p class="muted">Toplam '+parsedRows.length+' kayıt. Kırmızı satırlardaki eksik veya tekrarlı bilgileri düzeltin. Saha No alanları boş kalabilir.</p>';
+      const check=rowChecks[i],ok=check.ok;
+      return '<tr data-import-row="'+i+'" class="'+(ok?"import-valid":"import-invalid")+'"><td>'+(i+1)+'</td><td><input data-field="siteId" data-index="'+i+'" maxlength="5" value="'+esc(r.siteId)+'" aria-label="Saha ID '+(i+1)+'"></td><td><input data-field="siteNo" data-index="'+i+'" inputmode="numeric" value="'+esc(r.siteNo)+'" placeholder="Sonra eklenebilir" aria-label="Saha No '+(i+1)+'"></td><td><input data-field="address" data-index="'+i+'" maxlength="500" value="'+esc(r.address)+'" aria-label="Adres '+(i+1)+'"></td><td>'+esc(r.lat??"—")+'</td><td>'+esc(r.lng??"—")+'</td><td class="import-status">'+(ok?"Aktarıma hazır":esc(check.error))+'</td></tr>';
+    }).join("")+'</tbody></table></div><p class="muted">Toplam '+parsedRows.length+' kayıt. Saha ID 5 harf/rakamdan oluşmalı ve benzersiz olmalıdır. Dolu Saha No alanları yalnızca rakamlardan oluşmalı ve benzersiz olmalıdır. Saha No boş bırakılabilir.</p>';
     host.querySelectorAll("input[data-field]").forEach(input=>input.addEventListener("input",()=>{
       const i=Number(input.dataset.index),field=input.dataset.field;
       parsedRows[i][field]=field==="siteId"?input.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,5):field==="siteNo"?input.value.replace(/[^0-9]/g,""):input.value;
       const pos=input.selectionStart;renderPreview();const next=host.querySelector('input[data-field="'+field+'"][data-index="'+i+'"]');if(next){next.focus();try{next.setSelectionRange(pos,pos)}catch{}}
     }));
-    const good=parsedRows.filter(r=>valid(r)&&!existingIds.has(r.siteId));
-    $("siteImportCommitBtn").disabled=!good.length;
+    $("siteImportCommitBtn").disabled=!rowChecks.some(check=>check.ok);
   }
   function renderExisting(){
     const body=$("siteImportExistingRows");if(!body)return;
@@ -143,9 +150,16 @@
     const user=firebase.auth().currentUser;if(!user){message("Önce yönetici olarak giriş yapın.","error");return}
     const authSnap=await firebase.database().ref("admins/"+user.uid).once("value");if(authSnap.val()!==true){message("Yönetici yetkisi doğrulanamadı; aktarım iptal edildi.","error");return}
     const existing=await firebase.database().ref("sites").once("value");sites=existing.val()||{};
-    const seen=new Set(Object.values(sites).map(s=>String(s.siteId||s.siteCode||"").toUpperCase()));
-    const batch=[];for(const r of parsedRows){const id=String(r.siteId||"").toUpperCase();if(!valid({...r,siteId:id})||seen.has(id))continue;seen.add(id);batch.push({...r,siteId:id})}
-    if(!batch.length){message("Aktarılabilecek geçerli ve benzersiz kayıt bulunamadı.","error");renderPreview();return}
+    const existingIds=new Set(Object.values(sites).map(s=>String(s.siteId||s.siteCode||"").trim().toUpperCase()).filter(Boolean));
+    const existingNos=new Set(Object.values(sites).map(s=>String(s.siteNo||"").trim()).filter(Boolean));
+    const seenIds=new Set(),seenNos=new Set(),batch=[];
+    for(const row of parsedRows){
+      const r={...row,siteId:String(row.siteId||"").trim().toUpperCase(),siteNo:String(row.siteNo||"").trim()};
+      const id=r.siteId,no=r.siteNo;
+      if(!valid(r)||existingIds.has(id)||seenIds.has(id)||(no&&!/^\\d+$/.test(no))||(no&&(existingNos.has(no)||seenNos.has(no))))continue;
+      seenIds.add(id);if(no)seenNos.add(no);batch.push(r);
+    }
+    if(!batch.length){message("Aktarılabilecek kayıt bulunamadı. Saha ID ve varsa Saha No değerlerinin benzersiz ve geçerli olduğunu kontrol edin.","error");renderPreview();return}
     if(!confirm(batch.length+" saha kaydı Firebase'e eklenecek. Saha No boş bırakılabilir. Devam edilsin mi?"))return;
     const btn=$("siteImportCommitBtn");btn.disabled=true;btn.textContent="Aktarılıyor…";
     try{
