@@ -153,8 +153,9 @@
     const existingIds=new Set(Object.values(sites).map(s=>String(s.siteId||s.siteCode||"").trim().toUpperCase()).filter(Boolean));
     const existingNos=new Set(Object.values(sites).map(s=>String(s.siteNo||"").trim()).filter(Boolean));
     const seenIds=new Set(),seenNos=new Set(),batch=[];
-    for(const row of parsedRows){
-      const r={...row,siteId:String(row.siteId||"").trim().toUpperCase(),siteNo:String(row.siteNo||"").trim()};
+    for(let sourceIndex=0;sourceIndex<parsedRows.length;sourceIndex++){
+      const row=parsedRows[sourceIndex];
+      const r={...row,siteId:String(row.siteId||"").trim().toUpperCase(),siteNo:String(row.siteNo||"").trim(),_sourceIndex:sourceIndex};
       const id=r.siteId,no=r.siteNo;
       if(!valid(r)||existingIds.has(id)||seenIds.has(id)||(no&&!/^\\d+$/.test(no))||(no&&(existingNos.has(no)||seenNos.has(no))))continue;
       seenIds.add(id);if(no)seenNos.add(no);batch.push(r);
@@ -167,7 +168,7 @@
       batch.forEach((r,i)=>{const key=db.ref("sites").push().key;updates["sites/"+key]={id:key,siteId:r.siteId,siteCode:r.siteId,siteNo:String(r.siteNo||""),mapsUrl:String(r.mapsUrl||""),ownerUid:user.uid,ownerName:"Yönetici",createdBy:"admin",company:"Mikrolink",operator:"",siteType:"",province:r.province||"",district:r.district||"",address:r.address,latitude:r.lat,lng:r.lng,lat:r.lat,notes:"Google Maps içe aktarımı"+(r.sourceName?" · "+r.sourceName:""),approved:true,status:"approved",createdAt:now+i,createdByUid:user.uid,approvedBy:user.uid,approvedAt:now+i,importSource:"google-maps"}});
       await db.ref().update(updates);
       await db.ref("auditLogs").push({action:"site-import",detail:batch.length+" Google Maps saha kaydı içe aktarıldı",adminUid:user.uid,createdAt:Date.now()});
-      const imported=new Set(batch.map(r=>r.siteId));parsedRows=parsedRows.filter(r=>!imported.has(r.siteId));renderPreview();message(batch.length+" saha kaydı eklendi. Saha No alanlarını aşağıdaki listeden daha sonra doldurabilirsiniz.","success");
+      const importedIndexes=new Set(batch.map(r=>r._sourceIndex));parsedRows=parsedRows.filter((r,index)=>!importedIndexes.has(index));renderPreview();message(batch.length+" saha kaydı eklendi. Aktarılmayan veya tekrarlı satırlar önizlemede bırakıldı; Saha No alanlarını aşağıdaki listeden daha sonra doldurabilirsiniz.","success");
     }catch(err){message("Aktarım başarısız: "+err.message,"error")}
     finally{btn.disabled=false;btn.textContent="Geçerli sahaları aktar"}
   });
