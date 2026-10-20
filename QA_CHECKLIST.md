@@ -15,6 +15,7 @@ These checks require a real browser and a test account connected to the Firebase
 - [ ] Save work notes and result; reload and verify both remain.
 - [ ] Leave required work notes or result empty; save/checkout must be blocked with a Turkish explanation.
 - [ ] End the visit; exactly one history record exists for that visit and the open visit is cleared.
+- [ ] Confirm personnel can read only their own visit-history key; direct reads of another user's history key and broad history listing remain denied.
 - [ ] Retry after a network failure; verify no duplicate history records or misleading success message.
 
 ## Import and site records
