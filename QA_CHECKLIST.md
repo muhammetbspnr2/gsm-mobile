@@ -48,3 +48,14 @@ These checks require a real browser and a test account connected to the Firebase
 - [ ] Confirm browser console has no uncaught errors or Firebase permission errors.
 
 Record tester, date, device/browser, test account, failures, and relevant console/network details before declaring a release production-ready.
+
+
+## 2.4.0 arayüz / responsive regresyonu
+- [ ] Personel giriş ve kayıt ekranı dar Android ekranında taşmadan açılıyor.
+- [ ] Personel alt gezinmesindeki beş hedef tıklanabilir, seçili bölüm belirgin ve sabit alt gezinme içerik alanını kapatmıyor.
+- [ ] Yönetici menüsünde İŞ GÜCÜ, SAHA OPERASYONLARI, İLETİŞİM ve SİSTEM grupları görünür.
+- [ ] Yönetici menüsündeki 14 bölümün tamamı seçilebiliyor; sekme seçimi doğru içeriği gösteriyor.
+- [ ] Yönetici istatistik kartları telefon ve masaüstünde okunaklı; kartlar yatay taşma oluşturmuyor.
+- [ ] Saha haritası, içe aktarma önizlemesi, tablolar, formlar, modal pencereler ve bildirimler yeni renk paletinde okunaklı.
+- [ ] Klavye odağı görünür; reduced-motion tercihi olan cihazlarda gereksiz hareket oluşmuyor.
+- [ ] Güncellemeden sonra PWA/Service Worker 2.4.0 önbelleğini kullanıyor; eski stil görünüyorsa uygulama kapatılıp açılarak tekrar kontrol ediliyor.

@@ -2,6 +2,11 @@
 Personel: https://muhammetbspnr2.github.io/gsm-mobile/  
 Yönetici: https://muhammetbspnr2.github.io/gsm-mobile/admin.html
 
+## 2.4.0 — Arayüz yenilemesi
+- Personel ve yönetici panelleri için ortak kurumsal renk sistemi, sade kartlar, daha net form/tablo hiyerarşisi ve erişilebilir odak durumları.
+- Yönetici menüsü iş gücü, saha operasyonları, iletişim ve sistem olarak gruplandı; tüm mevcut bölümler korunarak mobil düzende sadeleştirildi.
+- PWA ve Service Worker önbelleği 2.4.0'a yükseltildi.
+
 ## Firebase kurulumu
 1. Firebase Console'da ilgili projeyi açın ve Authentication > Sign-in method altında Email/Password girişini etkinleştirin.
 2. Project settings > Your apps içinden Web App yapılandırmasını alın ve firebase-config.js dosyasındaki tüm BURAYA_ alanlarını değiştirin. Veritabanı adresi önceden girilmiştir.
@@ -27,7 +32,7 @@ Yönetici: https://muhammetbspnr2.github.io/gsm-mobile/admin.html
 Firebase Realtime Database kuralları GitHub Pages dağıtımıyla otomatik yayınlanmaz. Bu sürümde database.rules.json güncellendi; canlı Firebase projesine ayrıca yayınlanması gerekir.
 
 
-## Sürüm 2.3.0 — Profesyonelleştirme ve kalite temeli
+## Sürüm 2.4.0 — Profesyonelleştirme ve kalite temeli
 - Personel ve yönetici ekranlarının statik varlık sürüm işaretleri, PWA bildirimi ve Service Worker önbelleği aynı sürüme hizalandı.
 - CSV içe aktarmada Saha No sayısal doğrulamasındaki çift kaçış hatası düzeltildi; önizleme ve aktarım doğrulaması aynı kurala göre çalışır.
 - Çevrimdışı saha notu/sonucu aynı açık ziyaretle eşleştirilerek cihazda bekletilir ve bağlantı geldiğinde doğrulanarak senkronize edilir; çevrimdışıyken yeni saha girişi/çıkışı engellenir.
