@@ -1012,3 +1012,75 @@ html[data-theme="light"] #adminAppView .admin-sidebar button:not(.active):focus-
  #adminAppView .admin-nav-group{align-content:start!important}
  #adminAppView .admin-nav-label{font-size:9px!important}
 }
+
+
+/* 2.5.2 personnel bottom navigation: clean floating dock, restrained brand accent */
+.person-nav.bottom-nav{
+ grid-template-columns:repeat(6,minmax(0,1fr))!important;
+ background:var(--surface)!important;
+ border:1px solid var(--line)!important;
+ box-shadow:0 12px 34px rgba(20,25,35,.14)!important;
+ backdrop-filter:blur(18px);
+}
+.person-nav.bottom-nav .person-tab{
+ position:relative;isolation:isolate;
+ overflow:hidden;
+ background:transparent!important;
+ color:var(--muted)!important;
+ border:1px solid transparent!important;
+ border-radius:14px!important;
+ transition:color .18s ease,background .18s ease,transform .18s ease;
+}
+.person-nav.bottom-nav .person-tab::before{
+ content:"";position:absolute;inset:4px;border-radius:11px;
+ background:var(--surface-alt);opacity:0;transform:scale(.88);
+ transition:opacity .18s ease,transform .18s ease;z-index:-1;
+}
+.person-nav.bottom-nav .person-tab:hover,
+.person-nav.bottom-nav .person-tab:focus-visible{
+ background:transparent!important;color:var(--ink)!important;
+ outline:2px solid transparent;
+}
+.person-nav.bottom-nav .person-tab:hover::before,
+.person-nav.bottom-nav .person-tab:focus-visible::before{
+ opacity:1;transform:scale(1);
+}
+.person-nav.bottom-nav .person-tab.active{
+ background:transparent!important;color:var(--brand)!important;
+ border-color:transparent!important;box-shadow:none!important;
+}
+.person-nav.bottom-nav .person-tab.active::before{
+ opacity:1;transform:scale(1);background:var(--surface-alt);
+}
+.person-nav.bottom-nav .person-tab.active svg{
+ stroke:var(--brand)!important;transform:translateY(-1px);
+}
+.person-nav.bottom-nav .person-tab svg{
+ position:relative;z-index:1;transition:transform .18s ease;
+}
+.person-nav.bottom-nav .person-tab span{position:relative;z-index:1;color:inherit!important}
+html[data-theme="dark"] .person-nav.bottom-nav{
+ background:rgba(24,24,24,.96)!important;
+ border-color:#383838!important;
+ box-shadow:0 12px 34px rgba(0,0,0,.38)!important;
+}
+html[data-theme="dark"] .person-nav.bottom-nav .person-tab::before{
+ background:#303030;
+}
+html[data-theme="light"] .person-nav.bottom-nav{
+ background:rgba(255,255,255,.96)!important;
+ border-color:#e4e4e4!important;
+}
+html[data-theme="light"] .person-nav.bottom-nav .person-tab::before{
+ background:#f0f0f0;
+}
+@media(max-width:650px){
+ .person-nav.bottom-nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+ .person-nav.bottom-nav .person-tab{min-width:0;padding:8px 1px!important;gap:4px!important}
+ .person-nav.bottom-nav .person-tab span{font-size:clamp(8px,2.35vw,10px)!important;letter-spacing:-.02em}
+ .person-nav.bottom-nav .person-tab svg{width:20px!important;height:20px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .person-nav.bottom-nav .person-tab,.person-nav.bottom-nav .person-tab::before,
+ .person-nav.bottom-nav .person-tab svg{transition:none!important}
+}
