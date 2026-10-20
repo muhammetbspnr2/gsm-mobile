@@ -541,3 +541,47 @@ tbody tr:hover{background:#1a2a40}
 }
 .site-detail-close{color:#18385f!important}
 .site-detail-dialog .site-map-note{color:#294563!important}
+
+
+/* v2.2.4 — admin nearest-site pairing panel */
+.proximity-layout{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.4fr);gap:14px;align-items:start}
+.proximity-picker,.proximity-results-panel{padding:16px;border:1px solid #2a3a52;border-radius:15px;min-width:0}
+.proximity-picker-head,.proximity-results-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.proximity-picker-head>div,.proximity-results-head>div{display:grid;gap:4px;min-width:0}
+.proximity-picker-head strong,.proximity-results-head strong{font-size:14px;color:#f3f6fc}
+.proximity-picker-head small,.proximity-results-head small{font-size:11px;color:#9aaac1;line-height:1.5}
+.proximity-picker-head .btn{padding:8px 10px;font-size:11px;white-space:nowrap}
+.proximity-picker>label{display:block;margin:8px 0;font-size:12px;font-weight:700}
+.proximity-picker>input{width:100%;padding:11px 12px;margin-bottom:10px}
+.proximity-site-options{display:grid;gap:7px;max-height:440px;overflow:auto;padding-right:2px}
+.proximity-site-option{display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border:1px solid #2d4058;border-radius:11px;background:#17263b;cursor:pointer}
+.proximity-site-option:has(input:checked){border-color:#d9b33c;background:#29344a}
+.proximity-site-option input{flex:0 0 auto;width:17px;height:17px;accent-color:#f2c43d}
+.proximity-site-option-copy{display:grid;gap:4px;min-width:0;flex:1}
+.proximity-site-option-copy strong{font-size:12px;color:#e7edf7;overflow-wrap:anywhere}
+.proximity-site-option-copy small{font-size:10px;line-height:1.45;color:#9aaac1;overflow-wrap:anywhere}
+.proximity-site-coordinate{flex:0 0 auto;font-size:9px;font-weight:800;color:#46d39a;text-align:right}
+.proximity-site-option.is-unavailable{opacity:.6;cursor:not-allowed}
+.proximity-site-option.is-unavailable .proximity-site-coordinate{color:#ffca82}
+.proximity-picker .hint{font-size:11px;line-height:1.6;margin:12px 0 0}
+.proximity-results-head{align-items:flex-start}
+.proximity-results-head .site-map-summary{flex:0 0 auto}
+.proximity-pair-list{display:grid;gap:9px}
+.proximity-pair-card{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px;border:1px solid #2b3e56;border-radius:13px;background:#16243a}
+.proximity-pair-number{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#2b3a50;color:#f2c43d;font-size:11px;font-weight:900}
+.proximity-pair-sites{display:grid;gap:9px;min-width:0}
+.proximity-pair-site{display:grid;grid-template-columns:7px minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0}
+.proximity-site-dot{width:7px;height:7px;border-radius:50%;background:#f2c43d;box-shadow:0 0 0 3px #f2c43d20}
+.proximity-pair-site>div{display:grid;gap:3px;min-width:0}
+.proximity-pair-site strong{font-size:12px;color:#f3f6fc;overflow-wrap:anywhere}
+.proximity-pair-site small{font-size:10px;line-height:1.4;color:#9aaac1;overflow-wrap:anywhere}
+.proximity-pair-site a{font-size:10px;font-weight:800;color:#f2c43d;text-decoration:none;white-space:nowrap}
+.proximity-pair-distance{display:grid;gap:4px;text-align:right;justify-items:end}
+.proximity-pair-distance strong{font-size:14px;color:#46d39a;white-space:nowrap}
+.proximity-pair-distance small{font-size:9px;color:#9aaac1}
+.proximity-unpaired{display:grid;gap:5px;margin-top:12px;padding:12px;border:1px dashed #52647b;border-radius:11px;color:#e7edf7}
+.proximity-unpaired strong{font-size:11px;color:#f2c43d}
+.proximity-unpaired span{font-size:12px;font-weight:800}
+.proximity-unpaired small{font-size:10px;color:#9aaac1}
+@media(max-width:900px){.proximity-layout{grid-template-columns:1fr}.proximity-site-options{max-height:330px}}
+@media(max-width:480px){.proximity-picker,.proximity-results-panel{padding:12px}.proximity-pair-card{grid-template-columns:27px minmax(0,1fr);gap:8px;padding:10px}.proximity-pair-number{width:26px;height:26px}.proximity-pair-distance{grid-column:2;grid-row:2;justify-items:start;text-align:left;display:flex;align-items:baseline;gap:6px}.proximity-pair-site{grid-template-columns:7px minmax(0,1fr) auto}.proximity-results-head{flex-direction:column}.proximity-picker-head{align-items:flex-start}}
