@@ -13,7 +13,7 @@ const files = {
   importer: read("site-import.js"),
   app: read("app.js")
 };
-const version = "2.3.0";
+const version = "2.4.0";
 
 for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
   assert.match(html, new RegExp("v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " asset query versions must be aligned");
@@ -23,6 +23,9 @@ for (const [name, html] of [["index.html", files.index], ["admin.html", files.ad
 assert.match(files.pwa, /const VERSION = "2\.3\.0"/, "PWA label/service-worker registration version must be current");
 assert.match(files.sw, /const VERSION = "2\.3\.0"/, "service worker cache version must be current");
 assert.match(files.manifest, /app-icon-tower\.svg\?v=2\.3\.0/, "manifest icon URLs must be versioned");
+assert.match(files.admin, /class="admin-nav-group"/, "admin navigation must be grouped by work area");
+assert.equal((files.admin.match(/data-admin-tab="/g)||[]).length, 14, "all admin sections must remain accessible");
+assert.match(files.index, /style\.css\?v=2\.4\.0/, "personnel design system must be versioned");
 assert.doesNotMatch(files.importer, /\^\\\\d\+\$/, "importer must not use the incorrectly double-escaped numeric regex");
 assert.match(files.importer, /no&&!\/\^\\d\+\$\/\.test\(no\)/, "preview numeric Saha No validation must use digit regex");
 assert.match(files.importer, /\(no&&!\/\^\\d\+\$\/\.test\(no\)\)/, "commit numeric Saha No validation must use digit regex");
