@@ -1,6 +1,6 @@
 "use strict";
-const VERSION = "2.0.18";
-const CACHE_NAME = "gsm-takip-" + VERSION;
+const VERSION = "2.1.0";
+const CACHE_NAME = "gsm-mobile-" + VERSION;
 const SHELL = ["", "index.html", "admin.html", "style.css", "app.js", "admin.js", "site-import.js", "firebase-config.js", "pwa.js", "manifest.webmanifest", "app-icon.svg", "app-icon-tower.svg"];
 const shellUrl = path => new URL(path, self.registration.scope).href;
 self.addEventListener("install", event => {
@@ -13,7 +13,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(key => key.startsWith("gsm-takip-") && key !== CACHE_NAME).map(key => caches.delete(key)));
+    await Promise.all(keys.filter(key => (key.startsWith("gsm-takip-") || key.startsWith("gsm-mobile-")) && key !== CACHE_NAME).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
