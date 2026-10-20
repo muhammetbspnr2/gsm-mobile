@@ -75,10 +75,10 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
    const query=String($("proximitySiteSearch")?.value||"").trim().toLocaleLowerCase("tr-TR");
    const entries=Object.entries(sites||{}).map(([key,site])=>({key,site:site||{},coords:proximityCoordinates(site)})).sort((a,b)=>proximitySiteName(a.site,a.key).localeCompare(proximitySiteName(b.site,b.key),"tr"));
    const filtered=entries.filter(({key,site})=>[proximitySiteName(site,key),site.siteNo,site.province,site.district,site.address].some(value=>String(value||"").toLocaleLowerCase("tr-TR").includes(query)));
-   $("proximitySelectionCount").textContent=proximitySelected.size+" / 15 saha seçildi";
+   $("proximitySelectionCount").textContent=proximitySelected.size+" / 20 saha seçildi";
    if(!filtered.length){host.innerHTML='<p class="map-empty-note">Aramanızla eşleşen saha bulunamadı.</p>';return}
    host.innerHTML=filtered.map(({key,site,coords})=>{
-    const checked=proximitySelected.has(key),disabled=!coords||(!checked&&proximitySelected.size>=15);
+    const checked=proximitySelected.has(key),disabled=!coords||(!checked&&proximitySelected.size>=20);
     const savedAddress=String(site.address||"").trim();
    const location=[site.province,site.district].filter(Boolean).join(" / ")||((savedAddress&&!/^https?:\/\//i.test(savedAddress))?savedAddress:(coords?"Koordinat mevcut":"Konum bilgisi yok"));
     const detail=(site.siteNo?"Saha No: "+site.siteNo+" · ":"")+location;
