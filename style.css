@@ -981,3 +981,34 @@ html[data-theme="dark"] .site-entry-hero .site-entry-form select{background:var(
 /* Single-brand accent; legacy decorative yellow is intentionally removed */
 .proximity-site-dot{background:var(--brand)!important}
 ::selection{background:rgba(230,0,0,.18);color:var(--ink)}
+
+
+/* 2.5.1: hover states remain within the current theme; admin navigation groups expand on hover */
+html[data-theme="dark"] #adminAppView .admin-sidebar button:not(.active):hover,
+html[data-theme="dark"] #adminAppView .admin-sidebar button:not(.active):focus-visible {
+ background:#2b2b2b!important;color:#f2f2f2!important;border-color:#3d3d3d!important;
+}
+html[data-theme="light"] #adminAppView .admin-sidebar button:not(.active):hover,
+html[data-theme="light"] #adminAppView .admin-sidebar button:not(.active):focus-visible {
+ background:#eeeeee!important;color:#242424!important;border-color:#dedede!important;
+}
+#adminAppView .admin-nav-group{display:block!important;min-width:0}
+#adminAppView .admin-nav-label{
+ display:flex;align-items:center;justify-content:space-between;width:100%;
+ border:0!important;background:transparent!important;color:#aeb6c3!important;
+ cursor:pointer;text-align:left;min-height:34px
+}
+#adminAppView .admin-nav-label:hover,
+#adminAppView .admin-nav-label:focus-visible{
+ background:var(--surface-alt)!important;color:var(--ink)!important
+}
+#adminAppView .admin-nav-items{display:grid;gap:3px}
+#adminAppView .admin-nav-items[hidden]{display:none!important}
+#adminAppView .admin-nav-chevron{transition:transform .15s ease;color:var(--muted)}
+#adminAppView .admin-nav-group:not(.is-collapsed) .admin-nav-chevron{transform:rotate(180deg)}
+#adminAppView .admin-nav-group.is-collapsed{padding-bottom:5px}
+#adminAppView .admin-nav-group.is-collapsed .admin-nav-label{margin-bottom:0}
+@media(max-width:900px){
+ #adminAppView .admin-nav-group{align-content:start!important}
+ #adminAppView .admin-nav-label{font-size:9px!important}
+}
