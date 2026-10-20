@@ -48,4 +48,4 @@ for (const [name, html] of [["index.html", files.index], ["admin.html", files.ad
     if (name === "index.html") assert.ok(html.includes('id="' + id + '"'), name + " must retain " + id);
   }
 }
-console.log("Static quality checks passed: version alignment, manifest/rules JSON, and Saha No import validation.");
+console.log("Static quality checks passed: release versions, JSON/Firebase config, import validation, offline queue, and visit-history access rules.");
