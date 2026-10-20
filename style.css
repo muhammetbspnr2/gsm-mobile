@@ -977,3 +977,7 @@ html[data-theme="dark"] th,html[data-theme="dark"] .notify-form{
 html[data-theme="dark"] .site-entry-hero{background:var(--surface)!important;color:var(--ink)!important}
 html[data-theme="dark"] .site-entry-hero .site-entry-form input,
 html[data-theme="dark"] .site-entry-hero .site-entry-form select{background:var(--surface-alt)!important;color:var(--ink)!important}
+
+/* Single-brand accent; legacy decorative yellow is intentionally removed */
+.proximity-site-dot{background:var(--brand)!important}
+::selection{background:rgba(230,0,0,.18);color:var(--ink)}
