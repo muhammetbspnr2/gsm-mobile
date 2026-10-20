@@ -1,7 +1,7 @@
 (() => {
  const cfg=window.GSM_FIREBASE_CONFIG||{},$=id=>document.getElementById(id),hide=(id,v)=>$(id).classList.toggle("hidden",v),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),msg=(id,t,type)=>{const e=$(id);e.textContent=t;e.className="message"+(type?" "+type:"")};
  if(!cfg.apiKey||!cfg.projectId){msg("adminLoginMessage","Firebase ayarları eksik.","error");return}
- firebase.initializeApp(cfg);const auth=firebase.auth(),db=firebase.database();const connectionRef=db.ref(".info/connected");let firebaseConnected=false;function updateConnectionStatus(connected){firebaseConnected=connected;const e=$("adminConnectionStatus");if(!e)return;const online=navigator.onLine&&connected;e.textContent=online?"Firebase bağlantısı aktif":"Bağlantı yok · İşlemler kaydedilemeyebilir";e.classList.toggle("is-connected",online);e.classList.toggle("is-disconnected",!online)}connectionRef.on("value",s=>updateConnectionStatus(s.val()===true));window.addEventListener("online",()=>updateConnectionStatus(firebaseConnected));window.addEventListener("offline",()=>updateConnectionStatus(firebaseConnected));let profiles={},access={},sites={},companies={},requests={},profileChanges={},sentNotifications={},adminInbox={},openVisits={},equipmentChangeRequests={},visitHistory={},auditLogs={},newsPosts={},newsReactions={},newsComments={},editingNewsId=null;
+ firebase.initializeApp(cfg);const auth=firebase.auth(),db=firebase.database();const connectionRef=db.ref(".info/connected");let firebaseConnected=false;function updateConnectionStatus(connected){firebaseConnected=connected;const e=$("adminConnectionStatus");if(!e)return;const online=navigator.onLine&&connected;e.textContent=online?"Firebase bağlantısı aktif":"Bağlantı yok · İşlemler kaydedilemeyebilir";e.classList.toggle("is-connected",online);e.classList.toggle("is-disconnected",!online)}connectionRef.on("value",s=>updateConnectionStatus(s.val()===true));window.addEventListener("online",()=>updateConnectionStatus(firebaseConnected));window.addEventListener("offline",()=>updateConnectionStatus(firebaseConnected));let profiles={},access={},sites={},companies={},requests={},profileChanges={},sentNotifications={},adminInbox={},openVisits={},equipmentChangeRequests={},visitHistory={},auditLogs={},newsPosts={},newsReactions={},newsComments={},editingNewsId=null;let proximitySelected=new Set();
  const AUTO_RELEASE_ANNOUNCEMENT={version:"2.0.18",announcementKey:"release_test_2_0_18",isMajor:false,isTest:true,title:"GSM Takip 2.0.18 güncelleme duyurusu · Deneme paylaşımı 🎉",body:"GSM Takip güncelleme haberinin otomatik paylaşımı yeniden deneniyor.\n\nGelen yenilikler:\n• Saha Bul araması yalnızca büyük harf ve rakam kabul eder; kod en fazla 5 karakterdir.\n• İlk 3 karakterden itibaren eşleşen saha önerileri gösterilir.\n• Arama yapılana kadar saha listesi kalabalık görünmez.\n• Öneriden saha seçilince bilgi kartı doğrudan açılır.\n• Otomatik güncelleme haberlerinde paylaşan kişi Sistem olarak görünür.\n• Güncelleme görseli 4:3 (1200 × 900) standardındadır.",category:"Operasyonel gelişme",siteLabel:"Sürüm 2.0.18 · Deneme",imageUrl:"https://muhammetbspnr2.github.io/gsm-mobile/update-2.0.18.svg"};
  async function publishAutomaticRelease(user,force=false){
   const release=AUTO_RELEASE_ANNOUNCEMENT;
@@ -54,6 +54,70 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
    if(String(latText??"").trim()===""||String(lngText??"").trim()==="")return {valid:false,empty:false};
    const latitude=Number(latText),longitude=Number(lngText);
    return {valid:Number.isFinite(latitude)&&Number.isFinite(longitude)&&latitude>=-90&&latitude<=90&&longitude>=-180&&longitude<=180,empty:false,latitude,longitude};
+  }
+  function proximityCoordinates(site){
+   const latText=String(site?.latitude??"").trim().replace(",", "."),lngText=String(site?.longitude??"").trim().replace(",", ".");
+   if(!latText||!lngText)return null;
+   const lat=Number(latText),lng=Number(lngText);
+   if(!Number.isFinite(lat)||!Number.isFinite(lng)||lat < -90||lat > 90||lng < -180||lng > 180)return null;
+   return {lat,lng};
+  }
+  function proximityDistance(a,b){
+   const rad=value=>value*Math.PI/180,lat1=rad(a.lat),lat2=rad(b.lat),dLat=rad(b.lat-a.lat),dLng=rad(b.lng-a.lng);
+   const h=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLng/2)**2;
+   return 6371*2*Math.atan2(Math.sqrt(h),Math.sqrt(Math.max(0,1-h)));
+  }
+  function proximityDistanceLabel(km){return km<1?Math.max(1,Math.round(km*1000))+" m":km.toLocaleString("tr-TR",{maximumFractionDigits:1,minimumFractionDigits:1})+" km"}
+  function proximitySiteName(site,key){return String(site?.siteId||site?.siteCode||key||"Saha")}
+  function renderProximityOptions(){
+   const host=$("proximitySiteOptions");if(!host)return;
+   const query=String($("proximitySiteSearch")?.value||"").trim().toLocaleLowerCase("tr-TR");
+   const entries=Object.entries(sites||{}).map(([key,site])=>({key,site:site||{},coords:proximityCoordinates(site)})).sort((a,b)=>proximitySiteName(a.site,a.key).localeCompare(proximitySiteName(b.site,b.key),"tr"));
+   const filtered=entries.filter(({key,site})=>[proximitySiteName(site,key),site.siteNo,site.province,site.district,site.address].some(value=>String(value||"").toLocaleLowerCase("tr-TR").includes(query)));
+   $("proximitySelectionCount").textContent=proximitySelected.size+" / 15 saha seçildi";
+   if(!filtered.length){host.innerHTML='<p class="map-empty-note">Aramanızla eşleşen saha bulunamadı.</p>';return}
+   host.innerHTML=filtered.map(({key,site,coords})=>{
+    const checked=proximitySelected.has(key),disabled=!coords||(!checked&&proximitySelected.size>=15);
+    const location=[site.province,site.district].filter(Boolean).join(" / ")||"Konum bilgisi yok";
+    const detail=(site.siteNo?"Saha No: "+site.siteNo+" · ":"")+location;
+    return '<label class="proximity-site-option'+(!coords?' is-unavailable':'')+'"><input type="checkbox" data-proximity-site="'+esc(key)+'" '+(checked?'checked ':'')+(disabled?'disabled ':'')+'><span class="proximity-site-option-copy"><strong>'+esc(proximitySiteName(site,key))+'</strong><small>'+esc(detail)+'</small></span><span class="proximity-site-coordinate">'+(coords?'Koordinat hazır':'Koordinat yok')+'</span></label>';
+   }).join("");
+  }
+  function renderProximityResults(){
+   const host=$("proximityResults");if(!host)return;
+   const selected=Array.from(proximitySelected).map(key=>({key,site:sites[key]||{},coords:proximityCoordinates(sites[key])})).filter(item=>item.coords);
+   const summary=$("proximityResultSummary");
+   if(summary)summary.textContent=selected.length+" saha · "+Math.floor(selected.length/2)+" çift";
+   if(selected.length<2){host.innerHTML='<p class="map-empty-note">En yakın saha çiftlerini görmek için en az iki koordinatlı saha seçin.</p>';return}
+   const remaining=selected.slice(),pairs=[];
+   while(remaining.length>=2){
+    let bestI=0,bestJ=1,bestDistance=proximityDistance(remaining[0].coords,remaining[1].coords);
+    for(let i=0;i<remaining.length;i++)for(let j=i+1;j<remaining.length;j++){
+     const distance=proximityDistance(remaining[i].coords,remaining[j].coords);
+     if(distance<bestDistance){bestDistance=distance;bestI=i;bestJ=j}
+    }
+    const second=remaining.splice(bestJ,1)[0],first=remaining.splice(bestI,1)[0];
+    pairs.push({first,second,distance:bestDistance});
+   }
+   const card=({first,second,distance},index)=>{
+    const details=item=>[item.site.province,item.site.district].filter(Boolean).join(" / ")||item.site.address||"Konum bilgisi yok";
+    const mapsUrl=item=>"https://www.google.com/maps?q="+encodeURIComponent(item.coords.lat+","+item.coords.lng);
+    return '<article class="proximity-pair-card"><div class="proximity-pair-number">'+String(index+1).padStart(2,"0")+'</div><div class="proximity-pair-sites"><div class="proximity-pair-site"><span class="proximity-site-dot"></span><div><strong>'+esc(proximitySiteName(first.site,first.key))+'</strong><small>'+esc(details(first))+(first.site.siteNo?' · Saha No: '+esc(first.site.siteNo):'')+'</small></div><a href="'+mapsUrl(first)+'" target="_blank" rel="noopener noreferrer" aria-label="Birinci sahayı haritada aç">Harita ↗</a></div><div class="proximity-pair-site"><span class="proximity-site-dot"></span><div><strong>'+esc(proximitySiteName(second.site,second.key))+'</strong><small>'+esc(details(second))+(second.site.siteNo?' · Saha No: '+esc(second.site.siteNo):'')+'</small></div><a href="'+mapsUrl(second)+'" target="_blank" rel="noopener noreferrer" aria-label="İkinci sahayı haritada aç">Harita ↗</a></div></div><div class="proximity-pair-distance"><strong>'+proximityDistanceLabel(distance)+'</strong><small>kuş uçuşu</small></div></article>';
+   };
+   host.innerHTML='<div class="proximity-pair-list">'+pairs.map(card).join("")+'</div>'+(remaining.length?'<div class="proximity-unpaired"><strong>Eşleşmeyen saha</strong><span>'+esc(proximitySiteName(remaining[0].site,remaining[0].key))+'</span><small>Seçili saha sayısı tek olduğu için bu saha eşleşmeden kaldı.</small></div>':'');
+  }
+  $("proximitySiteSearch")?.addEventListener("input",renderProximityOptions);
+  $("proximitySiteOptions")?.addEventListener("change",event=>{
+   const input=event.target.closest("[data-proximity-site]");if(!input)return;
+   const key=input.dataset.proximitySite;
+   if(input.checked){if(proximitySelected.size>=15){input.checked=false;return}if(proximityCoordinates(sites[key]))proximitySelected.add(key)}
+   else proximitySelected.delete(key);
+   renderProximityOptions();renderProximityResults();
+  });
+  $("proximityClearBtn")?.addEventListener("click",()=>{proximitySelected.clear();renderProximityOptions();renderProximityResults()});
+  function renderProximityPanel(){
+   for(const key of Array.from(proximitySelected))if(!sites[key]||!proximityCoordinates(sites[key]))proximitySelected.delete(key);
+   renderProximityOptions();renderProximityResults();
   }
   function renderSites(){
    const entries=Object.entries(sites||{});const rows=entries.map(([key,value])=>({...value,id:value?.id||key}));
@@ -113,5 +177,5 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
  const btn=$("adminSaveSiteBtn");btn.disabled=true;const original=btn.textContent;btn.textContent="Kaydediliyor…";
  try{const now=Date.now(),siteRef=db.ref("sites").push(),uid=auth.currentUser?.uid;if(!uid)throw new Error("Yönetici oturumu bulunamadı.");let finalProvince=province,finalDistrict=district,finalAddress=address;if(!coordinates.empty){try{const location=await reverseGeocodeAddress(coordinates.latitude,coordinates.longitude);if(location.province)finalProvince=location.province;if(location.district)finalDistrict=location.district;if(!finalAddress&&location.formattedAddress)finalAddress=location.formattedAddress}catch(geoError){msg("adminSiteMessage","Google Maps il/ilçe otomatik bulunamadı; girdiğiniz il ve ilçe kullanılacak. "+geoError.message,"error");if(!finalProvince||!finalDistrict)throw geoError}}const payload={id:siteRef.key,siteId,siteNo,siteCode:siteId,ownerUid:uid,ownerName:"Yönetici",createdBy:"admin",company,operator,siteType,province:finalProvince,district:finalDistrict,address:finalAddress,latitude:coordinates.empty?"":coordinates.latitude,longitude:coordinates.empty?"":coordinates.longitude,approved:true,status:"approved",createdAt:now,createdByUid:uid,approvedBy:uid,approvedAt:now};await siteRef.set(payload);await logAudit("site-create-admin","Yönetici yeni saha ekledi: "+siteId+" / "+siteNo+" · "+province+"/"+district);msg("adminSiteMessage","Saha başarıyla eklendi ve personel kullanımına açıldı.","success");$("adminSiteForm").reset()}catch(err){msg("adminSiteMessage","Saha eklenemedi: "+(err.message||"Bilinmeyen hata"),"error")}finally{btn.disabled=false;btn.textContent=original}
  });
- auth.onAuthStateChanged(async user=>{if(!user){hide("adminLoginView",false);hide("adminAppView",true);return}try{const snap=await db.ref("admins/"+user.uid).once("value");if(snap.val()!==true){msg("adminLoginMessage","Bu hesap yönetici olarak yetkilendirilmemiş.","error");await auth.signOut();return}hide("adminLoginView",true);hide("adminAppView",false);publishAutomaticRelease(user).catch(err=>console.warn("Otomatik sürüm duyurusu yayımlanamadı:",err));db.ref("profiles").on("value",s=>{profiles=s.val()||{};renderUsers();updateTabBadges()});db.ref("access").on("value",s=>{access=s.val()||{};renderUsers();updateTabBadges()});db.ref("sites").on("value",s=>{sites=s.val()||{};renderSites();renderRequests()});db.ref("siteRequests").on("value",s=>{requests=s.val()||{};renderRequests();renderActivity();updateTabBadges()});db.ref("profileChangeRequests").on("value",s=>{profileChanges=s.val()||{};renderProfileChanges();renderActivity();updateTabBadges()});db.ref("companies").on("value",s=>{companies=s.val()||{};renderCompanies()});db.ref("sentNotifications").on("value",s=>{sentNotifications=s.val()||{};renderSentNotifications()});db.ref("adminInbox").on("value",s=>{adminInbox=s.val()||{};renderActivity()});db.ref("openVisits").on("value",s=>{openVisits=s.val()||{};renderOpenSites()});db.ref("visitHistory").on("value",s=>{visitHistory=s.val()||{};renderVisitHistory()});db.ref("equipmentChangeRequests").on("value",s=>{equipmentChangeRequests=s.val()||{};renderEquipmentChanges();updateTabBadges()});db.ref("auditLogs").on("value",s=>{auditLogs=s.val()||{};renderAuditLogs()});db.ref("news").on("value",s=>{newsPosts=s.val()||{};renderAdminNews()});db.ref("newsReactions").on("value",s=>{newsReactions=s.val()||{};renderAdminNews()});db.ref("newsComments").on("value",s=>{newsComments=s.val()||{};renderAdminNews()});setInterval(()=>{if(Object.keys(openVisits).length)renderOpenSites()},60000);setTimeout(checkPasswordReminders,1200)}catch(err){msg("adminLoginMessage","Yönetici yetkisi kontrol edilemedi: "+err.message,"error");await auth.signOut()}})
+ auth.onAuthStateChanged(async user=>{if(!user){hide("adminLoginView",false);hide("adminAppView",true);return}try{const snap=await db.ref("admins/"+user.uid).once("value");if(snap.val()!==true){msg("adminLoginMessage","Bu hesap yönetici olarak yetkilendirilmemiş.","error");await auth.signOut();return}hide("adminLoginView",true);hide("adminAppView",false);publishAutomaticRelease(user).catch(err=>console.warn("Otomatik sürüm duyurusu yayımlanamadı:",err));db.ref("profiles").on("value",s=>{profiles=s.val()||{};renderUsers();updateTabBadges()});db.ref("access").on("value",s=>{access=s.val()||{};renderUsers();updateTabBadges()});db.ref("sites").on("value",s=>{sites=s.val()||{};renderSites();renderProximityPanel();renderRequests()});db.ref("siteRequests").on("value",s=>{requests=s.val()||{};renderRequests();renderActivity();updateTabBadges()});db.ref("profileChangeRequests").on("value",s=>{profileChanges=s.val()||{};renderProfileChanges();renderActivity();updateTabBadges()});db.ref("companies").on("value",s=>{companies=s.val()||{};renderCompanies()});db.ref("sentNotifications").on("value",s=>{sentNotifications=s.val()||{};renderSentNotifications()});db.ref("adminInbox").on("value",s=>{adminInbox=s.val()||{};renderActivity()});db.ref("openVisits").on("value",s=>{openVisits=s.val()||{};renderOpenSites()});db.ref("visitHistory").on("value",s=>{visitHistory=s.val()||{};renderVisitHistory()});db.ref("equipmentChangeRequests").on("value",s=>{equipmentChangeRequests=s.val()||{};renderEquipmentChanges();updateTabBadges()});db.ref("auditLogs").on("value",s=>{auditLogs=s.val()||{};renderAuditLogs()});db.ref("news").on("value",s=>{newsPosts=s.val()||{};renderAdminNews()});db.ref("newsReactions").on("value",s=>{newsReactions=s.val()||{};renderAdminNews()});db.ref("newsComments").on("value",s=>{newsComments=s.val()||{};renderAdminNews()});setInterval(()=>{if(Object.keys(openVisits).length)renderOpenSites()},60000);setTimeout(checkPasswordReminders,1200)}catch(err){msg("adminLoginMessage","Yönetici yetkisi kontrol edilemedi: "+err.message,"error");await auth.signOut()}})
 })();
