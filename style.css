@@ -644,7 +644,7 @@ html{scroll-behavior:smooth}
   outline:none;
 }
 table tbody tr:hover td{
-  background:#fbf8ed;
+  background:transparent!important;
 }
 th{
   position:sticky;
@@ -1015,6 +1015,7 @@ html[data-theme="light"] #adminAppView .admin-sidebar button:not(.active):focus-
 
 
 /* 2.5.2 personnel bottom navigation: clean floating dock, restrained brand accent */
+/* 2.5.3: remove cream-colored table-row hover highlight */
 .person-nav.bottom-nav{
  grid-template-columns:repeat(6,minmax(0,1fr))!important;
  background:var(--surface)!important;
