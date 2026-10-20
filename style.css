@@ -336,14 +336,14 @@ body{background:linear-gradient(180deg,#eef3fa 0,#f7f9fc 260px,#f4f6fa 100%);col
 .site-entry-hero h2{color:#fff;letter-spacing:-.035em}.site-entry-hero p{color:#c7d2e2;line-height:1.65}.site-entry-hero .eyebrow{color:#f2c43d}.site-entry-hero .site-entry-form label{color:#fff}.site-entry-hero .site-entry-form input,.site-entry-hero .site-entry-form select{background:#fff}.site-entry-hero .hint{color:#c4cede}
 .section-title{gap:14px}.section-title h2,.section-title h3{letter-spacing:-.025em}.news-home-section,.person-page>.panel,.person-page>.table-wrap,.person-page>.site-directory-search,.person-page>.section-title,.person-page>.dash-grid,.person-page>.profile-panel{margin-top:18px}
 .dash-card,.recent-site,.site-record-card,.news-post,.stat-card{border:1px solid #e3e9f2;box-shadow:0 6px 20px #17243a08;border-radius:16px}.dash-card{padding:20px}.dash-card strong{letter-spacing:-.045em}.site-record-card{border-radius:16px}.site-record-card:hover,.site-record-card:focus-visible{border-color:#e3be3e;box-shadow:0 10px 24px #17243a12}
-.site-entry-current{border:1px solid #dce5f0;border-radius:16px;background:#fff;box-shadow:0 5px 18px #17243a06}.badge{border:1px solid #f0d878;background:#fff8dc;color:#705700}
+.site-entry-current{border:1px solid #dce5f0;border-radius:16px;background:#fff;box-shadow:0 5px 18px #17243a06}.badge{border:1px solid #f0d878;background:#f1f4f8;color:#334155}
 .table-wrap{border:1px solid #e1e7f0;border-radius:16px;background:#fff;box-shadow:0 6px 20px #17243a06}table{border-collapse:separate;border-spacing:0}th{background:#f2f5fa;color:#5c6b81;font-size:11px;letter-spacing:.055em;text-transform:uppercase}td{vertical-align:middle}tbody tr:hover td{background:#fafcff}
 .profile-panel>div:not(.password-settings){border-bottom:1px solid #edf1f6;padding:12px 0}.footer-note{padding:22px 16px calc(22px + env(safe-area-inset-bottom));color:#758198}
 .site-detail-dialog{border-radius:24px}.site-detail-field{border-radius:13px;background:#f7f9fc}.notification-popover{border:1px solid #e1e7f0;box-shadow:0 20px 60px #111b2c26;border-radius:18px}
-.person-nav.bottom-nav{border:1px solid #dce4ef;box-shadow:0 12px 34px #111b2c20}.person-nav.bottom-nav .person-tab.active{background:#fff8dc;color:#735700}.person-nav.bottom-nav .person-tab.active svg{stroke:#9a7600}
+.person-nav.bottom-nav{border:1px solid #dce4ef;box-shadow:0 12px 34px #111b2c20}.person-nav.bottom-nav .person-tab.active{background:#f1f4f8;color:#334155}.person-nav.bottom-nav .person-tab.active svg{stroke:#9a7600}
 .admin-shell{max-width:1440px}#adminAppView .welcome-row{padding:10px 0 20px}#adminAppView .welcome-row h1{letter-spacing:-.045em}#adminAppView .stats-grid{gap:14px}
 #adminAppView .stat-card{position:relative;overflow:hidden;padding:22px;border-radius:18px;background:linear-gradient(145deg,#fff,#f9fbfe)}#adminAppView .stat-card:before{height:4px;background:#f2c43d}#adminAppView .stat-card:nth-child(2):before{background:#e9a23b}#adminAppView .stat-card:nth-child(3):before{background:#5076d8}#adminAppView .stat-card>strong{letter-spacing:-.05em}
-#adminAppView .admin-content{gap:18px}#adminAppView .sidebar.admin-sidebar{border:1px solid #e1e7f0;border-radius:18px;background:#fff;box-shadow:0 8px 24px #17243a08}#adminAppView .admin-sidebar button{border-radius:11px;transition:background .15s,color .15s}#adminAppView .admin-sidebar button.active{background:#fff5ce;color:#644e00;box-shadow:inset 3px 0 #f2c43d}
+#adminAppView .admin-content{gap:18px}#adminAppView .sidebar.admin-sidebar{border:1px solid #e1e7f0;border-radius:18px;background:#fff;box-shadow:0 8px 24px #17243a08}#adminAppView .admin-sidebar button{border-radius:11px;transition:background .15s,color .15s}#adminAppView .admin-sidebar button.active{background:#f1f4f8;color:#263449;box-shadow:inset 3px 0 #f2c43d}
 #adminAppView .content-panel{min-width:0;border-radius:18px;background:#fff;padding:clamp(16px,2.5vw,26px)}#adminAppView [data-admin-section]>.section-title:first-child{padding-bottom:12px;border-bottom:1px solid #edf1f6;margin-bottom:16px}#adminAppView .admin-tab-badge{background:#f2c43d;color:#17243a}#adminAppView .admin-sidebar .side-label{color:#8a96a8}
 @media(max-width:900px){.auth-layout{padding-top:36px}#adminAppView .content-panel{padding:16px}}
 @media(max-width:650px){
@@ -656,15 +656,15 @@ th{
 }
 .site-entry-current{
   border-color:#eadca8;
-  background:#fff9e7;
+  background:#f4f6f8;
 }
 .site-entry-current strong{
-  color:#7d5c00;
+  color:#334155;
 }
 .app-version{
   border-color:#eadca8;
-  background:#fff9e7;
-  color:#775900;
+  background:#f4f6f8;
+  color:#334155;
 }
 @media (hover:hover){
   .dash-card:hover,.recent-site:hover{
@@ -1084,4 +1084,16 @@ html[data-theme="light"] .person-nav.bottom-nav .person-tab::before{
 @media(prefers-reduced-motion:reduce){
  .person-nav.bottom-nav .person-tab,.person-nav.bottom-nav .person-tab::before,
  .person-nav.bottom-nav .person-tab svg{transition:none!important}
+}
+
+
+/* 2.5.4: replace cream-tinted surfaces site-wide with neutral theme surfaces */
+html[data-theme="light"] .site-entry-current,
+html[data-theme="light"] .app-version,
+html[data-theme="light"] .badge,
+html[data-theme="light"] .person-nav.bottom-nav .person-tab.active,
+html[data-theme="light"] #adminAppView .admin-sidebar button.active,
+html[data-theme="light"] table tbody tr:hover td {
+  background-color:#f1f4f8!important;
+  color:#334155;
 }

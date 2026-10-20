@@ -13,16 +13,16 @@ const files = {
   importer: read("site-import.js"),
   app: read("app.js")
 };
-const version = "2.5.3";
+const version = "2.5.4";
 
 for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
   assert.match(html, new RegExp("v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " asset query versions must be aligned");
   assert.match(html, new RegExp("v" + version.replaceAll(".", "\\.") + "<"), name + " visible footer version must be aligned");
   assert.doesNotMatch(html, /v=2\.2\.9|v2\.2\.12/, name + " contains stale cache/version markers");
 }
-assert.ok(files.pwa.includes('const VERSION = "2.5.3"'), "PWA label/service-worker registration version must be current");
-assert.ok(files.sw.includes('const VERSION = "2.5.3"'), "service worker cache version must be current");
-assert.ok(files.manifest.includes("app-icon-tower.svg?v=2.5.3"), "manifest icon URLs must be versioned");
+assert.ok(files.pwa.includes('const VERSION = "2.5.4"'), "PWA label/service-worker registration version must be current");
+assert.ok(files.sw.includes('const VERSION = "2.5.4"'), "service worker cache version must be current");
+assert.ok(files.manifest.includes("app-icon-tower.svg?v=2.5.4"), "manifest icon URLs must be versioned");
 assert.match(files.admin, /class="admin-nav-group"/, "admin navigation must be grouped by work area");
 assert.equal((files.admin.match(/data-admin-tab="/g)||[]).length, 14, "all admin sections must remain accessible");
 assert.match(files.index, /style\.css\?v=2\\.5\\.1/, "personnel design system must be versioned");
