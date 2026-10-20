@@ -23,8 +23,8 @@ assert.match(files.pwa, /const VERSION = "2\.3\.0"/, "PWA label/service-worker r
 assert.match(files.sw, /const VERSION = "2\.3\.0"/, "service worker cache version must be current");
 assert.match(files.manifest, /app-icon-tower\.svg\?v=2\.3\.0/, "manifest icon URLs must be versioned");
 assert.doesNotMatch(files.importer, /\^\\\\d\+\$/, "importer must not use the incorrectly double-escaped numeric regex");
-assert.match(files.importer, /!\^\\d\+\$\/.test\(no\)/, "preview numeric Saha No validation must use digit regex");
-assert.match(files.importer, /\(no&&!\^\\d\+\$\/.test\(no\)\)/, "commit numeric Saha No validation must use digit regex");
+assert.match(files.importer, /no&&!\/\^\\d\+\$\/\.test\(no\)/, "preview numeric Saha No validation must use digit regex");
+assert.match(files.importer, /\(no&&!\/\^\\d\+\$\/\.test\(no\)\)/, "commit numeric Saha No validation must use digit regex");
 
 JSON.parse(files.manifest);
 JSON.parse(read("database.rules.json"));
