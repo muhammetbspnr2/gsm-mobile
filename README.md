@@ -2,6 +2,11 @@
 Personel: https://muhammetbspnr2.github.io/gsm-mobile/  
 Yönetici: https://muhammetbspnr2.github.io/gsm-mobile/admin.html
 
+## 2.5.0 — Vodafone esintili açık/koyu tema
+- Kırmızı, beyaz ve nötr gri ağırlıklı sade tasarım sistemi; açık/koyu tema düğmesi ve aynı tarayıcıda korunan tercih.
+- Personel ve yönetim ekranlarında aynı renk kuralları; durum renkleri yalnızca başarı, uyarı ve hata durumlarında kullanılır.
+- Tema varlığı ve PWA önbelleği 2.5.0 sürümüne yükseltildi.
+
 ## 2.4.0 — Arayüz yenilemesi
 - Personel ve yönetici panelleri için ortak kurumsal renk sistemi, sade kartlar, daha net form/tablo hiyerarşisi ve erişilebilir odak durumları.
 - Yönetici menüsü iş gücü, saha operasyonları, iletişim ve sistem olarak gruplandı; tüm mevcut bölümler korunarak mobil düzende sadeleştirildi.
