@@ -21,7 +21,7 @@ for (const [name, html] of [["index.html", files.index], ["admin.html", files.ad
   assert.doesNotMatch(html, /v=2\.2\.9|v2\.2\.12/, name + " contains stale cache/version markers");
 }
 assert.ok(files.pwa.includes('const VERSION = "2.5.6"'), "PWA label/service-worker registration version must be current");
-assert.ok(files.sw.includes('const VERSION = "2.5.4"'), "service worker cache version must be current");
+assert.ok(files.sw.includes('const VERSION = "2.5.6"'), "service worker cache version must be current");
 assert.ok(files.manifest.includes("app-icon-tower.svg?v=2.5.6"), "manifest icon URLs must be versioned");
 assert.match(files.admin, /class="admin-nav-group"/, "admin navigation must be grouped by work area");
 assert.equal((files.admin.match(/data-admin-tab="/g)||[]).length, 14, "all admin sections must remain accessible");
