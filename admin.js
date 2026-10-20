@@ -139,8 +139,11 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
     try{const location=await reverseGeocodeAddress(coordinates.latitude,coordinates.longitude);if(cell&&(location.province||location.district))cell.textContent=(location.province||sites[id]?.province||"—")+" / "+(location.district||sites[id]?.district||"—");input.title="Adres servisi konumu çözümlendi; kalıcı kaydetmek için Kaydet'e basın"}catch(err){input.title="Adres servisi il/ilçe bulamadı. Kaydet sırasında da tekrar denenir."}
    }));
    document.querySelectorAll("[data-save-site]").forEach(b=>b.onclick=async()=>{
-    const id=b.dataset.saveSite,row=b.closest("tr"),siteNo=row.querySelector("[data-site-no]").value.trim(),address=row.querySelector("[data-site-address]").value.trim(),latText=row.querySelector("[data-site-latitude]").value.trim().replace(",", "."),lngText=row.querySelector("[data-site-longitude]").value.trim().replace(",", ".");
-    if(!/^[0-9]+$/.test(siteNo)){alert("Saha No yalnızca rakamlardan oluşmalı ve boş bırakılamaz.");return}
+    const id=b.dataset.saveSite,row=b.closest("tr"),siteNoInput=row?.querySelector("[data-site-no]"),addressInput=row?.querySelector("[data-site-address]"),latitudeInput=row?.querySelector("[data-site-latitude]"),longitudeInput=row?.querySelector("[data-site-longitude]");
+    if(!siteNoInput||!addressInput||!latitudeInput||!longitudeInput){alert("Saha alanları okunamadı. Sayfayı yenileyip tekrar deneyin.");return}
+    const siteNo=String(siteNoInput.value??"").replace(/\s+/g,"").trim(),address=addressInput.value.trim(),latText=latitudeInput.value.trim().replace(",", "."),lngText=longitudeInput.value.trim().replace(",", ".");
+    if(!/^[0-9]+$/.test(siteNo)){siteNoInput.focus();siteNoInput.setCustomValidity("Saha No alanına yalnızca rakam girin.");siteNoInput.reportValidity();siteNoInput.setCustomValidity("");alert("Saha No alanı boş okunuyor veya rakam dışında karakter içeriyor. Aynı satırdaki Saha No alanını kontrol edin.");return}
+    siteNoInput.value=siteNo;
     if(Object.entries(sites).some(([otherId,s])=>otherId!==id&&String(s.siteNo||"").trim()===siteNo)){alert("Bu Saha No başka bir kayıtta kullanılıyor.");return}
     const coordinates=validCoordinates(latText,lngText);if(!coordinates.valid){alert("Enlem ve boylam birlikte girilmeli. Enlem -90 ile 90, boylam -180 ile 180 arasında olmalı.");return}
     let province=String(sites[id]?.province||""),district=String(sites[id]?.district||""),geocodeWarning="";
