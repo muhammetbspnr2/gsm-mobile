@@ -17,6 +17,7 @@
 6. **Operasyonel kontrol listesi:** Gerçek Firebase ve Android testlerinin tekrarlanabilir biçimde kaydedilmesi için `QA_CHECKLIST.md` eklendi.
 
 ## Üretim öncesi açık doğrulamalar
+- Güncellenen database.rules.json kuralları bu depoda hazırdır ancak Firebase Console/CLI üzerinden yayınlanana kadar canlı veritabanında etkili olmaz.
 Bunlar statik kaynak kodundan kesin biçimde doğrulanamaz; gerçek test hesabı ve tarayıcı gerekir:
 - Firebase yetki kurallarının canlı projede yayımlanan sürümle eşleşmesi.
 - E-posta doğrulama, personel aktifliği, yönetici yetkisi ve yetkisiz erişim senaryoları.
