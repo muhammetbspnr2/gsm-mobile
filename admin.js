@@ -1,4 +1,5 @@
 (() => {
+  const normalizeSiteNo=value=>String(value??"").normalize("NFKC").replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/\s+/g,"").trim();
  const cfg=window.GSM_FIREBASE_CONFIG||{},$=id=>document.getElementById(id),hide=(id,v)=>$(id).classList.toggle("hidden",v),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),msg=(id,t,type)=>{const e=$(id);e.textContent=t;e.className="message"+(type?" "+type:"")};
  if(!cfg.apiKey||!cfg.projectId){msg("adminLoginMessage","Firebase ayarları eksik.","error");return}
  firebase.initializeApp(cfg);const auth=firebase.auth(),db=firebase.database();const connectionRef=db.ref(".info/connected");let firebaseConnected=false;function updateConnectionStatus(connected){firebaseConnected=connected;const e=$("adminConnectionStatus");if(!e)return;const online=navigator.onLine&&connected;e.textContent=online?"Firebase bağlantısı aktif":"Bağlantı yok · İşlemler kaydedilemeyebilir";e.classList.toggle("is-connected",online);e.classList.toggle("is-disconnected",!online)}connectionRef.on("value",s=>updateConnectionStatus(s.val()===true));window.addEventListener("online",()=>updateConnectionStatus(firebaseConnected));window.addEventListener("offline",()=>updateConnectionStatus(firebaseConnected));let profiles={},access={},sites={},companies={},requests={},profileChanges={},sentNotifications={},adminInbox={},openVisits={},equipmentChangeRequests={},visitHistory={},auditLogs={},newsPosts={},newsReactions={},newsComments={},editingNewsId=null;let proximitySelected=new Set();
@@ -141,7 +142,7 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
    document.querySelectorAll("[data-save-site]").forEach(b=>b.onclick=async()=>{
     const id=b.dataset.saveSite,row=b.closest("tr"),siteNoInput=row?.querySelector("[data-site-no]"),addressInput=row?.querySelector("[data-site-address]"),latitudeInput=row?.querySelector("[data-site-latitude]"),longitudeInput=row?.querySelector("[data-site-longitude]");
     if(!siteNoInput||!addressInput||!latitudeInput||!longitudeInput){alert("Saha alanları okunamadı. Sayfayı yenileyip tekrar deneyin.");return}
-    const siteNo=String(siteNoInput.value??"").replace(/\s+/g,"").trim(),address=addressInput.value.trim(),latText=latitudeInput.value.trim().replace(",", "."),lngText=longitudeInput.value.trim().replace(",", ".");
+    const siteNo=normalizeSiteNo(siteNoInput.value),address=addressInput.value.trim(),latText=latitudeInput.value.trim().replace(",", "."),lngText=longitudeInput.value.trim().replace(",", ".");
     if(!/^[0-9]+$/.test(siteNo)){siteNoInput.focus();siteNoInput.setCustomValidity("Saha No alanına yalnızca rakam girin.");siteNoInput.reportValidity();siteNoInput.setCustomValidity("");alert("Saha No alanı boş okunuyor veya rakam dışında karakter içeriyor. Aynı satırdaki Saha No alanını kontrol edin.");return}
     siteNoInput.value=siteNo;
     if(Object.entries(sites).some(([otherId,s])=>otherId!==id&&String(s.siteNo||"").trim()===siteNo)){alert("Bu Saha No başka bir kayıtta kullanılıyor.");return}
@@ -168,7 +169,7 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
  $("adminAddSiteBtn")?.addEventListener("click",()=>{ $("adminSiteForm").reset();msg("adminSiteMessage","","");hide("adminSiteFormPanel",false);$("adminSiteId").focus()});
  $("adminCancelSiteBtn")?.addEventListener("click",()=>{hide("adminSiteFormPanel",true);msg("adminSiteMessage","","")});
  $("adminSiteId")?.addEventListener("input",()=>{$("adminSiteId").value=$("adminSiteId").value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,5)});
- $("adminSiteNo")?.addEventListener("input",()=>{$("adminSiteNo").value=$("adminSiteNo").value.replace(/[^0-9]/g,"")});
+ $("adminSiteNo")?.addEventListener("input",()=>{$("adminSiteNo").value=normalizeSiteNo($("adminSiteNo").value).replace(/[^0-9]/g,"")});
  const autoFillLocationFromCoordinates=async()=>{
   const latText=($("adminSiteLatitude")?.value||"").trim().replace(",", "."),lngText=($("adminSiteLongitude")?.value||"").trim().replace(",", ".");
   if(!latText&&!lngText)return;
@@ -178,7 +179,7 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
  $("adminSiteLatitude")?.addEventListener("change",autoFillLocationFromCoordinates);
  $("adminSiteLongitude")?.addEventListener("change",autoFillLocationFromCoordinates);
 
- $("adminSiteForm")?.addEventListener("submit",async e=>{e.preventDefault();const siteId=$("adminSiteId").value.trim().toUpperCase(),siteNo=$("adminSiteNo").value.trim(),company=$("adminSiteCompany").value.trim(),province=$("adminSiteProvince").value.trim(),district=$("adminSiteDistrict").value.trim(),address=$("adminSiteAddress").value.trim(),latitudeText=($("adminSiteLatitude")?.value||"").trim().replace(",", "."),longitudeText=($("adminSiteLongitude")?.value||"").trim().replace(",", "."),operator=$("adminSiteOperator").value,siteType=$("adminSiteType").value;
+ $("adminSiteForm")?.addEventListener("submit",async e=>{e.preventDefault();const siteId=$("adminSiteId").value.trim().toUpperCase(),siteNo=normalizeSiteNo($("adminSiteNo").value),company=$("adminSiteCompany").value.trim(),province=$("adminSiteProvince").value.trim(),district=$("adminSiteDistrict").value.trim(),address=$("adminSiteAddress").value.trim(),latitudeText=($("adminSiteLatitude")?.value||"").trim().replace(",", "."),longitudeText=($("adminSiteLongitude")?.value||"").trim().replace(",", "."),operator=$("adminSiteOperator").value,siteType=$("adminSiteType").value;
  if(!/^[A-Z0-9]{5}$/.test(siteId)){msg("adminSiteMessage","Saha ID tam 5 karakter olmalı; yalnızca harf ve rakam kullanın.","error");return}
  if(!/^[0-9]+$/.test(siteNo)){msg("adminSiteMessage","Saha No yalnızca rakamlardan oluşmalıdır.","error");return}
  const coordinates=validCoordinates(latitudeText,longitudeText);if(!coordinates.valid){msg("adminSiteMessage","Enlem ve boylam birlikte girilmeli. Enlem -90 ile 90, boylam -180 ile 180 arasında olmalı.","error");return}
