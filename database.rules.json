@@ -108,14 +108,15 @@
       "$uid": {
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && root.child('access').child(auth.uid).child('active').val() === true))",
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
-        ".validate": "!newData.exists() || (newData.child('uid').val() === $uid && newData.child('checkInAt').isNumber() && newData.child('siteRecordId').isString())"
+        ".validate": "!newData.exists() || (newData.child('uid').val() === $uid && newData.child('checkInAt').isNumber() && newData.child('siteRecordId').isString() && (data.exists() ? (newData.child('siteRecordId').val() === data.child('siteRecordId').val() && newData.child('checkInAt').val() === data.child('checkInAt').val()) : root.child('sites').child(newData.child('siteRecordId').val()).child('approved').val() === true))"
       },
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
     "visitHistory": {
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       "$visitId": {
-        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('uid').val() === auth.uid && root.child('access').child(auth.uid).child('active').val() === true && root.child('openVisits').child(auth.uid).child('siteRecordId').val() === newData.child('siteRecordId').val() && root.child('openVisits').child(auth.uid).child('checkInAt').val() === newData.child('checkInAt').val() && newData.child('checkOutAt').isNumber() && newData.child('durationMs').isNumber()))"
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('uid').val() === auth.uid && root.child('access').child(auth.uid).child('active').val() === true && root.child('openVisits').child(auth.uid).child('siteRecordId').val() === newData.child('siteRecordId').val() && root.child('openVisits').child(auth.uid).child('checkInAt').val() === newData.child('checkInAt').val() && newData.child('checkOutAt').isNumber() && newData.child('durationMs').isNumber()))",
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || $visitId.matches('^' + auth.uid + '_[0-9]+$'))"
       }
     },
     "equipmentChangeRequests": {

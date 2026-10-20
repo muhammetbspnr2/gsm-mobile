@@ -5,7 +5,7 @@ Yönetici: https://muhammetbspnr2.github.io/gsm-mobile/admin.html
 ## Firebase kurulumu
 1. Firebase Console'da ilgili projeyi açın ve Authentication > Sign-in method altında Email/Password girişini etkinleştirin.
 2. Project settings > Your apps içinden Web App yapılandırmasını alın ve firebase-config.js dosyasındaki tüm BURAYA_ alanlarını değiştirin. Veritabanı adresi önceden girilmiştir.
-3. Realtime Database > Rules bölümünde database.rules.json içeriğini yayınlayın.
+3. Önce database.rules.json değişikliklerini inceleyin. Firebase CLI ile oturum açtıktan sonra `firebase deploy --only database` komutuyla kuralları yayınlayabilir veya Firebase Console > Realtime Database > Rules alanına içeriği elle aktarabilirsiniz. Bu işlem canlı veritabanı erişim kurallarını değiştirir; yayınlamadan önce test edin.
 4. Personel ekranından kendi yönetici hesabınızı kaydedin. Firebase Authentication > Users içinden UID'yi kopyalayın. Realtime Database'de /admins/UID yoluna boolean true yazın.
 5. Authentication authorized domains listesinde muhammetbspnr2.github.io bulunduğunu doğrulayın.
 6. Kayıt, onay, giriş ve saha kaydını test edin.
@@ -24,4 +24,13 @@ Yönetici: https://muhammetbspnr2.github.io/gsm-mobile/admin.html
 - Çevrimdışı/çevrimiçi durum bilgilendirmesi ve desteklenen tarayıcılarda uygulama yükleme istemi eklendi.
 - Sürüm numarası, önbellek stratejisi ve statik doğrulama kontrolleri birlikte güncellendi.
 
-Firebase Realtime Database kuralları bu statik sürümle otomatik yayınlanmaz; bu sürüm kuralları değiştirmez.
+Firebase Realtime Database kuralları GitHub Pages dağıtımıyla otomatik yayınlanmaz. Bu sürümde database.rules.json güncellendi; canlı Firebase projesine ayrıca yayınlanması gerekir.
+
+
+## Sürüm 2.3.0 — Profesyonelleştirme ve kalite temeli
+- Personel ve yönetici ekranlarının statik varlık sürüm işaretleri, PWA bildirimi ve Service Worker önbelleği aynı sürüme hizalandı.
+- CSV içe aktarmada Saha No sayısal doğrulamasındaki çift kaçış hatası düzeltildi; önizleme ve aktarım doğrulaması aynı kurala göre çalışır.
+- Çevrimdışı saha notu/sonucu aynı açık ziyaretle eşleştirilerek cihazda bekletilir ve bağlantı geldiğinde doğrulanarak senkronize edilir; çevrimdışıyken yeni saha girişi/çıkışı engellenir.
+- JavaScript sözdizimi, sürüm uyumu, temel HTML bağlantıları, kritik içe aktarma kuralları ve çevrimdışı kuyruk varlığı için otomatik kalite kontrolü eklendi.
+- Personelin yalnızca kendi ziyaret geçmişi anahtarını okuyabilmesi ve açık ziyaret kimliğinin değiştirilememesi için güvenlik kuralları güncellendi. Bu düzeltmelerin etkili olması için güncel database.rules.json dosyası ayrıca Firebase projesine yayınlanmalıdır.
+- Gerçek Firebase/telefon uçtan uca testleri otomatik statik kontrollerden ayrı tutulur; bunların sonucu canlı ortamda ayrıca doğrulanmalıdır.

@@ -114,7 +114,7 @@
       const duplicateId=!!id&&(existingIds.has(id)||seenIds.has(id));
       const duplicateNo=!!no&&(existingNos.has(no)||seenNos.has(no));
       if(id)seenIds.add(id);if(no)seenNos.add(no);
-      const error=!/^[A-Z0-9]{5}$/.test(id)?"Saha ID tam 5 harf/rakam olmalı":!String(r.address||"").trim()?"Adres eksik":duplicateId?"Saha ID kayıtlı veya dosyada tekrarlı":no&&!/^\\d+$/.test(no)?"Saha No yalnızca rakam olmalı":duplicateNo?"Saha No kayıtlı veya dosyada tekrarlı":"";
+      const error=!/^[A-Z0-9]{5}$/.test(id)?"Saha ID tam 5 harf/rakam olmalı":!String(r.address||"").trim()?"Adres eksik":duplicateId?"Saha ID kayıtlı veya dosyada tekrarlı":no&&!/^\d+$/.test(no)?"Saha No yalnızca rakam olmalı":duplicateNo?"Saha No kayıtlı veya dosyada tekrarlı":"";
       return {ok:!error,error};
     });
     host.innerHTML='<div class="table-wrap"><table><thead><tr><th>#</th><th>Saha ID</th><th>Saha No (isteğe bağlı)</th><th>Adres</th><th>Enlem</th><th>Boylam</th><th>Kontrol</th></tr></thead><tbody>'+parsedRows.map((r,i)=>{
@@ -157,7 +157,7 @@
       const row=parsedRows[sourceIndex];
       const r={...row,siteId:String(row.siteId||"").trim().toUpperCase(),siteNo:String(row.siteNo||"").trim(),_sourceIndex:sourceIndex};
       const id=r.siteId,no=r.siteNo;
-      if(!valid(r)||existingIds.has(id)||seenIds.has(id)||(no&&!/^\\d+$/.test(no))||(no&&(existingNos.has(no)||seenNos.has(no))))continue;
+      if(!valid(r)||existingIds.has(id)||seenIds.has(id)||(no&&!/^\d+$/.test(no))||(no&&(existingNos.has(no)||seenNos.has(no))))continue;
       seenIds.add(id);if(no)seenNos.add(no);batch.push(r);
     }
     if(!batch.length){message("Aktarılabilecek kayıt bulunamadı. Saha ID ve varsa Saha No değerlerinin benzersiz ve geçerli olduğunu kontrol edin.","error");renderPreview();return}

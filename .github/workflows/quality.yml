@@ -1,0 +1,31 @@
+name: GSM Mobile quality checks
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  static-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check admin.js
+          node --check site-import.js
+          node --check map.js
+          node --check pwa.js
+          node --check sw.js
+      - name: Run static regression checks
+        run: node tests/static-checks.cjs
