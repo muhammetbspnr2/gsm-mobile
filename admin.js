@@ -118,7 +118,7 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
   $("proximitySiteOptions")?.addEventListener("change",event=>{
    const input=event.target.closest("[data-proximity-site]");if(!input)return;
    const key=input.dataset.proximitySite;
-   if(input.checked){if(proximitySelected.size>=15){input.checked=false;return}if(proximityCoordinates(sites[key]))proximitySelected.add(key)}
+   if(input.checked){if(proximitySelected.size>=20){input.checked=false;return}if(proximityCoordinates(sites[key]))proximitySelected.add(key)}
    else proximitySelected.delete(key);
    renderProximityOptions();renderProximityResults();
   });
