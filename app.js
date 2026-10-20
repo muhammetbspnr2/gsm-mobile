@@ -41,6 +41,7 @@ function showPage(id){if(id==="equipmentArea"&&!(equipmentAccessGranted&&auth.cu
   const now=new Date();$("dashMonthCount").textContent=rows.filter(s=>{const d=new Date(s.createdAt||0);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()}).length;
   $("siteCount").textContent=rows.length;
   renderSiteDirectorySearch(rows);
+  window.GSMMap?.render("personSiteMap",rows,{searchId:"personMapSearch",operatorId:"personMapOperator",typeId:"personMapType",summaryId:"personMapSummary",missingId:"personMapMissing",onSelect:site=>openSiteDetails(site._key||site.id)});
   $("reportRows").innerHTML=rows.map(s=>'<tr><td>'+esc(s.siteId||s.siteCode)+'</td><td>'+esc(s.siteNo||"—")+'</td><td>'+esc(s.company||"—")+'</td><td>'+esc(siteStatus(s))+'</td></tr>').join("")||'<tr><td colspan="4">Rapor kaydı yok.</td></tr>';
   $("recentSiteCards").innerHTML=rows.slice(0,4).map(s=>'<article class="recent-site"><strong>'+esc(s.siteId||s.siteCode)+'</strong><small>'+esc(s.siteNo||"Saha No yok")+' · '+esc(s.company||"")+'</small><small>'+esc(siteStatus(s))+'</small></article>').join("")||'<p class="muted">Henüz saha yok. Yeni saha oluşturma başvurusu yapabilirsin.</p>';
   renderSiteIdSuggestions();
