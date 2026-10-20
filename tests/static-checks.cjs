@@ -34,6 +34,10 @@ assert.ok(files.app.includes("if(pending.siteRecordId===v.siteRecordId&&Number(p
 
 JSON.parse(files.manifest);
 const rules = JSON.parse(read("database.rules.json"));
+const firebaseConfig = JSON.parse(read("firebase.json"));
+const projectAlias = JSON.parse(read(".firebaserc"));
+assert.equal(firebaseConfig.database.rules, "database.rules.json", "Firebase CLI must publish the reviewed rules file");
+assert.equal(projectAlias.projects.default, "spu-personal", "Firebase project alias must match the documented project");
 assert.match(rules.rules.visitHistory["$visitId"][".read"], /\.matches\(/, "personnel must be able to read only their own visit-history key");
 assert.match(rules.rules.openVisits["$uid"][".validate"], /data\.exists\(\)/, "open visit identity must be immutable after creation");
 for (const file of ["app.js", "admin.js", "site-import.js", "map.js", "pwa.js", "sw.js"]) {
