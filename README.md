@@ -30,5 +30,6 @@ Firebase Realtime Database kuralları bu statik sürümle otomatik yayınlanmaz;
 ## Sürüm 2.3.0 — Profesyonelleştirme ve kalite temeli
 - Personel ve yönetici ekranlarının statik varlık sürüm işaretleri, PWA bildirimi ve Service Worker önbelleği aynı sürüme hizalandı.
 - CSV içe aktarmada Saha No sayısal doğrulamasındaki çift kaçış hatası düzeltildi; önizleme ve aktarım doğrulaması aynı kurala göre çalışır.
-- JavaScript sözdizimi, sürüm uyumu, temel HTML bağlantıları ve kritik içe aktarma kuralları için otomatik kalite kontrolü eklendi.
+- Çevrimdışı saha notu/sonucu aynı açık ziyaretle eşleştirilerek cihazda bekletilir ve bağlantı geldiğinde doğrulanarak senkronize edilir; çevrimdışıyken yeni saha girişi/çıkışı engellenir.
+- JavaScript sözdizimi, sürüm uyumu, temel HTML bağlantıları, kritik içe aktarma kuralları ve çevrimdışı kuyruk varlığı için otomatik kalite kontrolü eklendi.
 - Gerçek Firebase/telefon uçtan uca testleri otomatik statik kontrollerden ayrı tutulur; bunların sonucu canlı ortamda ayrıca doğrulanmalıdır.
