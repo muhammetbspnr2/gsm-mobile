@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const VERSION = "2.0.18";
+  const VERSION = "2.0.23";
   let installPrompt = null;
   const standalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   const panel = document.createElement("div");
@@ -14,7 +14,7 @@
   dot.setAttribute("aria-hidden", "true");
   const label = document.createElement("span");
   label.className = "pwa-status-text";
-  label.textContent = "GSM Takip v" + VERSION;
+  label.textContent = "GSM Mobile v" + VERSION;
   const install = document.createElement("button");
   install.className = "pwa-install-btn";
   install.type = "button";
@@ -29,7 +29,7 @@
       label.textContent = "İnternet yok · Arayüz açılabilir, canlı kayıtlar için bağlantı gerekir.";
       panel.hidden = false;
     } else if (installPrompt && !standalone()) {
-      label.textContent = "GSM Takip cihazınıza yüklenmeye hazır.";
+      label.textContent = "GSM Mobile cihazınıza yüklenmeye hazır.";
       panel.hidden = false;
     } else panel.hidden = true;
     install.hidden = !installPrompt || standalone() || offline;
@@ -55,7 +55,7 @@
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register(new URL("sw.js?v=" + VERSION, document.baseURI).href)
-        .catch(error => console.warn("GSM Takip çevrimdışı desteği etkinleştirilemedi:", error));
+        .catch(error => console.warn("GSM Mobile çevrimdışı desteği etkinleştirilemedi:", error));
     });
   }
   renderStatus();
