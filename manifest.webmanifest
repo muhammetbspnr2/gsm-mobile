@@ -1,7 +1,7 @@
 {
-  "name": "GSM Takip",
-  "short_name": "GSM Takip",
-  "description": "GSM saha operasyonları ve personel takibi",
+  "name": "GSM Mobile",
+  "short_name": "GSM Mobile",
+  "description": "GSM Mobile saha operasyonları ve personel takibi",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
