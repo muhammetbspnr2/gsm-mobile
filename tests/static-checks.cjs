@@ -20,14 +20,14 @@ for (const [name, html] of [["index.html", files.index], ["admin.html", files.ad
   assert.match(html, new RegExp("v" + version.replaceAll(".", "\\.") + "<"), name + " visible footer version must be aligned");
   assert.doesNotMatch(html, /v=2\.2\.9|v2\.2\.12/, name + " contains stale cache/version markers");
 }
-assert.match(files.pwa, /const VERSION = "2\.4\.0"/, "PWA label/service-worker registration version must be current");
-assert.match(files.sw, /const VERSION = "2\.4\.0"/, "service worker cache version must be current");
-assert.match(files.manifest, /app-icon-tower\.svg\?v=2\.4\.0/, "manifest icon URLs must be versioned");
+assert.match(files.pwa, /const VERSION = "2\\.5\\.1"/, "PWA label/service-worker registration version must be current");
+assert.match(files.sw, /const VERSION = "2\\.5\\.1"/, "service worker cache version must be current");
+assert.match(files.manifest, /app-icon-tower\.svg\?v=2\\.5\\.1/, "manifest icon URLs must be versioned");
 assert.match(files.admin, /class="admin-nav-group"/, "admin navigation must be grouped by work area");
 assert.equal((files.admin.match(/data-admin-tab="/g)||[]).length, 14, "all admin sections must remain accessible");
-assert.match(files.index, /style\.css\?v=2\.5\.0/, "personnel design system must be versioned");
-assert.match(files.index, /theme\.js\?v=2\.5\.0/, "personnel theme switcher must be loaded");
-assert.match(files.admin, /theme\.js\?v=2\.5\.0/, "admin theme switcher must be loaded");
+assert.match(files.index, /style\.css\?v=2\\.5\\.1/, "personnel design system must be versioned");
+assert.match(files.index, /theme\.js\?v=2\\.5\\.1/, "personnel theme switcher must be loaded");
+assert.match(files.admin, /theme\.js\?v=2\\.5\\.1/, "admin theme switcher must be loaded");
 assert.match(read("style.css"), /html\[data-theme="dark"\]/, "dark theme tokens must be defined");
 assert.match(read("theme.js"), /localStorage\.setItem\(KEY, next\)/, "theme choice must persist");
 assert.doesNotMatch(files.importer, /\^\\\\d\+\$/, "importer must not use the incorrectly double-escaped numeric regex");
