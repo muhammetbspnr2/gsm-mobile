@@ -30,9 +30,12 @@ assert.ok(files.app.includes("function pendingVisitWriteKey("), "offline visit-n
 assert.ok(files.app.includes("async function syncPendingVisitNotes()"), "pending visit-note sync helper must exist");
 assert.ok(files.app.includes("window.setTimeout(syncPendingVisitNotes,500)"), "pending visit notes must be retried after connection/login");
 assert.ok(files.app.includes("Bağlantı yok. Saha çıkışı sunucuya güvenli biçimde kaydedilemedi"), "checkout must be blocked while offline");
+assert.ok(files.app.includes("if(pending.siteRecordId===v.siteRecordId&&Number(pending.checkInAt)===Number(v.checkInAt))localStorage.removeItem(pendingKey)"), "a different visit queue must never be discarded by a normal save");
 
 JSON.parse(files.manifest);
-JSON.parse(read("database.rules.json"));
+const rules = JSON.parse(read("database.rules.json"));
+assert.match(rules.rules.visitHistory["$visitId"][".read"], /\.matches\(/, "personnel must be able to read only their own visit-history key");
+assert.match(rules.rules.openVisits["$uid"][".validate"], /data\.exists\(\)/, "open visit identity must be immutable after creation");
 for (const file of ["app.js", "admin.js", "site-import.js", "map.js", "pwa.js", "sw.js"]) {
   assert.ok(fs.existsSync(path.join(root, file)), file + " must exist");
 }
