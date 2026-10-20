@@ -82,30 +82,33 @@ function showPage(id){if(id==="equipmentArea"&&!(equipmentAccessGranted&&auth.cu
  async function setActiveSite(site,visitReason){if(!auth.currentUser)return;equipmentAccessGranted=false;syncEquipmentTab();try{const uid=auth.currentUser.uid,visitRef=db.ref("openVisits/"+uid),checkInAt=Date.now(),candidate={uid,personName:profile.name||profile.username||"",siteRecordId:site.id,siteId:site.siteId||site.siteCode,siteNo:site.siteNo||"",operator:site.operator||"",siteType:site.siteType||"",company:site.company||"",visitReason,checkInAt,workNotes:"",outcome:""};const tx=await visitRef.transaction(current=>{if(current&&current.siteRecordId!==site.id)return;return current||candidate});if(!tx.committed){const existing=tx.snapshot.val();msg("entryMessage","Önce açık olan "+(existing?.siteId||"saha")+" ziyaretinden çıkış yapmalısın. Mevcut giriş saati korunuyor.","error");return}const record=tx.snapshot.val(),existing=record.checkInAt!==checkInAt;if(!record||record.uid!==uid||record.siteRecordId!==site.id){throw new Error("Açık saha ziyareti doğrulanamadı.")}activeSite=site;openVisitRecord=record;equipmentAccessGranted=true;syncEquipmentTab();$("selectedSiteCode").textContent=site.siteId||site.siteCode;$("selectedSiteStatus").textContent=siteStatus(site);$("equipmentHeading").textContent="Ekipmanlar · "+(site.siteId||site.siteCode);$("visitWorkNotes").value=record.workNotes||"";$("visitOutcome").value=record.outcome||"";restoreVisitDraft(record);msg("activeVisitNotice","Aktif ziyaret: "+(record.siteId||"Saha")+" · Giriş: "+new Date(record.checkInAt).toLocaleString("tr-TR")+" · Neden: "+(record.visitReason||visitReason||"—"),"success");hide("activeVisitNotice",false);msg("equipmentMessage",existing?"Açık saha ziyaretin sürdürüldü ("+(record.visitReason||"İş nedeni belirtilmemiş")+"). Giriş saati korunuyor. Ekipman girişi isteğe bağlıdır.":"Saha girişi kaydedildi ("+visitReason+"). Ekipman girişi isteğe bağlıdır. İşin bitince Saha Çıkış düğmesine bas.","success");loadEquipment();showPage("equipmentArea");msg("entryMessage","Onaylı saha açıldı: "+(site.siteId||site.siteCode),"success")}catch(err){equipmentAccessGranted=false;openVisitRecord=null;syncEquipmentTab();msg("equipmentMessage","Saha ziyareti doğrulanamadı veya kaydedilemedi: "+err.message,"error");showPage("dashboard")}}
    let openVisitListener=null,restoreVisitToken=0,pendingOpenVisitRecord=null;
   async function restoreOpenVisit(record){
-   if(!record||!auth.currentUser||record.uid!==auth.currentUser.uid)return;
-   const token=++restoreVisitToken,uid=auth.currentUser.uid;
-   try{
-    let siteKey=String(record.siteRecordId||""),siteData=null;
-    if(siteKey){const siteSnap=await db.ref("sites/"+siteKey).once("value");siteData=siteSnap.val();}
-    if(!siteData){
-     const match=Object.entries(sites).find(([key,s])=>key===siteKey||String(s.id||"")===siteKey||normalizeId(s.siteId||s.siteCode)===normalizeId(record.siteId));
-     if(match){siteKey=match[0];siteData=match[1];}
-    }
-    if(token!==restoreVisitToken||auth.currentUser?.uid!==uid)return;
-    if(!siteData){msg("entryMessage","Açık saha ziyaretin sunucuda kayıtlı; ancak saha bilgisi henüz yüklenemedi. Bağlantı geldiğinde yeniden dene.","error");return;}
-    const site={...siteData,id:siteKey||siteData.id||record.siteRecordId};
-    activeSite=site;openVisitRecord=record;equipmentAccessGranted=true;syncEquipmentTab();
-    $("selectedSiteCode").textContent=site.siteId||site.siteCode||record.siteId||"—";
-    $("selectedSiteStatus").textContent=siteStatus(site);
-    $("equipmentHeading").textContent="Ekipmanlar · "+(site.siteId||site.siteCode||record.siteId||"Saha");
-    $("visitWorkNotes").value=record.workNotes||"";$("visitOutcome").value=record.outcome||"";
-    restoreVisitDraft(record);
-    msg("activeVisitNotice","Açık saha otomatik geri yüklendi: "+(record.siteId||site.siteId||"Saha")+" · Giriş: "+new Date(record.checkInAt).toLocaleString("tr-TR")+" · Neden: "+(record.visitReason||"—"),"success");
-    hide("activeVisitNotice",false);loadEquipment();showPage("equipmentArea");
-    msg("entryMessage","Önceki açık saha ziyaretin geri yüklendi. Yeniden giriş yapmana gerek yok.","success");
-   }catch(err){console.error("Açık saha geri yüklenemedi:",err);msg("entryMessage","Açık saha kaydı okunamadı: "+err.message,"error");}
-  }
-const stockGroups={"Ekipman Listesi":["Anten","Rru","Combainer","Jumper","Ret","Ret Kablo","İnce-Kalın Konnektör","Kalın-İnce Konnektör"],"Çanak":["30","60","90","120"],"Kutucuk":["Ericsson (AEG)","Huawei (EYA)"]};
+    if(!record||!auth.currentUser||record.uid!==auth.currentUser.uid)return;
+    const token=++restoreVisitToken,uid=auth.currentUser.uid;
+    try{
+     let siteKey=String(record.siteRecordId||""),siteData=null;
+     // A direct read may fail under Firebase rules even when the approved-sites
+     // listener can provide the same record. Always try the local approved list.
+     if(siteKey){try{const siteSnap=await db.ref("sites/"+siteKey).once("value");siteData=siteSnap.val();}catch(readError){console.warn("Doğrudan saha okuması başarısız; onaylı saha listesinden aranıyor.",readError);}}
+     if(!siteData){
+      const match=Object.entries(sites).find(([key,s])=>key===siteKey||String(s.id||"")===siteKey||normalizeId(s.siteId||s.siteCode)===normalizeId(record.siteId));
+      if(match){siteKey=match[0];siteData=match[1];}
+     }
+     if(token!==restoreVisitToken||auth.currentUser?.uid!==uid)return;
+     if(!siteData){msg("entryMessage","Açık saha kaydı sunucuda mevcut; saha ayrıntıları henüz yüklenmedi. İnternet bağlantısını kontrol edip birkaç saniye bekleyin.","error");return;}
+     const site={...siteData,id:siteKey||siteData.id||record.siteRecordId};
+     if(site.approved!==true){msg("entryMessage","Açık saha kaydı bulundu ancak saha şu anda yönetici onaylı görünmüyor. Yönetici panelinden saha durumunu kontrol edin.","error");return;}
+     activeSite=site;openVisitRecord=record;equipmentAccessGranted=true;syncEquipmentTab();
+     $("selectedSiteCode").textContent=site.siteId||site.siteCode||record.siteId||"—";
+     $("selectedSiteStatus").textContent=siteStatus(site);
+     $("equipmentHeading").textContent="Ekipmanlar · "+(site.siteId||site.siteCode||record.siteId||"Saha");
+     $("visitWorkNotes").value=record.workNotes||"";$("visitOutcome").value=record.outcome||"";
+     restoreVisitDraft(record);
+     msg("activeVisitNotice","Açık saha otomatik geri yüklendi: "+(record.siteId||site.siteId||"Saha")+" · Giriş: "+new Date(record.checkInAt).toLocaleString("tr-TR")+" · Neden: "+(record.visitReason||"—"),"success");
+     hide("activeVisitNotice",false);loadEquipment();showPage("equipmentArea");
+     msg("entryMessage","Önceki açık saha ziyaretin geri yüklendi. Yeniden giriş yapmana gerek yok.","success");
+    }catch(err){console.error("Açık saha geri yüklenemedi:",err);msg("entryMessage","Açık saha kaydı geri yüklenemedi: "+err.message,"error");}
+   }
+   const stockGroups={"Ekipman Listesi":["Anten","Rru","Combainer","Jumper","Ret","Ret Kablo","İnce-Kalın Konnektör","Kalın-İnce Konnektör"],"Çanak":["30","60","90","120"],"Kutucuk":["Ericsson (AEG)","Huawei (EYA)"]};
  function renderStockCounters(){const root=$("stockCounters");if(!root)return;root.innerHTML=Object.entries(stockGroups).map(([group,items])=>'<div class="stock-group"><h4>'+esc(group)+'</h4>'+items.map(name=>'<div class="stock-row"><span class="stock-name">'+esc(name)+'</span><div class="stepper"><button type="button" data-stock-up="'+esc(name)+'" aria-label="'+esc(name)+' artır">+</button><strong>'+Number(stockCounts[name]||0)+'</strong><button type="button" data-stock-down="'+esc(name)+'" aria-label="'+esc(name)+' azalt">−</button></div></div>').join("")+'</div>').join("");root.querySelectorAll("[data-stock-up]").forEach(b=>b.onclick=()=>{const n=b.dataset.stockUp;stockCounts[n]=Number(stockCounts[n]||0)+1;renderStockCounters()});root.querySelectorAll("[data-stock-down]").forEach(b=>b.onclick=()=>{const n=b.dataset.stockDown;stockCounts[n]=Math.max(0,Number(stockCounts[n]||0)-1);renderStockCounters()})}
  async function startBarcodeScanner(){if(!navigator.mediaDevices?.getUserMedia){msg("equipmentMessage","Bu tarayıcı kamera erişimini desteklemiyor veya güvenli bağlantı gerekli.","error");return}if(!("BarcodeDetector" in window)){msg("equipmentMessage","Bu tarayıcı barkod tanımayı desteklemiyor. Chrome/Edge güncel sürümünü deneyin veya barkodu elle girin.","error");return}try{scannerStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false});const video=$("barcodeVideo");video.srcObject=scannerStream;await video.play();$("scannerPanel").classList.remove("hidden");const detector=new BarcodeDetector({formats:["qr_code","code_128","code_39","ean_13","ean_8","upc_a","upc_e","itf","codabar"]});msg("scannerMessage","Barkodu kamera çerçevesine getir.","");const scan=async()=>{if(!scannerStream)return;try{const found=await detector.detect(video);if(found.length){$("equipmentSerial").value=found[0].rawValue;stopBarcodeScanner();msg("equipmentMessage","Barkod kamerayla okundu.","success");return}}catch(_){}scannerTimer=setTimeout(scan,250)};scan()}catch(err){stopBarcodeScanner();msg("equipmentMessage","Kamera açılamadı: "+err.message,"error")}}
  function stopBarcodeScanner(){if(scannerTimer)clearTimeout(scannerTimer);scannerTimer=null;if(scannerStream)scannerStream.getTracks().forEach(t=>t.stop());scannerStream=null;const v=$("barcodeVideo");if(v)v.srcObject=null;const p=$("scannerPanel");if(p)p.classList.add("hidden")}
