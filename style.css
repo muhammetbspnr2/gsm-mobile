@@ -513,3 +513,31 @@ tbody tr:hover{background:#1a2a40}
   #adminAppView .admin-sidebar button{padding:8px 10px!important;font-size:11px!important}
   #adminAppView .content-panel{padding:11px}
 }
+
+
+/* v2.2.2 — high-contrast personnel site-details popup */
+.site-detail-dialog{
+  background:#f4f7fc!important;
+  color:#142b4d!important;
+  border-color:#cbd7e7!important;
+}
+.site-detail-heading .eyebrow{color:#18385f!important}
+.site-detail-heading h2{color:#102b50!important}
+.site-detail-field{
+  background:#e8eef7!important;
+  border-color:#c6d3e5!important;
+}
+.site-detail-field span{
+  color:#102b50!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  letter-spacing:.035em!important;
+}
+.site-detail-field strong{
+  color:#203b5e!important;
+  font-size:13px!important;
+  font-weight:400!important;
+  line-height:1.55!important;
+}
+.site-detail-close{color:#18385f!important}
+.site-detail-dialog .site-map-note{color:#294563!important}
