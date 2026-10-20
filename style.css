@@ -934,3 +934,46 @@ html[data-theme="dark"] .message.error{background:#3b2525!important;color:#ffb8b
  .top-link{font-size:10px;white-space:nowrap}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* Explicitly neutralize legacy accent colors across the existing screens */
+.top-link,.top-link:hover,.site-detail-close,.site-detail-field,.site-entry-current,
+.app-version,.admin-tab-badge,.map-popup a,.site-entry-hero .site-entry-form input,
+.site-entry-hero .site-entry-form select,.site-directory-search>input,
+#adminAppView .sidebar.admin-sidebar,.notification-close{
+ background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important
+}
+#adminAppView .sidebar.admin-sidebar{background:var(--nav)!important;color:var(--nav-text)!important}
+.top-link:hover{color:var(--brand)!important}
+.site-detail-field,.site-detail-close{background:var(--surface-alt)!important}
+.app-version{background:var(--surface-alt)!important;color:var(--brand)!important;border:1px solid var(--line)}
+.admin-tab-badge{background:var(--brand)!important;color:#fff!important}
+.map-popup a{background:var(--brand)!important;color:#fff!important}
+.hero-copy .eyebrow:before{background:var(--brand)!important}
+.site-detail-dialog{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+.connection-status.is-connected{background:#edf8f1!important;color:#17613c!important;border-color:#c5e7d1!important}
+.connection-status.is-offline,.connection-status.is-error{background:#fff0f0!important;color:#9f1d1d!important;border-color:#f1c4c4!important}
+html[data-theme="dark"] .connection-status.is-connected{background:#1d3428!important;color:#a5e7c1!important;border-color:#315c43!important}
+html[data-theme="dark"] .connection-status.is-offline,html[data-theme="dark"] .connection-status.is-error{background:#3b2525!important;color:#ffb8b8!important;border-color:#674040!important}
+html[data-theme="dark"] .site-detail-field,html[data-theme="dark"] .site-detail-close,
+html[data-theme="dark"] .site-entry-current,html[data-theme="dark"] .site-directory-search>input{
+ background:var(--surface-alt)!important;color:var(--ink)!important;border-color:var(--line)!important
+}
+html[data-theme="dark"] .map-popup a{background:var(--brand)!important;color:#fff!important}
+html[data-theme="dark"] .person-tab{color:#d0d0d0}
+html[data-theme="dark"] .panel,html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .content-panel,html[data-theme="dark"] .dash-card,
+html[data-theme="dark"] .recent-site,html[data-theme="dark"] .site-detail-dialog,
+html[data-theme="dark"] .notification-popover,html[data-theme="dark"] .scanner-panel,
+html[data-theme="dark"] .stock-group,html[data-theme="dark"] .site-map-panel,
+html[data-theme="dark"] .site-directory-item,html[data-theme="dark"] .news-card,
+html[data-theme="dark"] .news-item,html[data-theme="dark"] .news-post{
+ background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important
+}
+html[data-theme="dark"] .site-detail-field,html[data-theme="dark"] .table-wrap,
+html[data-theme="dark"] th,html[data-theme="dark"] .notify-form{
+ background:var(--surface-alt)!important;color:var(--ink)!important;border-color:var(--line)!important
+}
+html[data-theme="dark"] .site-entry-hero{background:var(--surface)!important;color:var(--ink)!important}
+html[data-theme="dark"] .site-entry-hero .site-entry-form input,
+html[data-theme="dark"] .site-entry-hero .site-entry-form select{background:var(--surface-alt)!important;color:var(--ink)!important}
