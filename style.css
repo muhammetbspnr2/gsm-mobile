@@ -1097,3 +1097,18 @@ html[data-theme="light"] table tbody tr:hover td {
   background-color:#f1f4f8!important;
   color:#334155;
 }
+
+
+/* Personel paneli: saha detay penceresinde koyu temada metin kontrastı */
+html[data-theme="dark"] #siteDetailModal .site-detail-dialog,
+html[data-theme="dark"] #siteDetailModal .site-detail-dialog h2,
+html[data-theme="dark"] #siteDetailModal .site-detail-heading .eyebrow,
+html[data-theme="dark"] #siteDetailModal .site-detail-field,
+html[data-theme="dark"] #siteDetailModal .site-detail-field strong,
+html[data-theme="dark"] #siteDetailModal .site-detail-field span,
+html[data-theme="dark"] #siteDetailModal .site-map-note {
+  color: #fff !important;
+}
+html[data-theme="dark"] #siteDetailModal .site-detail-close {
+  color: #fff !important;
+}
