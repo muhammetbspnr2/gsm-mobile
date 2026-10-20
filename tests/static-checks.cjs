@@ -10,7 +10,8 @@ const files = {
   pwa: read("pwa.js"),
   sw: read("sw.js"),
   manifest: read("manifest.webmanifest"),
-  importer: read("site-import.js")
+  importer: read("site-import.js"),
+  app: read("app.js")
 };
 const version = "2.3.0";
 
@@ -25,6 +26,10 @@ assert.match(files.manifest, /app-icon-tower\.svg\?v=2\.3\.0/, "manifest icon UR
 assert.doesNotMatch(files.importer, /\^\\\\d\+\$/, "importer must not use the incorrectly double-escaped numeric regex");
 assert.match(files.importer, /no&&!\/\^\\d\+\$\/\.test\(no\)/, "preview numeric Saha No validation must use digit regex");
 assert.match(files.importer, /\(no&&!\/\^\\d\+\$\/\.test\(no\)\)/, "commit numeric Saha No validation must use digit regex");
+assert.ok(files.app.includes("function pendingVisitWriteKey("), "offline visit-note queue helper must exist");
+assert.ok(files.app.includes("async function syncPendingVisitNotes()"), "pending visit-note sync helper must exist");
+assert.ok(files.app.includes("window.setTimeout(syncPendingVisitNotes,500)"), "pending visit notes must be retried after connection/login");
+assert.ok(files.app.includes("Bağlantı yok. Saha çıkışı sunucuya güvenli biçimde kaydedilemedi"), "checkout must be blocked while offline");
 
 JSON.parse(files.manifest);
 JSON.parse(read("database.rules.json"));
