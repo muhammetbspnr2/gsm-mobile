@@ -56,7 +56,8 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
    return {valid:Number.isFinite(latitude)&&Number.isFinite(longitude)&&latitude>=-90&&latitude<=90&&longitude>=-180&&longitude<=180,empty:false,latitude,longitude};
   }
   function proximityCoordinates(site){
-   const latText=String(site?.latitude??"").trim().replace(",", "."),lngText=String(site?.longitude??"").trim().replace(",", ".");
+   // Imported Google Maps CSV records may store longitude under lng rather than longitude.
+   const latText=String(site?.latitude??site?.lat??"").trim().replace(",", "."),lngText=String(site?.longitude??site?.lng??"").trim().replace(",", ".");
    if(!latText||!lngText)return null;
    const lat=Number(latText),lng=Number(lngText);
    if(!Number.isFinite(lat)||!Number.isFinite(lng)||lat < -90||lat > 90||lng < -180||lng > 180)return null;
@@ -78,7 +79,8 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
    if(!filtered.length){host.innerHTML='<p class="map-empty-note">Aramanızla eşleşen saha bulunamadı.</p>';return}
    host.innerHTML=filtered.map(({key,site,coords})=>{
     const checked=proximitySelected.has(key),disabled=!coords||(!checked&&proximitySelected.size>=15);
-    const location=[site.province,site.district].filter(Boolean).join(" / ")||"Konum bilgisi yok";
+    const savedAddress=String(site.address||"").trim();
+   const location=[site.province,site.district].filter(Boolean).join(" / ")||((savedAddress&&!/^https?:\/\//i.test(savedAddress))?savedAddress:(coords?"Koordinat mevcut":"Konum bilgisi yok"));
     const detail=(site.siteNo?"Saha No: "+site.siteNo+" · ":"")+location;
     return '<label class="proximity-site-option'+(!coords?' is-unavailable':'')+'"><input type="checkbox" data-proximity-site="'+esc(key)+'" '+(checked?'checked ':'')+(disabled?'disabled ':'')+'><span class="proximity-site-option-copy"><strong>'+esc(proximitySiteName(site,key))+'</strong><small>'+esc(detail)+'</small></span><span class="proximity-site-coordinate">'+(coords?'Koordinat hazır':'Koordinat yok')+'</span></label>';
    }).join("");
@@ -100,7 +102,13 @@ $("adminNewsForm")?.addEventListener("submit",async e=>{e.preventDefault();const
     pairs.push({first,second,distance:bestDistance});
    }
    const card=({first,second,distance},index)=>{
-    const details=item=>[item.site.province,item.site.district].filter(Boolean).join(" / ")||item.site.address||"Konum bilgisi yok";
+    const details=item=>{
+     const area=[item.site.province,item.site.district].filter(Boolean).join(" / ");
+     if(area)return area;
+     const address=String(item.site.address||"").trim();
+     if(address&&!/^https?:\/\//i.test(address))return address;
+     return "Koordinat: "+item.coords.lat.toFixed(5)+", "+item.coords.lng.toFixed(5);
+    };
     const mapsUrl=item=>"https://www.google.com/maps?q="+encodeURIComponent(item.coords.lat+","+item.coords.lng);
     return '<article class="proximity-pair-card"><div class="proximity-pair-number">'+String(index+1).padStart(2,"0")+'</div><div class="proximity-pair-sites"><div class="proximity-pair-site"><span class="proximity-site-dot"></span><div><strong>'+esc(proximitySiteName(first.site,first.key))+'</strong><small>'+esc(details(first))+(first.site.siteNo?' · Saha No: '+esc(first.site.siteNo):'')+'</small></div><a href="'+mapsUrl(first)+'" target="_blank" rel="noopener noreferrer" aria-label="Birinci sahayı haritada aç">Harita ↗</a></div><div class="proximity-pair-site"><span class="proximity-site-dot"></span><div><strong>'+esc(proximitySiteName(second.site,second.key))+'</strong><small>'+esc(details(second))+(second.site.siteNo?' · Saha No: '+esc(second.site.siteNo):'')+'</small></div><a href="'+mapsUrl(second)+'" target="_blank" rel="noopener noreferrer" aria-label="İkinci sahayı haritada aç">Harita ↗</a></div></div><div class="proximity-pair-distance"><strong>'+proximityDistanceLabel(distance)+'</strong><small>kuş uçuşu</small></div></article>';
    };
