@@ -1,22 +1,22 @@
 {
   "name": "GSM Mobile",
   "short_name": "GSM Mobile",
-  "description": "GSM Mobile saha operasyonları ve personel takibi",
+  "description": "Koyu teknik operasyon paneli: GSM saha haritası, saha kayıtları ve personel operasyonları",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f6fa",
-  "theme_color": "#111b2c",
+  "background_color": "#0b1220",
+  "theme_color": "#101b2d",
   "lang": "tr",
   "icons": [
     {
-      "src": "app-icon-tower.svg?v=2.1.0",
+      "src": "app-icon-tower.svg?v=2.2.0",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "app-icon-tower.svg?v=2.1.0",
+      "src": "app-icon-tower.svg?v=2.2.0",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
