@@ -22,7 +22,7 @@ for (const [name, html] of [["index.html", files.index], ["admin.html", files.ad
 }
 assert.ok(files.pwa.includes('const VERSION = "2.5.1"'), "PWA label/service-worker registration version must be current");
 assert.ok(files.sw.includes('const VERSION = "2.5.1"'), "service worker cache version must be current");
-assert.match(files.manifest, /app-icon-tower\.svg\?v=2\\.5\\.1/, "manifest icon URLs must be versioned");
+assert.ok(files.manifest.includes("app-icon-tower.svg?v=2.5.1"), "manifest icon URLs must be versioned");
 assert.match(files.admin, /class="admin-nav-group"/, "admin navigation must be grouped by work area");
 assert.equal((files.admin.match(/data-admin-tab="/g)||[]).length, 14, "all admin sections must remain accessible");
 assert.match(files.index, /style\.css\?v=2\\.5\\.1/, "personnel design system must be versioned");
