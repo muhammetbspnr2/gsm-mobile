@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const VERSION = "2.0.23";
+  const VERSION = "2.0.24";
   let installPrompt = null;
   const standalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   const panel = document.createElement("div");
