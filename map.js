@@ -12,7 +12,8 @@
   const mapUrl = site => {
     const coords = validCoords(site);
     const target = coords ? coords[0] + "," + coords[1] : String(site.address || [site.district, site.province, "Türkiye"].filter(Boolean).join(", "));
-    return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(target);
+    const saved = String(site.mapsUrl || "").trim();
+    return /^https?:\/\//i.test(saved) ? saved : "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(target);
   };
   function render(containerId, incoming, options) {
     const container = document.getElementById(containerId);
@@ -54,6 +55,12 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> katkıda bulunanlar'
       }).addTo(state.map);
       state.layer = window.L.featureGroup().addTo(state.map);
+      if ("ResizeObserver" in window) {
+        state.resizeObserver = new ResizeObserver(() => {
+          if (state.map && container.clientWidth > 0 && container.clientHeight > 0) state.map.invalidateSize({pan:false});
+        });
+        state.resizeObserver.observe(container);
+      }
       setTimeout(() => state.map && state.map.invalidateSize(), 150);
     }
     update(containerId);
