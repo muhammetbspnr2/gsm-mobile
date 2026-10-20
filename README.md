@@ -24,7 +24,7 @@ Yönetici: https://muhammetbspnr2.github.io/gsm-mobile/admin.html
 - Çevrimdışı/çevrimiçi durum bilgilendirmesi ve desteklenen tarayıcılarda uygulama yükleme istemi eklendi.
 - Sürüm numarası, önbellek stratejisi ve statik doğrulama kontrolleri birlikte güncellendi.
 
-Firebase Realtime Database kuralları bu statik sürümle otomatik yayınlanmaz; bu sürüm kuralları değiştirmez.
+Firebase Realtime Database kuralları GitHub Pages dağıtımıyla otomatik yayınlanmaz. Bu sürümde database.rules.json güncellendi; canlı Firebase projesine ayrıca yayınlanması gerekir.
 
 
 ## Sürüm 2.3.0 — Profesyonelleştirme ve kalite temeli
