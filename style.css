@@ -464,3 +464,52 @@ tbody tr:hover{background:#1a2a40}
 .map-unavailable strong{color:#f2c43d}
 @media(max-width:700px){.site-map-filters{grid-template-columns:1fr 1fr}.site-map-filters input{grid-column:1/-1}.site-map-heading{flex-direction:column}.site-map-summary{max-width:100%}.site-map-canvas{height:360px;min-height:280px}.site-map-missing{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* v2.2.1 — compact admin navigation on phones */
+@media(max-width:760px){
+  #adminAppView .admin-content{display:block;min-width:0}
+  #adminAppView .sidebar.admin-sidebar{
+    position:sticky;top:0;z-index:1000;
+    display:flex;flex-direction:row;align-items:center;gap:6px;
+    width:calc(100% + 2px);min-height:0;height:auto;
+    margin:0 0 14px;padding:7px;
+    overflow-x:auto;overflow-y:hidden;
+    border-radius:0 0 13px 13px;
+    border:1px solid #2a3a52;border-top:0;
+    background:rgba(13,23,39,.97)!important;
+    box-shadow:0 8px 22px #0004;
+    scrollbar-width:thin;scrollbar-color:#52657f #101b2d;
+    -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  }
+  #adminAppView .admin-sidebar .side-label{display:none!important}
+  #adminAppView .admin-sidebar button{
+    flex:0 0 auto;width:auto;min-height:38px;
+    justify-content:center;white-space:nowrap;
+    padding:9px 12px!important;margin:0;
+    border:1px solid #30415a!important;border-radius:9px;
+    font-size:12px!important;line-height:1.15;
+    background:#17263b!important;color:#c7d5e8!important;
+  }
+  #adminAppView .admin-sidebar button.active{
+    background:#f2c43d!important;border-color:#f2c43d!important;
+    color:#172033!important;box-shadow:none!important;
+  }
+  #adminAppView .admin-sidebar button .admin-tab-badge{
+    margin-left:2px;flex:0 0 auto;
+  }
+  #adminAppView .content-panel{padding:14px;margin-bottom:14px}
+  #adminAppView .welcome-row{gap:10px;margin-bottom:14px;align-items:flex-start}
+  #adminAppView .welcome-row h1{font-size:21px}
+  #adminAppView .welcome-row p{font-size:12px}
+  #adminAppView .welcome-row .btn{flex:0 0 auto;padding:9px 10px;font-size:12px}
+  #adminAppView .stats-grid{gap:8px;margin-bottom:14px}
+  #adminAppView .stat-card{padding:11px 9px;min-width:0}
+  #adminAppView .stat-card>strong{font-size:20px}
+  #adminAppView .stat-card>span{font-size:9px}
+}
+@media(max-width:380px){
+  #adminAppView .admin-sidebar{gap:5px;padding:6px}
+  #adminAppView .admin-sidebar button{padding:8px 10px!important;font-size:11px!important}
+  #adminAppView .content-panel{padding:11px}
+}
