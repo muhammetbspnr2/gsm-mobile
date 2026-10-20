@@ -13,7 +13,7 @@ const files = {
   importer: read("site-import.js"),
   app: read("app.js")
 };
-const version = "2.5.0";
+const version = "2.5.1";
 
 for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
   assert.match(html, new RegExp("v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " asset query versions must be aligned");
