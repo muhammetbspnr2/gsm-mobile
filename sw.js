@@ -1,7 +1,7 @@
 "use strict";
-const VERSION = "2.4.0";
+const VERSION = "2.5.0";
 const CACHE_NAME = "gsm-mobile-" + VERSION;
-const SHELL = ["", "index.html", "admin.html", "style.css", "app.js", "admin.js", "site-import.js", "firebase-config.js", "map.js", "pwa.js", "manifest.webmanifest", "app-icon.svg", "app-icon-tower.svg"];
+const SHELL = ["", "index.html", "admin.html", "style.css", "app.js", "admin.js", "site-import.js", "firebase-config.js", "map.js", "pwa.js", "theme.js", "manifest.webmanifest", "app-icon.svg", "app-icon-tower.svg"];
 const shellUrl = path => new URL(path, self.registration.scope).href;
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
