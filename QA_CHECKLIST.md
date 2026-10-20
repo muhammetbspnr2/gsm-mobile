@@ -37,6 +37,11 @@ These checks require a real browser and a test account connected to the Firebase
 ## Mobile, offline and release
 - [ ] Check common Android screen widths, keyboard behavior, touch targets and fixed navigation.
 - [ ] With network disabled, the cached interface opens and clearly states that live Firebase writes need connectivity.
+- [ ] Disable network, save required visit notes/result, close and reopen the PWA, then restore connectivity; verify the queued note syncs once to the same open visit.
+- [ ] While a note is queued, edit it again and verify the newest text is synced without dropping the earlier queue.
+- [ ] Attempt checkout offline; verify it is blocked and the open visit remains intact.
+- [ ] Attempt to start another visit while offline; verify no visit is created.
+- [ ] Log out with pending notes; verify the app warns that the notes remain on this device until the same account reconnects.
 - [ ] Restore connectivity and confirm data refreshes without duplicate submissions.
 - [ ] Install/update the PWA; confirm the visible version and refreshed assets match the release.
 - [ ] Confirm browser console has no uncaught errors or Firebase permission errors.
