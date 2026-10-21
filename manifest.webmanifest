@@ -1,7 +1,7 @@
 {
   "name": "GSM Mobile",
   "short_name": "GSM Mobile",
-  "description": "GSM saha operasyonları, saha kayıtları ve personel yönetimi; açık ve koyu tema desteği",
+  "description": "GSM saha operasyonları, saha kayıtları ve personel yönetimi; Vodafone kırmızı-beyaz kurumsal arayüz",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -10,13 +10,13 @@
   "lang": "tr",
   "icons": [
     {
-      "src": "app-icon-tower.svg?v=2.6.1",
+      "src": "app-icon-tower.svg?v=2.6.5",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "app-icon-tower.svg?v=2.6.1",
+      "src": "app-icon-tower.svg?v=2.6.5",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
