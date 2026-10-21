@@ -61,7 +61,10 @@ Durum: Tasarım/ön hazırlık. Bu belge canlı Firebase verisini veya uygulaman
 - Saha ID'nin tam 5 karakter, büyük harf/rakam olması; benzersizlik kontrolü ve Saha No'nun mevcut kuralları korunur.
 - İçe aktarma işlemi, yetkili kullanıcının firma kapsamı dışında kayıt yazamaz.
 
-### E. Operasyon verileri ve ekip şefi paneli
+### E. Operasyon verileri ve ayrı ekip şefi paneli
+- Ekip şefi için yönetici panelinden ayrı team-leader.html ekranı ve team-leader.js akışı hazırlandı. Giriş, atanmış ekipleri yükleme, günlük görev oluşturma ve görev durumunu izleme arayüzü bu ayrı paneldedir.
+- Ana personel ekranı ve yönetici ekranının üst bağlantılarına ayrı ekip şefi paneli bağlantısı eklendi; ekip şefi özellikleri yönetici menüsüne gömülmedi.
+- Panel teamLeaders/{uid}, teams/{teamId} ve dailyPlans/{teamId}/{planId} için hedef şemayı kullanır. Üretimde çalışır hâle gelmesi için bu yolların güvenli Firebase kuralları ve personel/ekip üyeliği doğrulaması ayrıca test edilmelidir.
 - Ziyaret, ekipman, değişiklik talepleri, bildirimler ve raporlara firma kapsamı eklenir.
 - Ekip şefi paneli günlük plan, görev durumu, açık saha ziyareti ve ekip raporlarını sadece atandığı ekipler için sunar.
 - Eski kayıtlar için firma/ekip ilişkisi kanıtlanamıyorsa tahminle taşınmaz; inceleme kuyruğunda kalır.
@@ -85,5 +88,7 @@ Durum: Tasarım/ön hazırlık. Bu belge canlı Firebase verisini veya uygulaman
 - Canlı Firebase verisi okunmadı veya değiştirilmedi.
 - Firebase Console'daki yayımlanmış kurallar doğrulanmadı.
 - Hiçbir kullanıcı ya da saha otomatik olarak firmaya atanmadı.
-- Uygulama kodu veya üretim güvenlik kuralları değiştirilmedi.
+- Ekip şefi panelinin arayüz ve istemci akışı ayrı geliştirme dalına eklendi; henüz canlıya yayımlanmadı ve mevcut Firebase kurallarıyla uçtan uca çalıştığı doğrulanmadı.
+- teamLeaders, teams, teamMembers ve dailyPlans yolları için güvenlik kuralları test ortamında hazırlanıp Emulator/ayrı Firebase projesinde sınanmalıdır.
+- Üretim güvenlik kuralları değiştirilmedi.
 - Bu plan uygulama değişikliği ve testlerin yerine geçmez; canlıya geçmeden önce ayrı test projesi ve yedek gereklidir.
