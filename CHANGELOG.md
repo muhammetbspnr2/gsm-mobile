@@ -1,4 +1,9 @@
-# GSM Takip sürüm notları
+# GSM Mobile sürüm notları
+
+## 2.7.2 — Kırmızı-beyaz tasarım ve önbellek tutarlılığı
+- Personel ve yönetici panellerinde ortak kırmızı-beyaz kurumsal tasarım sistemi; daha tutarlı formlar, kartlar, tablolar, gezinme ve mobil etkileşim durumları.
+- Personel ve yönetici varlıkları, PWA etiketi ve Service Worker önbelleği 2.7.2 sürümünde hizalandı.
+- Mevcut Firebase iş akışları ve CSV/KML/KMZ aktarım kuralları korunur.
 
 ## 2.0.13 — Bildirim izin hatası açıklaması
 - Bildirim gönderimi tüm alıcılarda PERMISSION_DENIED ile başarısız olursa hata mesajı, canlı Firebase kurallarının yayımlanmasını açıkça belirtir.
