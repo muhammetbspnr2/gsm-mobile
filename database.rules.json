@@ -72,7 +72,7 @@
     },
     "equipment": {
       "$siteId": {
-        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && root.child('sites').child($siteId).child('approved').val() === true && (root.child('sites').child($siteId).child('ownerUid').val() === auth.uid || root.child('openVisits').child(auth.uid).child('siteRecordId').val() === $siteId)))",
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && root.child('sites').child($siteId).child('approved').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === root.child('sites').child($siteId).child('operatorId').val() || root.child('profiles').child(auth.uid).child('operatorIds').child(root.child('sites').child($siteId).child('operatorId').val()).val() === true) && (root.child('sites').child($siteId).child('ownerUid').val() === auth.uid || root.child('openVisits').child(auth.uid).child('siteRecordId').val() === $siteId)))",
         "$equipmentId": {
           ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && root.child('sites').child($siteId).child('approved').val() === true && root.child('openVisits').child(auth.uid).child('siteRecordId').val() === $siteId && ((!data.exists() && newData.child('ownerUid').val() === auth.uid) || (data.child('ownerUid').val() === auth.uid && newData.child('ownerUid').val() === auth.uid))))"
         },
@@ -123,7 +123,7 @@
     "equipmentChangeRequests": {
       "$requestId": {
         ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || data.child('ownerUid').val() === auth.uid)",
-        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('ownerUid').val() === auth.uid && newData.child('status').val() === 'pending' && root.child('access').child(auth.uid).child('active').val() === true))"
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('ownerUid').val() === auth.uid && newData.child('status').val() === 'pending' && root.child('access').child(auth.uid).child('active').val() === true && root.child('openVisits').child(auth.uid).child('siteRecordId').val() === newData.child('siteRecordId').val() && root.child('sites').child(newData.child('siteRecordId').val()).child('approved').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === root.child('sites').child(newData.child('siteRecordId').val()).child('operatorId').val() || root.child('profiles').child(auth.uid).child('operatorIds').child(root.child('sites').child(newData.child('siteRecordId').val()).child('operatorId').val()).val() === true)))"
       },
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
