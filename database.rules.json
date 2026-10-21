@@ -33,13 +33,14 @@
       }
     },
     "sites": {
-      ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && ((query.orderByChild === 'approved' && query.equalTo === true) || (query.orderByChild === 'ownerUid' && query.equalTo === auth.uid))))",
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".indexOn": [
         "ownerUid",
-        "approved"
+        "approved",
+        "operatorId"
       ],
       "$siteId": {
-        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && (data.child('approved').val() === true || data.child('ownerUid').val() === auth.uid)))",
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && data.child('approved').val() === true && data.child('operatorId').isString() && (root.child('profiles').child(auth.uid).child('operatorId').val() === data.child('operatorId').val() || root.child('profiles').child(auth.uid).child('operatorIds').child(data.child('operatorId').val()).val() === true)))",
         ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
       }
     },
@@ -71,7 +72,7 @@
     },
     "equipment": {
       "$siteId": {
-        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && root.child('sites').child($siteId).child('approved').val() === true && (root.child('sites').child($siteId).child('ownerUid').val() === auth.uid || root.child('openVisits').child(auth.uid).child('siteRecordId').val() === $siteId)))",
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && root.child('sites').child($siteId).child('approved').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === root.child('sites').child($siteId).child('operatorId').val() || root.child('profiles').child(auth.uid).child('operatorIds').child(root.child('sites').child($siteId).child('operatorId').val()).val() === true) && (root.child('sites').child($siteId).child('ownerUid').val() === auth.uid || root.child('openVisits').child(auth.uid).child('siteRecordId').val() === $siteId)))",
         "$equipmentId": {
           ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && root.child('sites').child($siteId).child('approved').val() === true && root.child('openVisits').child(auth.uid).child('siteRecordId').val() === $siteId && ((!data.exists() && newData.child('ownerUid').val() === auth.uid) || (data.child('ownerUid').val() === auth.uid && newData.child('ownerUid').val() === auth.uid))))"
         },
@@ -106,7 +107,7 @@
     },
     "openVisits": {
       "$uid": {
-        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && root.child('access').child(auth.uid).child('active').val() === true))",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (auth.uid === $uid && root.child('access').child(auth.uid).child('active').val() === true && ((!newData.exists() && data.child('uid').val() === auth.uid && root.child('sites').child(data.child('siteRecordId').val()).child('approved').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === root.child('sites').child(data.child('siteRecordId').val()).child('operatorId').val() || root.child('profiles').child(auth.uid).child('operatorIds').child(root.child('sites').child(data.child('siteRecordId').val()).child('operatorId').val()).val() === true)) || (newData.exists() && newData.child('uid').val() === auth.uid && newData.child('siteRecordId').isString() && root.child('sites').child(newData.child('siteRecordId').val()).child('approved').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === root.child('sites').child(newData.child('siteRecordId').val()).child('operatorId').val() || root.child('profiles').child(auth.uid).child('operatorIds').child(root.child('sites').child(newData.child('siteRecordId').val()).child('operatorId').val()).val() === true)))))",
         ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
         ".validate": "!newData.exists() || (newData.child('uid').val() === $uid && newData.child('checkInAt').isNumber() && newData.child('siteRecordId').isString() && (data.exists() ? (newData.child('siteRecordId').val() === data.child('siteRecordId').val() && newData.child('checkInAt').val() === data.child('checkInAt').val()) : root.child('sites').child(newData.child('siteRecordId').val()).child('approved').val() === true))"
       },
@@ -122,7 +123,7 @@
     "equipmentChangeRequests": {
       "$requestId": {
         ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || data.child('ownerUid').val() === auth.uid)",
-        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('ownerUid').val() === auth.uid && newData.child('status').val() === 'pending' && root.child('access').child(auth.uid).child('active').val() === true))"
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (!data.exists() && newData.child('ownerUid').val() === auth.uid && newData.child('status').val() === 'pending' && root.child('access').child(auth.uid).child('active').val() === true && root.child('openVisits').child(auth.uid).child('siteRecordId').val() === newData.child('siteRecordId').val() && root.child('sites').child(newData.child('siteRecordId').val()).child('approved').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === root.child('sites').child(newData.child('siteRecordId').val()).child('operatorId').val() || root.child('profiles').child(auth.uid).child('operatorIds').child(root.child('sites').child(newData.child('siteRecordId').val()).child('operatorId').val()).val() === true)))"
       },
       ".read": "auth != null && root.child('admins').child(auth.uid).val() === true"
     },
@@ -169,6 +170,54 @@
         ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || data.child('ownerUid').val() === auth.uid)",
         ".write": "auth != null && ((root.child('admins').child(auth.uid).val() === true && data.exists()) || (root.child('access').child(auth.uid).child('active').val() === true && !data.exists() && newData.child('ownerUid').val() === auth.uid && newData.child('status').val() === 'new'))",
         ".validate": "!newData.exists() || (newData.child('ownerUid').isString() && newData.child('category').isString() && newData.child('message').isString() && newData.child('message').val().length > 0 && newData.child('message').val().length <= 2000 && newData.child('createdAt').isNumber() && (newData.child('status').val() === 'new' || newData.child('status').val() === 'in_progress' || newData.child('status').val() === 'resolved'))"
+      }
+    },
+    "operators": {
+      ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('access').child(auth.uid).child('active').val() === true)",
+      "$operatorId": {
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "teams": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$teamId": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true) || root.child('teamMembers').child($teamId).child(auth.uid).child('active').val() === true)",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "teamLeaders": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "teamMembers": {
+      "$teamId": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('teamMembers').child($teamId).child(auth.uid).child('active').val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true))",
+        "$uid": {
+          ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+        }
+      }
+    },
+    "dailyPlans": {
+      "$teamId": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true) || root.child('teamMembers').child($teamId).child(auth.uid).child('active').val() === true)",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true))",
+        "$planId": {
+          ".validate": "!newData.exists() || (newData.child('teamId').val() === $teamId && newData.child('companyId').val() === root.child('teams').child($teamId).child('companyId').val() && (data.exists() ? newData.child('createdBy').val() === data.child('createdBy').val() : newData.child('createdBy').val() === auth.uid))"
+        }
+      }
+    },
+    "operatorSites": {
+      "$operatorId": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === $operatorId || root.child('profiles').child(auth.uid).child('operatorIds').child($operatorId).val() === true) && query.orderByChild === 'approved' && query.equalTo === true))",
+        ".indexOn": [
+          "approved"
+        ],
+        "$siteId": {
+          ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === $operatorId || root.child('profiles').child(auth.uid).child('operatorIds').child($operatorId).val() === true) && data.child('approved').val() === true))",
+          ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+        }
       }
     }
   }

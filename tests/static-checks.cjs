@@ -2,6 +2,8 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const os = require("node:os");
+const { execFileSync } = require("node:child_process");
 const root = path.resolve(__dirname, "..");
 const read = name => fs.readFileSync(path.join(root, name), "utf8");
 const files = {
@@ -10,6 +12,8 @@ const files = {
   app: read("app.js"),
   adminJs: read("admin.js"),
   importer: read("site-import.js"),
+  tenantSites: read("tenant-sites.js"),
+  migration: read("scripts/assign-existing-sites-turkcell.mjs"),
   pwa: read("pwa.js"),
   sw: read("sw.js"),
   theme: read("theme.js"),
@@ -20,7 +24,7 @@ const files = {
   alias: JSON.parse(read(".firebaserc")),
   firebaseConfig: read("firebase-config.js")
 };
-const version = "2.7.3";
+const version = "2.8.1";
 
 for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
   assert.match(html, new RegExp("style\\.css\\?v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " must load current CSS");
@@ -45,7 +49,52 @@ assert.ok(files.css.includes("--red:#e60000") && files.css.includes("--red-soft:
 assert.ok(files.app.includes("sendEmailVerification") && files.app.includes("emailVerified"), "email verification flow must remain");
 assert.ok(files.app.includes(".info/connected"), "Firebase connection status must remain");
 assert.ok(files.app.includes("equipmentAccessGranted"), "equipment access gate must remain");
-assert.ok(files.app.includes('orderByChild("approved").equalTo(true)'), "personnel must query approved sites");
+assert.ok(files.tenantSites.includes('orderByChild("approved").equalTo(true)'), "personnel must query approved sites from operator-scoped catalogues");
+assert.ok(files.tenantSites.includes("operatorSites/"), "operator-scoped site index helper must exist");
+assert.ok(files.tenantSites.includes("profileOperatorIds"), "users must support one or multiple operator assignments");
+assert.ok(files.migration.includes('operator: "Turkcell"') && files.migration.includes('company: "Turkcell Ankara Bölge"'), "offline migration must assign existing sites to Turkcell Ankara Bölge");
+assert.ok(files.migration.includes('writeFile(outputPath') && files.migration.includes('{ flag: "wx" }'), "offline migration must write a new file without overwriting the backup");
+assert.ok(files.migration.includes('liveFirebaseTouched: false'), "offline migration must not connect to live Firebase");
+execFileSync(process.execPath, ["--check", path.join(root, "tenant-sites.js")]);
+execFileSync(process.execPath, ["--check", path.join(root, "scripts/assign-existing-sites-turkcell.mjs")]);
+const migrationTestDir = fs.mkdtempSync(path.join(os.tmpdir(), "gsm-mobile-tenant-migration-"));
+try {
+  const backupPath = path.join(migrationTestDir, "backup.json");
+  const outputPath = path.join(migrationTestDir, "backup-turkcell.json");
+  const fixture = {
+    operators: {},
+    companies: {},
+    sites: {
+      siteA: { id: "siteA", siteId: "ABCDE", siteNo: "100", latitude: 39.9, longitude: 32.8, address: "Ankara", approved: true },
+      siteB: { id: "siteB", siteId: "FGHIJ", siteNo: "200", lat: 40.1, lng: 32.9, address: "Ankara 2", approved: false }
+    },
+    profiles: { userA: { company: "Legacy company" } },
+    visitHistory: { visitA: { uid: "userA", durationMs: 1200 } }
+  };
+  const original = JSON.stringify(fixture, null, 2) + "\n";
+  fs.writeFileSync(backupPath, original);
+  const dryRun = JSON.parse(execFileSync(process.execPath, [path.join(root, "scripts/assign-existing-sites-turkcell.mjs"), backupPath], { encoding: "utf8" }));
+  assert.equal(dryRun.totalSites, 2);
+  assert.equal(dryRun.liveFirebaseTouched, false);
+  assert.equal(fs.existsSync(outputPath), false, "dry-run must not create output");
+  execFileSync(process.execPath, [path.join(root, "scripts/assign-existing-sites-turkcell.mjs"), backupPath, "--write-output", "--output", outputPath], { encoding: "utf8" });
+  assert.equal(fs.readFileSync(backupPath, "utf8"), original, "migration must not overwrite the source backup");
+  const migrated = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+  assert.equal(Object.keys(migrated.sites).length, 2);
+  assert.equal(migrated.sites.siteA.siteId, "ABCDE");
+  assert.equal(migrated.sites.siteA.siteNo, "100");
+  assert.equal(migrated.sites.siteA.latitude, 39.9);
+  assert.equal(migrated.sites.siteA.operator, "Turkcell");
+  assert.equal(migrated.sites.siteA.company, "Turkcell Ankara Bölge");
+  assert.equal(migrated.sites.siteB.approved, false);
+  assert.equal(migrated.operatorSites[migrated.sites.siteA.operatorId].siteA.siteId, "ABCDE");
+  assert.deepEqual(migrated.profiles, fixture.profiles, "migration must not change personnel profiles");
+  assert.deepEqual(migrated.visitHistory, fixture.visitHistory, "migration must not change visit history");
+} finally {
+  fs.rmSync(migrationTestDir, { recursive: true, force: true });
+}
+assert.ok(files.importer.includes('updates["operatorSites/"+targetOperatorId+"/"+key]'), "site import must update the operator catalogue index");
+assert.ok(files.adminJs.includes('updates["operatorSites/"+operatorId+"/"+siteRef.key]'), "manual site creation must update the operator catalogue index");
 assert.ok(files.app.includes("/^[A-Z0-9]{5}$/"), "Saha ID must be exactly five uppercase alphanumeric characters");
 assert.ok(files.app.includes("function pendingVisitWriteKey(") && files.app.includes("async function syncPendingVisitNotes()"), "offline visit-note queue must remain");
 assert.ok(files.app.includes("historySnap.exists()"), "duplicate checkout protection must remain");
@@ -69,11 +118,16 @@ assert.ok(files.importer.includes("Koordinat") || files.importer.includes("coord
 assert.ok(files.rules.rules.visitHistory["$visitId"][".read"].includes(".matches("), "visit-history reads must be scoped to the owner");
 assert.ok(files.rules.rules.siteRequests["$requestId"][".write"].includes("root.child('admins').child(auth.uid).val() === true"), "site requests must be admin-only");
 assert.ok(files.rules.rules.sites["$siteId"][".write"].includes("root.child('admins').child(auth.uid).val() === true"), "site writes must be admin-only");
+assert.ok(files.rules.rules.sites[".read"].includes("root.child('admins').child(auth.uid).val() === true"), "the shared site root must not be readable by every active user");
+assert.ok(files.rules.rules.operatorSites["$operatorId"][".read"].includes("query.orderByChild === 'approved'"), "operator catalogue reads must require an approved-sites query");
+assert.ok(files.rules.rules.openVisits["$uid"][".write"].includes("operatorIds"), "personnel visits must be constrained by operator assignment");
+assert.ok(files.rules.rules.equipmentChangeRequests["$requestId"][".write"].includes("openVisits"), "equipment change requests must require an active visit");
+assert.ok(files.rules.rules.equipment["$siteId"][".read"].includes("operatorIds"), "equipment reads must be constrained by operator assignment");
 assert.ok(files.rules.rules.equipment["$siteId"]["$equipmentId"][".write"].includes("openVisits"), "equipment writes must require an active visit");
 assert.equal(files.config.database.rules, "database.rules.json");
 assert.equal(files.alias.projects.default, "spu-personal");
 assert.doesNotMatch(files.firebaseConfig, /BEGIN [A-Z ]*PRIVATE KEY|private_key/i, "Firebase web config must not contain a service-account private key");
-for (const file of ["app.js","admin.js","site-import.js","map.js","pwa.js","sw.js","theme.js","admin-nav.js"]) {
+for (const file of ["app.js","admin.js","site-import.js","map.js","pwa.js","sw.js","theme.js","admin-nav.js","tenant-sites.js"]) {
   assert.ok(fs.existsSync(path.join(root, file)), file + " must exist");
 }
-console.log("Static quality checks passed: 2.7.3 release, red-white design, responsive navigation, Firebase protections, imports, visits, news, contact inbox and PWA cache.");
+console.log("Static quality checks passed: 2.8.1 release, red-white design, responsive navigation, Firebase protections, imports, visits, news, contact inbox and PWA cache.");

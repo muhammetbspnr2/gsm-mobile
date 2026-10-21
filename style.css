@@ -1,4 +1,4 @@
-/* GSM MOBILE 2.7.3 — complete CSS rebuild; preserves existing HTML IDs and app workflows */
+/* GSM MOBILE 2.8.1 — complete CSS rebuild; preserves existing HTML IDs and app workflows */
 :root{color-scheme:light;--red:#e60000;--red-dark:#c90000;--red-soft:#fff0f0;--ink:#202124;--ink2:#42464d;--muted:#70747a;--line:#e5e5e5;--line2:#d2d2d2;--surface:#fff;--surface2:#f7f7f7;--page:#f4f4f4;--green:#168052;--green-soft:#e9f7ef;--amber:#966000;--amber-soft:#fff5dc;--blue:#1756a9;--blue-soft:#edf4ff;--danger:#b91c1c;--danger-soft:#fff0f0;--r-sm:10px;--r:16px;--r-lg:24px;--pill:999px;--shadow-sm:0 2px 8px #0000000b;--shadow:0 8px 28px #00000010;--shadow-lg:0 20px 65px #00000030;--page-width:1440px;font-synthesis:none;text-size-adjust:100%;-webkit-text-size-adjust:100%}
 *,*::before,*::after{box-sizing:border-box}
 html{min-height:100%;background:var(--page);scroll-behavior:smooth}
