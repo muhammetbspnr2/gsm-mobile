@@ -93,6 +93,8 @@ Durum: Geliştirme dalında operatör bazlı saha kataloğu ve çevrimdışı ge
 - Personel saha listesini ortak `sites` kökünden değil, `operatorSites/{operatorId}` altındaki yalnızca onaylı kayıtlardan okur. Operatör ataması olmayan personel için tüm saha kataloğu kapalıdır.
 - `database.rules.json` içinde ortak `sites` kökünün genel personel okuması kaldırıldı. Tekil saha okuması kullanıcı operatör atamasıyla sınırlandırıldı; operatör katalog sorgusu yalnızca ilgili operatöre atanmış aktif kullanıcıya ve `approved=true` sorgusuna açıldı. Yazmalar yöneticiyle sınırlı.
 - Yönetici manuel saha ekleme/düzenleme/silme ve içe aktarma yolları operatör kataloğu indeksini de günceller. Operatör değişiminde eski indeks kopyası kaldırılır.
+- Saha ziyareti açma/güncelleme/kapama kuralları, ziyaret edilen sahanın onaylı olmasını ve personelin o sahanın operatörüne atanmış olmasını gerektirir. Ekipman okuma ve ekipman değişiklik talebi kuralları da operatör ataması/aktif ziyaret bağlamını kontrol eder.
+- Ziyaret ve envanter değişikliği kayıtlarına operatör/firma bağlamı eklenmeye başlandı; geçmiş kayıtlar için geçiş aracı saha verisini korur ve kullanıcı/ziyaret kayıtlarını otomatik yeniden atamaz.
 - Personel atama tablosu birden fazla operatör seçimini destekler; seçilen operatörlerin tümü firmanın `operatorIds` ilişkisine kayıtlı olmalıdır.
 - Sürüm/cache göstergeleri tutarlı biçimde `2.8.1` olarak hizalandı; statik testler operatör kataloğu kurallarını da denetleyecek şekilde güncellendi.
 - GitHub Actions'ta son commit için `GSM Mobile quality checks` ve `GSM Takip validation` başarılı oldu. Bu, statik doğrulamadır; ayrı Firebase Emulator/test projesinde gerçek okuma/yazma yetki testlerinin yerini tutmaz.
