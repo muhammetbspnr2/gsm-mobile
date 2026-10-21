@@ -70,3 +70,11 @@ Record tester, date, device/browser, test account, failures, and relevant consol
 - [ ] Buton, input, select, textarea, hata/başarı mesajları, devre dışı durumlar ve modal pencereler açık/koyu metin kontrastını koruyor.
 - [ ] PWA güncellemesinden sonra 2.7.2 CSS ve Service Worker sürümü yükleniyor; eski önbellek görünümü varsa uygulama kapatılıp yeniden açılarak tekrar deneniyor.
 - [ ] CSV/KML/KMZ önizlemesi, benzersiz 5 karakterli Saha ID ve Saha No doğrulaması bu görsel sürümden sonra da çalışıyor.
+
+
+## 2.7.3 CSS baştan yazım kontrolü
+- [ ] Giriş ekranı masaüstü ve mobilde yeni beyaz kart/kırmızı vurgu düzeniyle açılır.
+- [ ] Personel ana ekranında kırmızı saha giriş bandı, kartlar ve sabit alt navigasyon görünür.
+- [ ] Yönetici panelinde kırmızı kategori menüsü, seçili durumlar ve 15 bölüm kullanılabilir.
+- [ ] Saha detay penceresi, harita, haber akışı, iletişim formu, tablo ve içe aktarma önizlemesi görünür ve taşma yapmaz.
+- [ ] Uygulama yeni CSS'i 2.7.3 sürümünden yükler.
