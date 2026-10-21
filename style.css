@@ -1556,3 +1556,23 @@ html[data-theme="dark"] #adminAppView .admin-nav-items button.active {
 #adminAppView .admin-nav-items[hidden] { display: none !important; }
 #adminAppView .admin-nav-label[aria-expanded="false"] .admin-nav-chevron { transform: rotate(-90deg); }
 #adminAppView .admin-nav-label .admin-nav-chevron { transition: transform .18s ease; }
+
+
+/* 2.6.3 — Personel iletişim formu ve yönetici mesaj kutusu */
+.contact-entry-wrap{display:flex;justify-content:flex-start;margin:14px 0 20px}
+.contact-entry-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:12px 20px;border:1px solid var(--line);border-radius:14px;font-weight:750}
+.contact-entry-btn span{font-size:18px;color:var(--brand)}
+.contact-form-panel{margin:0 0 24px;padding:clamp(16px,3vw,24px);border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.contact-form-panel .section-title{align-items:flex-start;gap:12px}
+.contact-form-panel h2{margin:0 0 6px}
+.contact-form-panel textarea{resize:vertical;min-height:110px}
+.contact-form-panel .form-stack{max-width:760px}
+.contact-message-cell{white-space:pre-wrap;overflow-wrap:anywhere;min-width:220px;max-width:420px}
+.contact-status{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:750;white-space:nowrap;background:var(--surface-alt);color:var(--ink)}
+.contact-status-new{background:#fff0f0;color:#b40000}
+.contact-status-in_progress{background:#fff5d8;color:#795400}
+.contact-status-resolved{background:#e5f7ec;color:#17643a}
+html[data-theme="dark"] .contact-status-new{background:#512424;color:#ffdede}
+html[data-theme="dark"] .contact-status-in_progress{background:#4a3a1b;color:#ffe7a5}
+html[data-theme="dark"] .contact-status-resolved{background:#183d2a;color:#c5f4d6}
+@media(max-width:650px){.contact-entry-wrap{margin:12px 0 18px}.contact-entry-btn{width:100%}.contact-form-panel .section-title{flex-direction:column}.contact-message-cell{min-width:180px}}
