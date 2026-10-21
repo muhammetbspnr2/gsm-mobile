@@ -1550,3 +1550,9 @@ html[data-theme="dark"] #adminAppView .admin-nav-items button.active {
   color: #fff !important;
   box-shadow: inset 3px 0 #ff4b4b !important;
 }
+
+
+/* Ensure collapsed admin navigation groups stay hidden in both themes. */
+#adminAppView .admin-nav-items[hidden] { display: none !important; }
+#adminAppView .admin-nav-label[aria-expanded="false"] .admin-nav-chevron { transform: rotate(-90deg); }
+#adminAppView .admin-nav-label .admin-nav-chevron { transition: transform .18s ease; }
