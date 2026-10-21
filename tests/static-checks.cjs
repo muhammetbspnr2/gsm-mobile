@@ -2,6 +2,8 @@
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
+const os = require("node:os");
+const { execFileSync } = require("node:child_process");
 const root = path.resolve(__dirname, "..");
 const read = name => fs.readFileSync(path.join(root, name), "utf8");
 const files = {
@@ -53,6 +55,44 @@ assert.ok(files.tenantSites.includes("profileOperatorIds"), "users must support 
 assert.ok(files.migration.includes('operator: "Turkcell"') && files.migration.includes('company: "Turkcell Ankara Bölge"'), "offline migration must assign existing sites to Turkcell Ankara Bölge");
 assert.ok(files.migration.includes('writeFile(outputPath') && files.migration.includes('{ flag: "wx" }'), "offline migration must write a new file without overwriting the backup");
 assert.ok(files.migration.includes('liveFirebaseTouched: false'), "offline migration must not connect to live Firebase");
+execFileSync(process.execPath, ["--check", path.join(root, "tenant-sites.js")]);
+execFileSync(process.execPath, ["--check", path.join(root, "scripts/assign-existing-sites-turkcell.mjs")]);
+const migrationTestDir = fs.mkdtempSync(path.join(os.tmpdir(), "gsm-mobile-tenant-migration-"));
+try {
+  const backupPath = path.join(migrationTestDir, "backup.json");
+  const outputPath = path.join(migrationTestDir, "backup-turkcell.json");
+  const fixture = {
+    operators: {},
+    companies: {},
+    sites: {
+      siteA: { id: "siteA", siteId: "ABCDE", siteNo: "100", latitude: 39.9, longitude: 32.8, address: "Ankara", approved: true },
+      siteB: { id: "siteB", siteId: "FGHIJ", siteNo: "200", lat: 40.1, lng: 32.9, address: "Ankara 2", approved: false }
+    },
+    profiles: { userA: { company: "Legacy company" } },
+    visitHistory: { visitA: { uid: "userA", durationMs: 1200 } }
+  };
+  const original = JSON.stringify(fixture, null, 2) + "\\n";
+  fs.writeFileSync(backupPath, original);
+  const dryRun = JSON.parse(execFileSync(process.execPath, [path.join(root, "scripts/assign-existing-sites-turkcell.mjs"), backupPath], { encoding: "utf8" }));
+  assert.equal(dryRun.totalSites, 2);
+  assert.equal(dryRun.liveFirebaseTouched, false);
+  assert.equal(fs.existsSync(outputPath), false, "dry-run must not create output");
+  execFileSync(process.execPath, [path.join(root, "scripts/assign-existing-sites-turkcell.mjs"), backupPath, "--write-output", "--output", outputPath], { encoding: "utf8" });
+  assert.equal(fs.readFileSync(backupPath, "utf8"), original, "migration must not overwrite the source backup");
+  const migrated = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+  assert.equal(Object.keys(migrated.sites).length, 2);
+  assert.equal(migrated.sites.siteA.siteId, "ABCDE");
+  assert.equal(migrated.sites.siteA.siteNo, "100");
+  assert.equal(migrated.sites.siteA.latitude, 39.9);
+  assert.equal(migrated.sites.siteA.operator, "Turkcell");
+  assert.equal(migrated.sites.siteA.company, "Turkcell Ankara Bölge");
+  assert.equal(migrated.sites.siteB.approved, false);
+  assert.equal(migrated.operatorSites[migrated.sites.siteA.operatorId].siteA.siteId, "ABCDE");
+  assert.deepEqual(migrated.profiles, fixture.profiles, "migration must not change personnel profiles");
+  assert.deepEqual(migrated.visitHistory, fixture.visitHistory, "migration must not change visit history");
+} finally {
+  fs.rmSync(migrationTestDir, { recursive: true, force: true });
+}
 assert.ok(files.importer.includes('updates["operatorSites/"+targetOperatorId+"/"+key]'), "site import must update the operator catalogue index");
 assert.ok(files.adminJs.includes('updates["operatorSites/"+operatorId+"/"+siteRef.key]'), "manual site creation must update the operator catalogue index");
 assert.ok(files.app.includes("/^[A-Z0-9]{5}$/"), "Saha ID must be exactly five uppercase alphanumeric characters");
