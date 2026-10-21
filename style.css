@@ -1660,3 +1660,78 @@ tr:nth-child(even) td{background:#fafafa!important}
 .news-home-section,.news-feed,.admin-section,.admin-tab-panel,.admin-table-section{background:transparent!important;color:#262626!important}
 footer,.footer-note{color:#666!important}
 @media(prefers-color-scheme:dark){html,body{color-scheme:light!important;background:#f7f7f7!important;color:#262626!important}}
+
+
+/* 2.6.6 — Replace every remaining former dark/navy surface with GSM Vodafone red */
+:root{--brand:#e60000!important;--nav:#e60000!important}
+.sidebar,
+.admin-sidebar,
+#adminAppView .sidebar.admin-sidebar,
+.admin-nav,
+.admin-nav-group,
+.admin-sidebar .admin-nav-items,
+#adminAppView .admin-nav-label,
+#adminAppView .admin-nav-label:hover,
+#adminAppView .admin-nav-label[aria-expanded="true"]{
+  background:#e60000!important;
+  color:#fff!important;
+  border-color:#c90000!important;
+}
+.sidebar .side-label,
+.admin-sidebar .side-label,
+.admin-sidebar .admin-nav-label,
+#adminAppView .admin-nav-label,
+#adminAppView .admin-nav-label .admin-nav-chevron,
+.side-foot,.side-foot span{
+  color:#fff!important;
+}
+.sidebar .person-tab,
+.admin-sidebar .admin-nav-items button,
+#adminAppView .admin-nav-items button{
+  background:transparent!important;
+  color:#fff!important;
+  border-color:transparent!important;
+}
+.sidebar .person-tab:hover,
+.sidebar .person-tab.active,
+.admin-sidebar .admin-nav-items button:hover,
+.admin-sidebar .admin-nav-items button.active,
+#adminAppView .admin-nav-items button:hover,
+#adminAppView .admin-nav-items button.active{
+  background:#c90000!important;
+  color:#fff!important;
+  border-color:#ffb3b3!important;
+  box-shadow:inset 3px 0 #fff!important;
+}
+.admin-sidebar .admin-nav-items,
+#adminAppView .admin-nav-items{background:#e60000!important}
+.site-entry-hero{
+  background:#e60000!important;
+  color:#fff!important;
+  border:1px solid #c90000!important;
+  border-top:5px solid #a90000!important;
+}
+.site-entry-hero *,.site-entry-hero label,.site-entry-hero h2,
+.site-entry-hero p,.site-entry-hero .eyebrow,.site-entry-hero .hint{
+  color:#fff!important;
+}
+.site-entry-hero input,.site-entry-hero select,.site-entry-hero textarea{
+  background:#fff!important;color:#262626!important;border-color:#ffd0d0!important;
+}
+.site-entry-hero .entry-icon,.site-entry-hero .site-entry-current{
+  background:#fff!important;color:#e60000!important;border-color:#ffd0d0!important;
+}
+.site-entry-hero .entry-icon *,.site-entry-hero .site-entry-current *{color:#e60000!important}
+.site-detail-modal{background:rgba(230,0,0,.58)!important}
+.pwa-status{background:#e60000!important;color:#fff!important;border-color:#c90000!important}
+.notification-bell{background:#e60000!important;color:#fff!important;border-color:#c90000!important}
+.news-avatar{background:#e60000!important;color:#fff!important}
+html,body{color-scheme:light!important}
+@media(prefers-color-scheme:dark){
+  html,body{color-scheme:light!important;background:#f7f7f7!important;color:#262626!important}
+  .sidebar,.admin-sidebar,#adminAppView .sidebar.admin-sidebar,.admin-nav,
+  .admin-nav-group,.admin-sidebar .admin-nav-items,#adminAppView .admin-nav-label,
+  .site-entry-hero,.pwa-status,.notification-bell,.news-avatar{
+    background:#e60000!important;color:#fff!important;
+  }
+}
