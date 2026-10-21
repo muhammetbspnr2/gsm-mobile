@@ -120,6 +120,9 @@ assert.ok(files.rules.rules.siteRequests["$requestId"][".write"].includes("root.
 assert.ok(files.rules.rules.sites["$siteId"][".write"].includes("root.child('admins').child(auth.uid).val() === true"), "site writes must be admin-only");
 assert.ok(files.rules.rules.sites[".read"].includes("root.child('admins').child(auth.uid).val() === true"), "the shared site root must not be readable by every active user");
 assert.ok(files.rules.rules.operatorSites["$operatorId"][".read"].includes("query.orderByChild === 'approved'"), "operator catalogue reads must require an approved-sites query");
+assert.ok(files.rules.rules.openVisits["$uid"][".write"].includes("operatorIds"), "personnel visits must be constrained by operator assignment");
+assert.ok(files.rules.rules.equipmentChangeRequests["$requestId"][".write"].includes("openVisits"), "equipment change requests must require an active visit");
+assert.ok(files.rules.rules.equipment["$siteId"][".read"].includes("operatorIds"), "equipment reads must be constrained by operator assignment");
 assert.ok(files.rules.rules.equipment["$siteId"]["$equipmentId"][".write"].includes("openVisits"), "equipment writes must require an active visit");
 assert.equal(files.config.database.rules, "database.rules.json");
 assert.equal(files.alias.projects.default, "spu-personal");
