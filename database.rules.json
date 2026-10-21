@@ -170,6 +170,42 @@
         ".write": "auth != null && ((root.child('admins').child(auth.uid).val() === true && data.exists()) || (root.child('access').child(auth.uid).child('active').val() === true && !data.exists() && newData.child('ownerUid').val() === auth.uid && newData.child('status').val() === 'new'))",
         ".validate": "!newData.exists() || (newData.child('ownerUid').isString() && newData.child('category').isString() && newData.child('message').isString() && newData.child('message').val().length > 0 && newData.child('message').val().length <= 2000 && newData.child('createdAt').isNumber() && (newData.child('status').val() === 'new' || newData.child('status').val() === 'in_progress' || newData.child('status').val() === 'resolved'))"
       }
+    },
+    "operators": {
+      ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('access').child(auth.uid).child('active').val() === true)",
+      "$operatorId": {
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "teams": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$teamId": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true) || root.child('teamMembers').child($teamId).child(auth.uid).child('active').val() === true)",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "teamLeaders": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('admins').child(auth.uid).val() === true)",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "teamMembers": {
+      "$teamId": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || root.child('teamMembers').child($teamId).child(auth.uid).child('active').val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true))",
+        "$uid": {
+          ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+        }
+      }
+    },
+    "dailyPlans": {
+      "$teamId": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true) || root.child('teamMembers').child($teamId).child(auth.uid).child('active').val() === true)",
+        ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true))",
+        "$planId": {
+          ".validate": "!newData.exists() || (newData.child('teamId').val() === $teamId && newData.child('companyId').val() === root.child('teams').child($teamId).child('companyId').val() && (data.exists() ? newData.child('createdBy').val() === data.child('createdBy').val() : newData.child('createdBy').val() === auth.uid))"
+        }
+      }
     }
   }
 }
