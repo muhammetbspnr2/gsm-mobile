@@ -1351,3 +1351,99 @@ html[data-theme="light"] .topbar .top-link {
     white-space: normal;
   }
 }
+
+
+/* 2.6.0 — Navbar renk paleti: aydınlık tema */
+html[data-theme="light"] .topbar {
+  background: #ffffff !important;
+  color: #202938 !important;
+  border-bottom: 1px solid #e2e7ef !important;
+  box-shadow: 0 4px 16px rgba(31, 45, 65, .07) !important;
+}
+html[data-theme="light"] .topbar .brand,
+html[data-theme="light"] .topbar .brand small {
+  color: #202938 !important;
+}
+html[data-theme="light"] .topbar .top-link,
+html[data-theme="light"] .topbar button {
+  background: #f1f4f8 !important;
+  color: #263449 !important;
+  border: 1px solid #d8e0ea !important;
+}
+html[data-theme="light"] .topbar .top-link:hover,
+html[data-theme="light"] .topbar button:hover {
+  background: #e7edf5 !important;
+  color: #17243a !important;
+}
+html[data-theme="light"] #adminAppView .sidebar.admin-sidebar {
+  background: #f8fafc !important;
+  border: 1px solid #dce3ec !important;
+  color: #263449 !important;
+  box-shadow: 0 8px 24px rgba(31,45,65,.06) !important;
+}
+html[data-theme="light"] #adminAppView .admin-nav-group {
+  background: #ffffff !important;
+  border: 1px solid #dce3ec !important;
+  box-shadow: 0 2px 5px rgba(31,45,65,.035) !important;
+}
+html[data-theme="light"] #adminAppView .admin-nav-label {
+  background: #edf2f8 !important;
+  color: #34445c !important;
+  border-bottom: 1px solid #dce3ec !important;
+}
+html[data-theme="light"] #adminAppView .admin-nav-label:hover {
+  background: #e5ecf5 !important;
+  color: #1e2d43 !important;
+}
+html[data-theme="light"] #adminAppView .admin-nav-label .admin-nav-chevron {
+  color: #66758b !important;
+}
+html[data-theme="light"] #adminAppView .admin-nav-items button {
+  background: transparent !important;
+  color: #42516a !important;
+  border: 1px solid transparent !important;
+}
+html[data-theme="light"] #adminAppView .admin-nav-items button:hover {
+  background: #f0f4f9 !important;
+  color: #1e2d43 !important;
+  border-color: #e0e7f0 !important;
+}
+html[data-theme="light"] #adminAppView .admin-nav-items button.active {
+  background: #e2ebf8 !important;
+  color: #17345d !important;
+  border-color: #c8d8ef !important;
+  box-shadow: inset 3px 0 #e5b923 !important;
+}
+html[data-theme="light"] #adminAppView .admin-nav-items .admin-tab-badge {
+  background: #e5b923 !important;
+  color: #202938 !important;
+}
+html[data-theme="dark"] #adminAppView .sidebar.admin-sidebar {
+  background: #171b22 !important;
+  border-color: #303744 !important;
+  color: #e8edf5 !important;
+}
+html[data-theme="dark"] #adminAppView .admin-nav-group {
+  background: #202630 !important;
+  border-color: #394352 !important;
+}
+html[data-theme="dark"] #adminAppView .admin-nav-label {
+  background: #293342 !important;
+  color: #e5edf8 !important;
+  border-bottom-color: #394352 !important;
+}
+html[data-theme="dark"] #adminAppView .admin-nav-label .admin-nav-chevron {
+  color: #a9b6c8 !important;
+}
+html[data-theme="dark"] #adminAppView .admin-nav-items button {
+  color: #d3dbe7 !important;
+}
+html[data-theme="dark"] #adminAppView .admin-nav-items button:hover {
+  background: #303b4b !important;
+  color: #ffffff !important;
+}
+html[data-theme="dark"] #adminAppView .admin-nav-items button.active {
+  background: #344963 !important;
+  color: #ffffff !important;
+  box-shadow: inset 3px 0 #e5b923 !important;
+}
