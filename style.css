@@ -1616,3 +1616,47 @@ th{background:#f4f4f4!important;color:#555!important}
 input,textarea,select{color:#252525}
 input:focus,textarea:focus,select:focus{border-color:#e60000!important;box-shadow:0 0 0 3px #e6000017!important}
 @media(prefers-color-scheme:dark){html,body{color-scheme:light!important;background:#f7f7f7!important;color:#252525!important}}
+
+
+/* FINAL OVERRIDE: eliminate dark/navy surfaces across the entire app */
+:root{color-scheme:light!important;--ink:#262626!important;--muted:#666!important;--line:#e5e5e5!important;--bg:#f7f7f7!important;--brand:#e60000!important;--nav:#e60000!important;--green:#16804a!important}
+html,body,#authView,#appView,#adminAppView,.admin-shell,.admin-content,.workspace,.workspace-main,.person-page,.admin-page{background:#f7f7f7!important;color:#262626!important}
+.sidebar,.admin-sidebar,.site-entry-hero,.admin-nav,.admin-nav-group,.admin-nav-items,.admin-sidebar .admin-nav-items{background:#fff!important;color:#262626!important;border-color:#e5e5e5!important}
+.site-entry-hero{background:#fff!important;color:#262626!important;border:1px solid #e5e5e5!important;border-top:5px solid #e60000!important}
+.site-entry-hero *,.site-entry-hero label,.site-entry-hero h2,.site-entry-hero p{color:#262626!important}
+.site-entry-hero .eyebrow,.site-entry-hero h2{color:#e60000!important}
+.entry-icon{background:#fff0f0!important;color:#e60000!important}
+.side-label,.admin-sidebar .side-label,.admin-nav-label{color:#666!important}
+.person-tab,.admin-sidebar .admin-nav-items button,.admin-nav-label{background:#fff!important;color:#444!important}
+.person-tab:hover,.admin-sidebar .admin-nav-items button:hover,.admin-nav-label:hover{background:#fff0f0!important;color:#c90000!important}
+.person-tab.active,.admin-sidebar .admin-nav-items button.active{background:#fff0f0!important;color:#c90000!important;box-shadow:inset 3px 0 #e60000!important}
+.side-foot,.side-foot span{color:#555!important}
+.panel,.auth-card,.dash-card,.stat-card,.table-wrap,.profile-panel,.site-map-panel,.site-detail-dialog,.site-detail-modal,.modal-content,.admin-login,.admin-panel,.content-panel,.news-card,.news-item,.contact-form-panel,.notification-popover,.notification-list,.site-detail-heading,.site-detail-grid,.profile-edit-block,.password-settings{background:#fff!important;color:#262626!important;border-color:#e5e5e5!important}
+.site-detail-modal{background:#0006!important}
+.site-detail-dialog{background:#fff!important;color:#262626!important}
+.site-detail-dialog h2,.site-detail-dialog h3,.site-detail-dialog strong,.site-detail-dialog p,.site-detail-dialog span{color:#262626!important}
+.topbar{background:#fff!important;border-bottom:3px solid #e60000!important}
+.brand-mark{background:#e60000!important}
+.top-link,.eyebrow,.hero-copy h1 em,.text-button{color:#e60000!important}
+.tabbar{background:#f0f0f0!important}
+.tab{color:#555!important}
+.tab.active{background:#fff!important;color:#e60000!important;box-shadow:0 2px 8px #0000000d!important}
+.btn.primary{background:#e60000!important;color:#fff!important}
+.btn.primary:hover{background:#c90000!important;color:#fff!important}
+.btn.secondary{background:#f0f0f0!important;color:#333!important;border:1px solid #e0e0e0!important}
+.btn.secondary:hover{background:#e7e7e7!important;color:#222!important}
+.admin-tab-badge,.notification-dot{background:#e60000!important;color:#fff!important}
+input,textarea,select{background:#fff!important;color:#262626!important;border-color:#d8d8d8!important}
+input::placeholder,textarea::placeholder{color:#888!important}
+input:focus,textarea:focus,select:focus{border-color:#e60000!important;box-shadow:0 0 0 3px #e6000018!important}
+th{background:#f2f2f2!important;color:#444!important}
+td{background:#fff!important;color:#262626!important}
+tr:nth-child(even) td{background:#fafafa!important}
+.badge,.site-entry-current{background:#fff0f0!important;color:#c90000!important;border-color:#ffdada!important}
+.connection-status{background:#fff!important;color:#444!important;border-color:#e5e5e5!important}
+.message{background:#fff0f0!important;color:#8f0000!important;border:1px solid #ffdada!important}
+.message.error{background:#fff0f0!important;color:#9b1c1c!important}
+.message.success{background:#edf8f0!important;color:#176744!important}
+.news-home-section,.news-feed,.admin-section,.admin-tab-panel,.admin-table-section{background:transparent!important;color:#262626!important}
+footer,.footer-note{color:#666!important}
+@media(prefers-color-scheme:dark){html,body{color-scheme:light!important;background:#f7f7f7!important;color:#262626!important}}
