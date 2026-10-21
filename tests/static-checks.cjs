@@ -71,7 +71,7 @@ try {
     profiles: { userA: { company: "Legacy company" } },
     visitHistory: { visitA: { uid: "userA", durationMs: 1200 } }
   };
-  const original = JSON.stringify(fixture, null, 2) + "\\n";
+  const original = JSON.stringify(fixture, null, 2) + "\n";
   fs.writeFileSync(backupPath, original);
   const dryRun = JSON.parse(execFileSync(process.execPath, [path.join(root, "scripts/assign-existing-sites-turkcell.mjs"), backupPath], { encoding: "utf8" }));
   assert.equal(dryRun.totalSites, 2);
