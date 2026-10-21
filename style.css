@@ -1481,3 +1481,184 @@ a:hover{color:#c90000}
   .topbar{background:#fff!important}
   .person-nav{background:#fff!important}
 }
+
+
+/* GSM MOBILE — Corporate telecom redesign inspired by Vodafone's red/white visual language.
+   Keeps all existing page structure and interaction hooks intact. */
+:root{
+ --ink:#292929;--muted:#686868;--line:#e8e8e8;--bg:#f6f6f6;
+ --brand:#e60000;--nav:#e60000;--green:#e60000;
+ --surface:#fff;--surface-soft:#fff4f4;--red-dark:#c90000;
+ --radius-card:18px;--radius-control:12px;
+}
+html{scroll-behavior:smooth;background:#f6f6f6!important;color-scheme:light!important}
+body{background:#f6f6f6!important;color:#292929!important;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:-.005em}
+::selection{background:#e60000;color:#fff}
+.topbar{
+ position:sticky;top:0;z-index:100;background:#fff!important;
+ min-height:76px;height:auto;padding:12px clamp(18px,4vw,64px);
+ border-bottom:3px solid #e60000!important;box-shadow:0 3px 18px rgba(0,0,0,.045);
+}
+.brand{gap:13px;font-size:17px;font-weight:850;color:#292929;letter-spacing:.025em}
+.brand-mark{width:46px;height:46px;flex-basis:46px;border-radius:14px;background:#e60000!important;box-shadow:0 5px 14px rgba(230,0,0,.2)}
+.brand small{color:#707070!important;font-size:9px;letter-spacing:.17em}
+.top-link{display:inline-flex;align-items:center;justify-content:center;padding:10px 17px;border:1px solid #e60000;border-radius:999px;color:#e60000!important;font-weight:750;background:#fff;transition:background .18s,color .18s}
+.top-link:hover{background:#e60000;color:#fff!important}
+.auth-layout{max-width:1240px;margin:46px auto 64px;padding:0 28px;gap:clamp(30px,5vw,76px)}
+.hero-copy{padding:clamp(20px,4vw,50px) 0}
+.hero-copy .eyebrow,.eyebrow{color:#e60000!important;font-size:11px;letter-spacing:.17em}
+.hero-copy h1{font-size:clamp(38px,5.4vw,68px);line-height:1.02;letter-spacing:-.055em;font-weight:850;color:#252525}
+.hero-copy h1 em{color:#e60000!important}
+.hero-copy p{font-size:18px;line-height:1.7;color:#666}
+.hero-points{color:#4a4a4a;gap:14px}
+.panel,.auth-card,.dash-card,.stat-card,.content-panel,.site-map-panel,.site-detail-dialog,.admin-login{
+ background:#fff!important;color:#292929!important;border:1px solid #e9e9e9!important;border-radius:var(--radius-card)!important;
+ box-shadow:0 8px 30px rgba(0,0,0,.045)!important;
+}
+.auth-card{padding:clamp(22px,3vw,34px);border-top:5px solid #e60000!important}
+.tabbar{background:#f4f4f4!important;border-radius:13px;padding:5px}
+.tab{border-radius:10px;font-weight:750}
+.tab.active{background:#e60000!important;color:#fff!important;box-shadow:0 3px 9px rgba(230,0,0,.18)}
+.form-stack label,.site-form label,.admin-site-form label,.admin-news-form label{font-weight:700;color:#333}
+input,select,textarea,.form-stack input,.site-form input,.site-form textarea,
+.admin-site-form input,.admin-site-form select,.admin-site-form textarea,
+.admin-news-form input,.admin-news-form select,.admin-news-form textarea{
+ background:#fff!important;color:#292929!important;border:1px solid #d9d9d9!important;border-radius:var(--radius-control)!important;min-height:44px;
+}
+textarea{min-height:100px}
+input:focus,select:focus,textarea:focus{border-color:#e60000!important;outline:0!important;box-shadow:0 0 0 3px rgba(230,0,0,.11)!important}
+input::placeholder,textarea::placeholder{color:#858585!important}
+.btn{min-height:42px;border-radius:999px!important;padding:10px 18px;font-weight:750;letter-spacing:.005em;transition:background .18s,border-color .18s,transform .18s,box-shadow .18s}
+.btn:active{transform:translateY(1px)}
+.btn.primary,.btn.danger{background:#e60000!important;color:#fff!important;border:1px solid #e60000!important;box-shadow:0 4px 12px rgba(230,0,0,.12)}
+.btn.primary:hover,.btn.danger:hover{background:#c90000!important;border-color:#c90000!important;box-shadow:0 5px 15px rgba(201,0,0,.2)}
+.btn.secondary,.btn.ghost,.btn.outline{background:#fff!important;color:#e60000!important;border:1px solid #e60000!important}
+.btn.secondary:hover,.btn.ghost:hover,.btn.outline:hover{background:#fff0f0!important;color:#c90000!important}
+.shell{max-width:1440px;margin:0 auto;padding:26px clamp(14px,3vw,40px) 110px}
+.connection-status{border-radius:10px}
+.welcome-row{padding:22px 0 26px;border-bottom:1px solid #e8e8e8;margin-bottom:24px;gap:18px}
+.welcome-row h1{font-size:clamp(27px,3.3vw,38px);letter-spacing:-.04em;color:#252525;font-weight:850}
+.welcome-row p,.muted{color:#6a6a6a!important}
+.welcome-copy .eyebrow{margin-bottom:7px}
+.notification-bell{background:#e60000!important;color:#fff!important;border:0!important;box-shadow:0 5px 14px rgba(230,0,0,.2)}
+.notification-bell:hover{background:#c90000!important}
+.person-nav.bottom-nav{
+ background:rgba(255,255,255,.97)!important;border:1px solid #e6e6e6!important;border-bottom:0;
+ box-shadow:0 -8px 28px rgba(0,0,0,.08)!important;backdrop-filter:blur(14px);
+}
+.person-nav.bottom-nav .person-tab{color:#656565!important;border-radius:13px;transition:background .18s,color .18s}
+.person-nav.bottom-nav .person-tab.active{background:#fff0f0!important;color:#e60000!important}
+.person-nav.bottom-nav .person-tab.active span,.person-nav.bottom-nav .person-tab.active svg{color:#e60000!important;stroke:#e60000}
+.person-nav.bottom-nav .person-tab:hover{background:#fff5f5!important;color:#c90000!important}
+.site-entry-hero{
+ background:#e60000!important;color:#fff!important;border:0!important;border-radius:22px!important;
+ padding:clamp(24px,4vw,42px)!important;box-shadow:0 12px 30px rgba(230,0,0,.17)!important;
+}
+.site-entry-hero h2{font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;font-weight:850}
+.site-entry-hero .eyebrow{color:#fff!important;opacity:.9}
+.site-entry-hero p,.site-entry-hero label,.site-entry-hero .hint{color:#fff!important}
+.site-entry-form{gap:18px}
+.site-entry-field input,.site-entry-field select,.site-entry-hero input,.site-entry-hero select{
+ background:#fff!important;color:#292929!important;border:1px solid #ffd0d0!important;border-radius:12px!important;
+}
+.site-entry-controls .btn.primary{background:#fff!important;color:#e60000!important;border:1px solid #fff!important}
+.site-entry-controls .btn.primary:hover{background:#fff0f0!important}
+.contact-entry-wrap{margin:16px 0 24px}
+.contact-entry-btn{font-weight:800}
+.news-home-section,.person-page{margin-top:26px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:26px 0 16px}
+.section-title h2,.section-title h3{font-size:clamp(20px,2.5vw,26px);font-weight:850;letter-spacing:-.035em;color:#292929}
+.dash-grid,.stats-grid{gap:16px}
+.dash-card,.stat-card{
+ position:relative;overflow:hidden;padding:22px!important;border-radius:17px!important;
+ border:1px solid #ededed!important;background:#fff!important;box-shadow:0 5px 20px rgba(0,0,0,.035)!important;
+}
+.dash-card:before,.stat-card:before{background:#e60000!important}
+.dash-card span,.stat-card>span{color:#737373!important;font-size:11px;font-weight:800;letter-spacing:.08em}
+.dash-card strong,.stat-card>strong{color:#292929!important;font-size:clamp(27px,3vw,36px);font-weight:850;letter-spacing:-.045em}
+.stat-card small{color:#777!important}
+.admin-shell{max-width:1600px;margin:0 auto;padding:24px clamp(14px,2.5vw,36px) 48px}
+#adminAppView .welcome-row{padding:22px 0 26px}
+#adminAppView .welcome-row h1{font-size:clamp(28px,3vw,38px)}
+#adminAppView .stats-grid{gap:16px;margin:22px 0 28px}
+#adminAppView .stat-card{min-height:140px;padding:22px!important}
+#adminAppView .admin-content{gap:24px;align-items:start}
+#adminAppView .sidebar.admin-sidebar{
+ background:#e60000!important;color:#fff!important;border:0!important;border-radius:18px!important;
+ padding:18px 12px!important;box-shadow:0 10px 24px rgba(230,0,0,.13)!important;
+}
+#adminAppView .side-label{color:#fff!important;opacity:.85;font-size:10px;font-weight:850;letter-spacing:.16em;padding:8px 12px 14px}
+#adminAppView .admin-nav-label{color:#fff!important;background:transparent!important;font-weight:850;letter-spacing:.08em;border-radius:10px}
+#adminAppView .admin-nav-label:hover,#adminAppView .admin-nav-label[aria-expanded=true]{background:#c90000!important}
+#adminAppView .admin-sidebar button{color:#fff!important;border-radius:10px;transition:background .18s}
+#adminAppView .admin-sidebar button:hover{background:#c90000!important}
+#adminAppView .admin-sidebar button.active{background:#fff!important;color:#e60000!important;box-shadow:0 3px 12px rgba(0,0,0,.1)!important}
+#adminAppView .admin-sidebar button.active *{color:#e60000!important}
+#adminAppView .admin-tab-badge{background:#fff!important;color:#e60000!important;border:1px solid #fff!important}
+#adminAppView .admin-content .content-panel,#adminAppView .admin-content .panel,
+#adminAppView .admin-content .admin-panel{background:#fff!important;color:#292929!important;border:1px solid #e9e9e9!important;border-radius:17px!important;box-shadow:0 6px 22px rgba(0,0,0,.04)!important;padding:clamp(16px,2vw,26px)}
+#adminAppView .admin-content h2,#adminAppView .admin-content h3{color:#292929}
+.table-wrap{overflow:auto;border:1px solid #e9e9e9!important;border-radius:16px!important;background:#fff!important;box-shadow:0 5px 20px rgba(0,0,0,.03)!important}
+table{width:100%;border-collapse:separate;border-spacing:0;background:#fff!important;color:#292929!important}
+thead th{background:#fff0f0!important;color:#b90000!important;font-size:11px;font-weight:850;letter-spacing:.04em;border-bottom:1px solid #f0caca!important}
+tbody td{background:#fff!important;color:#333!important;border-bottom:1px solid #eee!important}
+tbody tr:nth-child(even) td{background:#fffafa!important}
+tbody tr:hover td{background:#fff0f0!important}
+#reportsArea #visitReportRows tr,#reportsArea #visitReportRows td{background:#e60000!important;color:#fff!important;border-color:#c90000!important}
+#reportsArea #visitReportRows tr:nth-child(even) td,#reportsArea #visitReportRows tr:hover td{background:#c90000!important;color:#fff!important}
+.site-directory-card,.recent-site,.news-post,.news-card,.notification-item,.site-id-suggestion{
+ background:#fff!important;color:#292929!important;border-color:#e9e9e9!important;border-radius:15px!important;
+}
+.site-id-suggestion:hover,.site-id-suggestion:focus-visible{background:#fff0f0!important;border-color:#e60000!important}
+.site-detail-modal{background:rgba(30,0,0,.42)!important;backdrop-filter:blur(5px)}
+.site-detail-dialog{border-top:5px solid #e60000!important}
+.site-detail-heading{border-bottom:1px solid #eee}
+.site-detail-field{background:#fff5f5!important;border:1px solid #f1d6d6!important;border-radius:12px!important}
+.site-detail-field span{color:#777!important}
+.site-detail-field strong{color:#292929!important}
+.notification-popover{background:#fff!important;border:1px solid #e8e8e8!important;border-top:4px solid #e60000!important;border-radius:16px!important;box-shadow:0 12px 36px rgba(0,0,0,.14)!important}
+.notification-popover-head{border-bottom:1px solid #eee}
+.news-post{overflow:hidden;border:1px solid #e8e8e8!important;box-shadow:0 5px 20px rgba(0,0,0,.035)!important}
+.news-post-head{background:#fff!important}
+.news-avatar{background:#e60000!important;color:#fff!important}
+.news-post-content h3{color:#292929!important;font-weight:850}
+.news-post-content p{color:#555!important}
+.news-category,.news-site-tag{background:#fff0f0!important;color:#c90000!important;border:1px solid #ffd5d5!important;border-radius:999px}
+.message{border-radius:12px}
+.message.error{background:#fff0f0!important;color:#a40000!important;border-color:#e60000!important}
+.message.success,.message.info{background:#fff5f5!important;color:#8e0000!important;border-color:#e60000!important}
+.footer-note{color:#777!important;border-top:1px solid #e8e8e8!important;background:#fff!important}
+a:focus-visible,button:focus-visible{outline:3px solid rgba(230,0,0,.25)!important;outline-offset:2px}
+@media(min-width:1100px){
+ .shell{padding-top:34px}
+ #dashboard .site-entry-hero{min-height:280px}
+ #adminAppView .admin-content{grid-template-columns:260px minmax(0,1fr)}
+}
+@media(max-width:900px){
+ .auth-layout{grid-template-columns:1fr;max-width:680px;margin:28px auto 45px;gap:18px}
+ .hero-copy{padding:15px 0}
+ .hero-copy h1{font-size:clamp(36px,8vw,52px)}
+ #adminAppView .admin-content{grid-template-columns:1fr}
+ #adminAppView .sidebar.admin-sidebar{width:100%;position:relative}
+}
+@media(max-width:600px){
+ .topbar{min-height:64px;padding:10px 14px}
+ .brand{font-size:14px;gap:9px}
+ .brand-mark{width:40px;height:40px;flex-basis:40px;border-radius:12px}
+ .top-link{font-size:11px;padding:8px 11px}
+ .shell{padding:16px 12px 100px}
+ .welcome-row{align-items:flex-start;flex-wrap:wrap;padding:16px 0 20px}
+ .welcome-row h1{font-size:26px}
+ .site-entry-hero{padding:22px 18px!important;border-radius:18px!important}
+ .section-title{align-items:flex-start;flex-wrap:wrap}
+ .dash-card,.stat-card{padding:16px!important}
+ .person-nav.bottom-nav{padding-bottom:env(safe-area-inset-bottom)}
+ #adminAppView .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #adminAppView .stats-grid .stat-card:last-child{grid-column:1/-1}
+ #adminAppView .admin-content .content-panel,#adminAppView .admin-content .panel{padding:15px}
+}
+@media(prefers-color-scheme:dark){
+ html,body{color-scheme:light!important;background:#f6f6f6!important;color:#292929!important}
+ .topbar,.panel,.auth-card,.dash-card,.stat-card,.content-panel,.table-wrap,
+ .site-map-panel,.site-detail-dialog,.notification-popover,.admin-content .panel{background:#fff!important;color:#292929!important}
+}
