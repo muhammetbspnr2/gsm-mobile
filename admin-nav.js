@@ -24,5 +24,4 @@
      if (!isNarrow() && !group.contains(event.relatedTarget)) setExpanded(group, false);
    });
  });
- window.addEventListener("resize", syncViewport, { passive: true });
 })();
