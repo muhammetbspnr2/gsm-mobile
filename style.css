@@ -1576,3 +1576,43 @@ html[data-theme="dark"] .contact-status-new{background:#512424;color:#ffdede}
 html[data-theme="dark"] .contact-status-in_progress{background:#4a3a1b;color:#ffe7a5}
 html[data-theme="dark"] .contact-status-resolved{background:#183d2a;color:#c5f4d6}
 @media(max-width:650px){.contact-entry-wrap{margin:12px 0 18px}.contact-entry-btn{width:100%}.contact-form-panel .section-title{flex-direction:column}.contact-message-cell{min-width:180px}}
+
+
+/* GSM Mobile Vodafone-inspired light identity — theme switch removed */
+:root{color-scheme:light;--ink:#252525;--muted:#666;--line:#e5e5e5;--bg:#f7f7f7;--brand:#e60000;--nav:#e60000;--green:#16804a}
+html{color-scheme:light!important;background:#f7f7f7!important}
+body{background:#f7f7f7!important;color:#252525!important}
+.topbar{background:#fff!important;border-bottom:3px solid #e60000!important}
+.brand-mark{background:#e60000!important;border-radius:12px!important}
+.brand small{color:#666!important}
+.top-link,.eyebrow,.text-button{color:#e60000!important}
+.auth-layout{background:transparent}
+.hero-copy h1 em{color:#e60000!important}
+.panel,.auth-card,.dash-card,.recent-site,.table-wrap,.contact-form-panel,.admin-login,.content-panel{background:#fff!important;color:#252525!important;border-color:#e5e5e5!important}
+.btn.primary{background:#e60000!important;color:#fff!important}
+.btn.secondary{background:#f1f1f1!important;color:#333!important;border:1px solid #e2e2e2!important}
+.btn.primary:hover{background:#c90000!important}
+.btn.secondary:hover{background:#e9e9e9!important;color:#222!important}
+.tabbar{background:#f2f2f2!important}
+.tab.active{background:#fff!important;color:#e60000!important;box-shadow:0 2px 8px #0000000d!important}
+.site-entry-hero{background:#fff!important;color:#252525!important;border:1px solid #e8e8e8!important;border-top:5px solid #e60000!important;box-shadow:0 8px 24px #00000008!important}
+.site-entry-hero .eyebrow,.site-entry-hero h2{color:#e60000!important}
+.site-entry-form label{color:#252525!important}
+.site-entry-form .hint{color:#666!important}
+.entry-icon{background:#fff0f0!important;color:#e60000!important}
+.sidebar{background:#fff!important;color:#252525!important;border:1px solid #e5e5e5!important;box-shadow:0 5px 20px #00000008!important}
+.side-label{color:#777!important}
+.person-tab{background:transparent!important;color:#555!important}
+.person-tab.active{background:#fff0f0!important;color:#e60000!important;box-shadow:inset 3px 0 #e60000!important}
+.side-foot,.side-foot span{color:#666!important}
+.admin-sidebar .admin-nav-label,.admin-sidebar .admin-nav-items button{color:#444!important}
+.admin-sidebar .admin-nav-label:hover,.admin-sidebar .admin-nav-items button:hover{background:#fff0f0!important;color:#e60000!important}
+.admin-sidebar .admin-nav-items button.active{background:#fff0f0!important;color:#e60000!important;box-shadow:inset 3px 0 #e60000!important}
+.admin-tab-badge{background:#e60000!important;color:#fff!important}
+th{background:#f4f4f4!important;color:#555!important}
+.badge{background:#fff0f0!important;color:#c90000!important}
+.site-entry-current{background:#fff5f5!important;border-color:#ffd7d7!important}
+.site-entry-current strong{color:#c90000!important}
+input,textarea,select{color:#252525}
+input:focus,textarea:focus,select:focus{border-color:#e60000!important;box-shadow:0 0 0 3px #e6000017!important}
+@media(prefers-color-scheme:dark){html,body{color-scheme:light!important;background:#f7f7f7!important;color:#252525!important}}
