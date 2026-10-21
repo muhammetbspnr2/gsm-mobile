@@ -3,7 +3,7 @@
  const nav = document.querySelector("#adminAppView .admin-sidebar");
  if (!nav) return;
  const groups = [...nav.querySelectorAll(".admin-nav-group")];
- const isNarrow = () => window.matchMedia("(max-width: 900px)").matches;
+ const isNarrow = () => window.matchMedia("(max-width: 900px)").matches;\n const syncViewport = () => { groups.forEach(group => { if (isNarrow()) setExpanded(group, false); }); };
  const setExpanded = (group, expanded) => {
    const trigger = group.querySelector("[data-nav-toggle]");
    const items = group.querySelector(".admin-nav-items");
@@ -24,4 +24,5 @@
      if (!isNarrow() && !group.contains(event.relatedTarget)) setExpanded(group, false);
    });
  });
+ window.addEventListener("resize", syncViewport, { passive: true });
 })();
