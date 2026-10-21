@@ -10,6 +10,7 @@ const files = {
   app: read("app.js"),
   adminJs: read("admin.js"),
   importer: read("site-import.js"),
+  tenantSites: read("tenant-sites.js"),
   pwa: read("pwa.js"),
   sw: read("sw.js"),
   theme: read("theme.js"),
@@ -20,7 +21,7 @@ const files = {
   alias: JSON.parse(read(".firebaserc")),
   firebaseConfig: read("firebase-config.js")
 };
-const version = "2.7.3";
+const version = "2.8.1";
 
 for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
   assert.match(html, new RegExp("style\\.css\\?v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " must load current CSS");
@@ -45,7 +46,11 @@ assert.ok(files.css.includes("--red:#e60000") && files.css.includes("--red-soft:
 assert.ok(files.app.includes("sendEmailVerification") && files.app.includes("emailVerified"), "email verification flow must remain");
 assert.ok(files.app.includes(".info/connected"), "Firebase connection status must remain");
 assert.ok(files.app.includes("equipmentAccessGranted"), "equipment access gate must remain");
-assert.ok(files.app.includes('orderByChild("approved").equalTo(true)'), "personnel must query approved sites");
+assert.ok(files.tenantSites.includes('orderByChild("approved").equalTo(true)'), "personnel must query approved sites from operator-scoped catalogues");
+assert.ok(files.tenantSites.includes("operatorSites/"), "operator-scoped site index helper must exist");
+assert.ok(files.tenantSites.includes("profileOperatorIds"), "users must support one or multiple operator assignments");
+assert.ok(files.importer.includes('updates["operatorSites/"+targetOperatorId+"/"+key]'), "site import must update the operator catalogue index");
+assert.ok(files.adminJs.includes('updates["operatorSites/"+operatorId+"/"+siteRef.key]'), "manual site creation must update the operator catalogue index");
 assert.ok(files.app.includes("/^[A-Z0-9]{5}$/"), "Saha ID must be exactly five uppercase alphanumeric characters");
 assert.ok(files.app.includes("function pendingVisitWriteKey(") && files.app.includes("async function syncPendingVisitNotes()"), "offline visit-note queue must remain");
 assert.ok(files.app.includes("historySnap.exists()"), "duplicate checkout protection must remain");
@@ -69,11 +74,13 @@ assert.ok(files.importer.includes("Koordinat") || files.importer.includes("coord
 assert.ok(files.rules.rules.visitHistory["$visitId"][".read"].includes(".matches("), "visit-history reads must be scoped to the owner");
 assert.ok(files.rules.rules.siteRequests["$requestId"][".write"].includes("root.child('admins').child(auth.uid).val() === true"), "site requests must be admin-only");
 assert.ok(files.rules.rules.sites["$siteId"][".write"].includes("root.child('admins').child(auth.uid).val() === true"), "site writes must be admin-only");
+assert.ok(files.rules.rules.sites[".read"].includes("root.child('admins').child(auth.uid).val() === true"), "the shared site root must not be readable by every active user");
+assert.ok(files.rules.rules.operatorSites["$operatorId"][".read"].includes("query.orderByChild === 'approved'"), "operator catalogue reads must require an approved-sites query");
 assert.ok(files.rules.rules.equipment["$siteId"]["$equipmentId"][".write"].includes("openVisits"), "equipment writes must require an active visit");
 assert.equal(files.config.database.rules, "database.rules.json");
 assert.equal(files.alias.projects.default, "spu-personal");
 assert.doesNotMatch(files.firebaseConfig, /BEGIN [A-Z ]*PRIVATE KEY|private_key/i, "Firebase web config must not contain a service-account private key");
-for (const file of ["app.js","admin.js","site-import.js","map.js","pwa.js","sw.js","theme.js","admin-nav.js"]) {
+for (const file of ["app.js","admin.js","site-import.js","map.js","pwa.js","sw.js","theme.js","admin-nav.js","tenant-sites.js"]) {
   assert.ok(fs.existsSync(path.join(root, file)), file + " must exist");
 }
-console.log("Static quality checks passed: 2.7.3 release, red-white design, responsive navigation, Firebase protections, imports, visits, news, contact inbox and PWA cache.");
+console.log("Static quality checks passed: 2.8.1 release, red-white design, responsive navigation, Firebase protections, imports, visits, news, contact inbox and PWA cache.");
