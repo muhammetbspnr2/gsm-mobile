@@ -59,3 +59,14 @@ Record tester, date, device/browser, test account, failures, and relevant consol
 - [ ] Saha haritası, içe aktarma önizlemesi, tablolar, formlar, modal pencereler ve bildirimler yeni renk paletinde okunaklı.
 - [ ] Klavye odağı görünür; reduced-motion tercihi olan cihazlarda gereksiz hareket oluşmuyor.
 - [ ] Güncellemeden sonra PWA/Service Worker 2.4.0 önbelleğini kullanıyor; eski stil görünüyorsa uygulama kapatılıp açılarak tekrar kontrol ediliyor.
+
+
+## 2.7.2 kırmızı-beyaz tasarım regresyonu
+- [ ] Personel giriş/kayıt kartı, üst marka alanı ve ana butonlar telefon ve masaüstünde dengeli görünüyor.
+- [ ] Personel ana ekranında Saha Giriş, Saha Bul, haberler, iletişim ve alt gezinme doğru sıralanıyor; sabit alt gezinme içerik ve klavyeyi kapatmıyor.
+- [ ] Saha detay penceresinde metin kontrastı, kapatma ve harita yönlendirme kontrolleri okunaklı.
+- [ ] Yönetici panelinde 15 bölümün tamamı erişilebilir; kırmızı menüde seçili öğe, hover ve klavye odağı ayırt ediliyor.
+- [ ] Yönetici tabloları, içe aktarma önizlemesi, saha haritası, formlar, haber yükleme ve mesaj kutusu dar ekranda yatay taşma oluşturmuyor.
+- [ ] Buton, input, select, textarea, hata/başarı mesajları, devre dışı durumlar ve modal pencereler açık/koyu metin kontrastını koruyor.
+- [ ] PWA güncellemesinden sonra 2.7.2 CSS ve Service Worker sürümü yükleniyor; eski önbellek görünümü varsa uygulama kapatılıp yeniden açılarak tekrar deneniyor.
+- [ ] CSV/KML/KMZ önizlemesi, benzersiz 5 karakterli Saha ID ve Saha No doğrulaması bu görsel sürümden sonra da çalışıyor.
