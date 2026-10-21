@@ -1,5 +1,11 @@
 # GSM Mobile sürüm notları
 
+## 2.7.3 — CSS baştan yazıldı
+- Eski, üst üste eklenmiş stil blokları tamamen kaldırılarak tek ve tutarlı kırmızı-beyaz tasarım sistemi oluşturuldu.
+- Giriş/kayıt ekranı, personel paneli, yönetici gezinmesi, tablolar, saha detay pencereleri, haberler, iletişim, harita ve içe aktarma alanları yeniden stillendirildi.
+- Mobil, tablet ve masaüstü kırılımları yeniden tanımlandı; CSS ve Service Worker önbelleği sürümü yükseltildi.
+- Mevcut HTML kimlikleri, uygulama mantığı, Firebase ve CSV/KML/KMZ akışları korunur.
+
 ## 2.7.2 — Kırmızı-beyaz tasarım ve önbellek tutarlılığı
 - Personel ve yönetici panellerinde ortak kırmızı-beyaz kurumsal tasarım sistemi; daha tutarlı formlar, kartlar, tablolar, gezinme ve mobil etkileşim durumları.
 - Personel ve yönetici varlıkları, PWA etiketi ve Service Worker önbelleği 2.7.2 sürümünde hizalandı.
