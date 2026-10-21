@@ -33,13 +33,14 @@
       }
     },
     "sites": {
-      ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && ((query.orderByChild === 'approved' && query.equalTo === true) || (query.orderByChild === 'ownerUid' && query.equalTo === auth.uid))))",
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
       ".indexOn": [
         "ownerUid",
-        "approved"
+        "approved",
+        "operatorId"
       ],
       "$siteId": {
-        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && (data.child('approved').val() === true || data.child('ownerUid').val() === auth.uid)))",
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && data.child('approved').val() === true && data.child('operatorId').isString() && (root.child('profiles').child(auth.uid).child('operatorId').val() === data.child('operatorId').val() || root.child('profiles').child(auth.uid).child('operatorIds').child(data.child('operatorId').val()).val() === true)))",
         ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
       }
     },
@@ -204,6 +205,18 @@
         ".write": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('teamLeaders').child(auth.uid).child('active').val() === true && root.child('teamLeaders').child(auth.uid).child('teamIds').child($teamId).val() === true))",
         "$planId": {
           ".validate": "!newData.exists() || (newData.child('teamId').val() === $teamId && newData.child('companyId').val() === root.child('teams').child($teamId).child('companyId').val() && (data.exists() ? newData.child('createdBy').val() === data.child('createdBy').val() : newData.child('createdBy').val() === auth.uid))"
+        }
+      }
+    },
+    "operatorSites": {
+      "$operatorId": {
+        ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === $operatorId || root.child('profiles').child(auth.uid).child('operatorIds').child($operatorId).val() === true) && query.orderByChild === 'approved' && query.equalTo === true))",
+        ".indexOn": [
+          "approved"
+        ],
+        "$siteId": {
+          ".read": "auth != null && (root.child('admins').child(auth.uid).val() === true || (root.child('access').child(auth.uid).child('active').val() === true && (root.child('profiles').child(auth.uid).child('operatorId').val() === $operatorId || root.child('profiles').child(auth.uid).child('operatorIds').child($operatorId).val() === true) && data.child('approved').val() === true))",
+          ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
         }
       }
     }
