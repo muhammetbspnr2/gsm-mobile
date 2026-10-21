@@ -1,6 +1,6 @@
 # GSM Mobile Çok Firmalı Mimari ve Güvenli Geçiş Planı
 
-Durum: Tasarım/ön hazırlık. Bu belge canlı Firebase verisini veya uygulamanın çalışan davranışını değiştirmez.
+Durum: Geliştirme dalında operatör bazlı saha kataloğu ve çevrimdışı geçiş aracı uygulandı. PR açık/draft; canlı site, canlı Firebase verisi ve yayımlanmış Firebase kuralları değiştirilmedi. Operasyon kayıtlarının tamamı için tenant izolasyonu henüz tamamlanmadı.
 
 ## Sabit ürün kararları
 - Bir firma bir veya birden fazla operatörle çalışabilir.
@@ -88,6 +88,15 @@ Durum: Tasarım/ön hazırlık. Bu belge canlı Firebase verisini veya uygulaman
 - Açık ziyaretler ve ziyaret geçmişi, yetki geçişinden sonra doğru kullanıcı ve firmayla ilişkilendirilir.
 - Bağlantı hatası/izin reddi durumları kullanıcıya anlaşılır gösterilir; hassas veri konsola dökülmez.
 
+## Kodda uygulanan ilk aşama: operatör bazlı saha kataloğu
+- `tenant-sites.js` personelin `profiles/{uid}/operatorId` ve `operatorIds` alanlarından operatör kapsamını hesaplar; birden çok operatör atanmışsa katalogları birleştirir.
+- Personel saha listesini ortak `sites` kökünden değil, `operatorSites/{operatorId}` altındaki yalnızca onaylı kayıtlardan okur. Operatör ataması olmayan personel için tüm saha kataloğu kapalıdır.
+- `database.rules.json` içinde ortak `sites` kökünün genel personel okuması kaldırıldı. Tekil saha okuması kullanıcı operatör atamasıyla sınırlandırıldı; operatör katalog sorgusu yalnızca ilgili operatöre atanmış aktif kullanıcıya ve `approved=true` sorgusuna açıldı. Yazmalar yöneticiyle sınırlı.
+- Yönetici manuel saha ekleme/düzenleme/silme ve içe aktarma yolları operatör kataloğu indeksini de günceller. Operatör değişiminde eski indeks kopyası kaldırılır.
+- Personel atama tablosu birden fazla operatör seçimini destekler; seçilen operatörlerin tümü firmanın `operatorIds` ilişkisine kayıtlı olmalıdır.
+- Sürüm/cache göstergeleri tutarlı biçimde `2.8.1` olarak hizalandı; statik testler operatör kataloğu kurallarını da denetleyecek şekilde güncellendi.
+- GitHub Actions'ta son commit için `GSM Mobile quality checks` ve `GSM Takip validation` başarılı oldu. Bu, statik doğrulamadır; ayrı Firebase Emulator/test projesinde gerçek okuma/yazma yetki testlerinin yerini tutmaz.
+
 ## Mevcut sahaları Turkcell'e hazırlama (kod dalında tamamlandı; canlıya uygulanmadı)
 - `site-import.js` içindeki yeni Google Maps CSV/KML/KMZ kayıtlarının sabit firma alanı `Mikrolink` yerine `Turkcell Ankara Bölge`, operatör alanı ise boş yerine `Turkcell` olarak değiştirildi. Ayrıştırma, önizleme, doğrulama, Saha ID/Saha No denetimleri ve koordinat/adres eşlemesi değiştirilmedi.
 - `scripts/assign-existing-sites-turkcell.mjs` eklendi. Bu araç yalnızca yerel Firebase JSON dışa aktarımını işler; Firebase'e bağlanmaz ve girdi dosyasının üzerine yazmaz. Varsayılanı dry-run'dır. `--write-output` verilirse ayrı bir JSON dosyası oluşturur.
@@ -101,4 +110,5 @@ Durum: Tasarım/ön hazırlık. Bu belge canlı Firebase verisini veya uygulaman
 - Ekip şefi panelinin arayüz ve istemci akışı ayrı geliştirme dalına eklendi; henüz canlıya yayımlanmadı ve mevcut Firebase kurallarıyla uçtan uca çalıştığı doğrulanmadı.
 - teamLeaders, teams, teamMembers ve dailyPlans yolları için güvenlik kuralları test ortamında hazırlanıp Emulator/ayrı Firebase projesinde sınanmalıdır.
 - Üretim güvenlik kuralları değiştirilmedi.
+- Ziyaretler, ekipman, değişiklik talepleri, mesajlar, bildirimler ve raporların tamamı için firma/ekip izolasyonu henüz uygulanmadı; bu nedenle bu PR tek başına üretime alınmaya hazır değildir.
 - Bu plan uygulama değişikliği ve testlerin yerine geçmez; canlıya geçmeden önce ayrı test projesi ve yedek gereklidir.
