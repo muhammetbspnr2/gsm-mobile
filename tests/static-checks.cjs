@@ -13,23 +13,23 @@ const files = {
   importer: read("site-import.js"),
   app: read("app.js")
 };
-const version = "2.5.8";
+const version = "2.7.2";
 
 for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
   assert.match(html, new RegExp("v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " asset query versions must be aligned");
   assert.match(html, new RegExp("v" + version.replaceAll(".", "\\.") + "<"), name + " visible footer version must be aligned");
   assert.doesNotMatch(html, /v=2\.2\.9|v2\.2\.12/, name + " contains stale cache/version markers");
 }
-assert.ok(files.pwa.includes('const VERSION = "2.5.8"'), "PWA label/service-worker registration version must be current");
+assert.ok(files.pwa.includes('const VERSION = "2.7.2"'), "PWA label/service-worker registration version must be current");
 assert.ok(files.sw.includes('const VERSION = "2.5.8"'), "service worker cache version must be current");
-assert.ok(files.manifest.includes("app-icon-tower.svg?v=2.5.8"), "manifest icon URLs must be versioned");
+assert.ok(files.manifest.includes("app-icon-tower.svg?v=2.7.2"), "manifest icon URLs must be versioned");
 assert.match(files.admin, /class="admin-nav-group"/, "admin navigation must be grouped by work area");
-assert.equal((files.admin.match(/data-admin-tab="/g)||[]).length, 14, "all admin sections must remain accessible");
-assert.match(files.index, /style\.css\?v=2\\.5\\.1/, "personnel design system must be versioned");
-assert.match(files.index, /theme\.js\?v=2\\.5\\.1/, "personnel theme switcher must be loaded");
-assert.match(files.admin, /theme\.js\?v=2\\.5\\.1/, "admin theme switcher must be loaded");
-assert.match(read("style.css"), /html\[data-theme="dark"\]/, "dark theme tokens must be defined");
-assert.match(read("theme.js"), /localStorage\.setItem\(KEY, next\)/, "theme choice must persist");
+assert.equal((files.admin.match(/data-admin-tab="/g)||[]).length, 15, "all admin sections must remain accessible");
+assert.match(files.index, /style\.css\?v=2\.7\.2/, "personnel design system must be versioned");
+assert.match(files.index, /theme\.js\?v=2\.7\.2/, "personnel theme switcher must be loaded");
+assert.match(files.admin, /theme\.js\?v=2\.7\.2/, "admin theme switcher must be loaded");
+assert.match(read("style.css"), /--gm-red:#e60000/, "red-white design tokens must be defined");
+assert.match(read("theme.js"), /root\.dataset\.theme = "light"/, "permanent light theme must be enforced");
 assert.doesNotMatch(files.importer, /\^\\\\d\+\$/, "importer must not use the incorrectly double-escaped numeric regex");
 assert.match(files.importer, /no&&!\/\^\\d\+\$\/\.test\(no\)/, "preview numeric Saha No validation must use digit regex");
 assert.match(files.importer, /\(no&&!\/\^\\d\+\$\/\.test\(no\)\)/, "commit numeric Saha No validation must use digit regex");
