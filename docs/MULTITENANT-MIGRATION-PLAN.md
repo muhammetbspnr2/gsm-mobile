@@ -63,6 +63,9 @@ Durum: Tasarım/ön hazırlık. Bu belge canlı Firebase verisini veya uygulaman
 
 ### E. Operasyon verileri ve ayrı ekip şefi paneli
 - Ekip şefi için yönetici panelinden ayrı team-leader.html ekranı ve team-leader.js akışı hazırlandı. Giriş, atanmış ekipleri yükleme, günlük görev oluşturma ve görev durumunu izleme arayüzü bu ayrı paneldedir.
+- Yönetici > Personel yönetimi tablosuna kayıtlı operatör/firma/ekip seçimleri ve Personel/Ekip şefi rolü eklendi. Ekip şefi ataması aynı firmadaki birden fazla ekibe genişletilebilir.
+- Yönetici > Firmalar bölümünden yeni operatör, firma ve firmaya bağlı ekip tanımlama formları eklendi; mükerrer adlar engellenir.
+- database.rules.json dosyasına yeni operatör, ekip, ekip üyeliği, ekip şefi ve günlük plan yolları için başlangıç kuralları eklendi. Bu kurallar yalnızca depo dalındadır; Firebase Console'a yayımlanmadı ve Emulator/test projesinde doğrulanmadan canlıya alınmamalıdır.
 - Ana personel ekranı ve yönetici ekranının üst bağlantılarına ayrı ekip şefi paneli bağlantısı eklendi; ekip şefi özellikleri yönetici menüsüne gömülmedi.
 - Panel teamLeaders/{uid}, teams/{teamId} ve dailyPlans/{teamId}/{planId} için hedef şemayı kullanır. Üretimde çalışır hâle gelmesi için bu yolların güvenli Firebase kuralları ve personel/ekip üyeliği doğrulaması ayrıca test edilmelidir.
 - Ziyaret, ekipman, değişiklik talepleri, bildirimler ve raporlara firma kapsamı eklenir.
