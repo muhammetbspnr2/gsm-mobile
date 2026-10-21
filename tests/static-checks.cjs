@@ -20,7 +20,7 @@ const files = {
   alias: JSON.parse(read(".firebaserc")),
   firebaseConfig: read("firebase-config.js")
 };
-const version = "2.7.2";
+const version = "2.7.3";
 
 for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
   assert.match(html, new RegExp("style\\.css\\?v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " must load current CSS");
@@ -40,7 +40,7 @@ assert.equal(files.manifest.start_url, "./");
 assert.ok(files.manifest.icons.some(icon => icon.sizes === "192x192") && files.manifest.icons.some(icon => icon.sizes === "512x512"), "PWA icon sizes must be declared");
 assert.ok(files.theme.includes('root.dataset.theme = "light"'), "the chosen permanent light theme must be enforced");
 assert.ok(files.theme.includes('el.remove()'), "theme switching controls must stay disabled");
-assert.ok(files.css.includes("--gm-red:#e60000") && files.css.includes("--gm-red-soft:#fff0f0"), "shared red-white design tokens must exist");
+assert.ok(files.css.includes("--red:#e60000") && files.css.includes("--red-soft:#fff0f0"), "shared red-white design tokens must exist");
 
 assert.ok(files.app.includes("sendEmailVerification") && files.app.includes("emailVerified"), "email verification flow must remain");
 assert.ok(files.app.includes(".info/connected"), "Firebase connection status must remain");
@@ -76,4 +76,4 @@ assert.doesNotMatch(files.firebaseConfig, /BEGIN [A-Z ]*PRIVATE KEY|private_key/
 for (const file of ["app.js","admin.js","site-import.js","map.js","pwa.js","sw.js","theme.js","admin-nav.js"]) {
   assert.ok(fs.existsSync(path.join(root, file)), file + " must exist");
 }
-console.log("Static quality checks passed: 2.7.2 release, red-white design, responsive navigation, Firebase protections, imports, visits, news, contact inbox and PWA cache.");
+console.log("Static quality checks passed: 2.7.3 release, red-white design, responsive navigation, Firebase protections, imports, visits, news, contact inbox and PWA cache.");
