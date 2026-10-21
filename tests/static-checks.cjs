@@ -11,6 +11,7 @@ const files = {
   adminJs: read("admin.js"),
   importer: read("site-import.js"),
   tenantSites: read("tenant-sites.js"),
+  migration: read("scripts/assign-existing-sites-turkcell.mjs"),
   pwa: read("pwa.js"),
   sw: read("sw.js"),
   theme: read("theme.js"),
@@ -49,6 +50,9 @@ assert.ok(files.app.includes("equipmentAccessGranted"), "equipment access gate m
 assert.ok(files.tenantSites.includes('orderByChild("approved").equalTo(true)'), "personnel must query approved sites from operator-scoped catalogues");
 assert.ok(files.tenantSites.includes("operatorSites/"), "operator-scoped site index helper must exist");
 assert.ok(files.tenantSites.includes("profileOperatorIds"), "users must support one or multiple operator assignments");
+assert.ok(files.migration.includes('operator: "Turkcell"') && files.migration.includes('company: "Turkcell Ankara Bölge"'), "offline migration must assign existing sites to Turkcell Ankara Bölge");
+assert.ok(files.migration.includes('writeFile(outputPath') && files.migration.includes('{ flag: "wx" }'), "offline migration must write a new file without overwriting the backup");
+assert.ok(files.migration.includes('liveFirebaseTouched: false'), "offline migration must not connect to live Firebase");
 assert.ok(files.importer.includes('updates["operatorSites/"+targetOperatorId+"/"+key]'), "site import must update the operator catalogue index");
 assert.ok(files.adminJs.includes('updates["operatorSites/"+operatorId+"/"+siteRef.key]'), "manual site creation must update the operator catalogue index");
 assert.ok(files.app.includes("/^[A-Z0-9]{5}$/"), "Saha ID must be exactly five uppercase alphanumeric characters");
