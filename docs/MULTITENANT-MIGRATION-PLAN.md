@@ -88,6 +88,12 @@ Durum: Tasarım/ön hazırlık. Bu belge canlı Firebase verisini veya uygulaman
 - Açık ziyaretler ve ziyaret geçmişi, yetki geçişinden sonra doğru kullanıcı ve firmayla ilişkilendirilir.
 - Bağlantı hatası/izin reddi durumları kullanıcıya anlaşılır gösterilir; hassas veri konsola dökülmez.
 
+## Mevcut sahaları Turkcell'e hazırlama (kod dalında tamamlandı; canlıya uygulanmadı)
+- `site-import.js` içindeki yeni Google Maps CSV/KML/KMZ kayıtlarının sabit firma alanı `Mikrolink` yerine `Turkcell Ankara Bölge`, operatör alanı ise boş yerine `Turkcell` olarak değiştirildi. Ayrıştırma, önizleme, doğrulama, Saha ID/Saha No denetimleri ve koordinat/adres eşlemesi değiştirilmedi.
+- `scripts/assign-existing-sites-turkcell.mjs` eklendi. Bu araç yalnızca yerel Firebase JSON dışa aktarımını işler; Firebase'e bağlanmaz ve girdi dosyasının üzerine yazmaz. Varsayılanı dry-run'dır. `--write-output` verilirse ayrı bir JSON dosyası oluşturur.
+- Araç mevcut `sites/{key}` kayıtlarında yalnızca `operator: "Turkcell"` ve `company: "Turkcell Ankara Bölge"` alanlarını hedefler; site anahtarları ve diğer saha/veri alanları aynen korunur. Çıktı, sayımlar ve saha eşleşmeleri incelenmeden canlıya yüklenmemelidir.
+- `operatorId` ve `companyId` kasıtlı olarak otomatik üretilmez; bunlar yönetici panelinde oluşturulan kayıtların gerçek Firebase anahtarlarıyla eşleştirildikten sonra ayrı bir aşamada doldurulmalıdır.
+
 ## Henüz yapılmayanlar
 - Canlı Firebase verisi okunmadı veya değiştirilmedi.
 - Firebase Console'daki yayımlanmış kurallar doğrulanmadı.
