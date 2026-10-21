@@ -10,13 +10,13 @@
   "lang": "tr",
   "icons": [
     {
-      "src": "app-icon-tower.svg?v=2.7.3",
+      "src": "app-icon-tower.svg?v=2.8.1",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "app-icon-tower.svg?v=2.7.3",
+      "src": "app-icon-tower.svg?v=2.8.1",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
