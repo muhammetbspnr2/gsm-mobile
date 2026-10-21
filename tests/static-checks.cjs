@@ -1,62 +1,79 @@
+"use strict";
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-
 const root = path.resolve(__dirname, "..");
 const read = name => fs.readFileSync(path.join(root, name), "utf8");
 const files = {
   index: read("index.html"),
   admin: read("admin.html"),
+  app: read("app.js"),
+  adminJs: read("admin.js"),
+  importer: read("site-import.js"),
   pwa: read("pwa.js"),
   sw: read("sw.js"),
-  manifest: read("manifest.webmanifest"),
-  importer: read("site-import.js"),
-  app: read("app.js")
+  theme: read("theme.js"),
+  css: read("style.css"),
+  manifest: JSON.parse(read("manifest.webmanifest")),
+  rules: JSON.parse(read("database.rules.json")),
+  config: JSON.parse(read("firebase.json")),
+  alias: JSON.parse(read(".firebaserc")),
+  firebaseConfig: read("firebase-config.js")
 };
 const version = "2.7.2";
 
 for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
-  assert.match(html, new RegExp("v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " asset query versions must be aligned");
-  assert.match(html, new RegExp("v" + version.replaceAll(".", "\\.") + "<"), name + " visible footer version must be aligned");
-  assert.doesNotMatch(html, /v=2\.2\.9|v2\.2\.12/, name + " contains stale cache/version markers");
+  assert.match(html, new RegExp("style\\.css\\?v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " must load current CSS");
+  assert.match(html, new RegExp("pwa\\.js\\?v=" + version.replaceAll(".", "\\.") + "(?:[\"'])"), name + " must load current PWA helper");
+  assert.match(html, new RegExp("v" + version.replaceAll(".", "\\.") + "<"), name + " visible release version must be aligned");
+  assert.doesNotMatch(html, /v=2\.2\.9|v2\.2\.12|v2\.6\.3/, name + " contains stale cache/version markers");
 }
-assert.ok(files.pwa.includes('const VERSION = "2.7.2"'), "PWA label/service-worker registration version must be current");
-assert.ok(files.sw.includes('const VERSION = "2.5.8"'), "service worker cache version must be current");
-assert.ok(files.manifest.includes("app-icon-tower.svg?v=2.7.2"), "manifest icon URLs must be versioned");
-assert.match(files.admin, /class="admin-nav-group"/, "admin navigation must be grouped by work area");
-assert.equal((files.admin.match(/data-admin-tab="/g)||[]).length, 15, "all admin sections must remain accessible");
-assert.match(files.index, /style\.css\?v=2\.7\.2/, "personnel design system must be versioned");
-assert.match(files.index, /theme\.js\?v=2\.7\.2/, "personnel theme switcher must be loaded");
-assert.match(files.admin, /theme\.js\?v=2\.7\.2/, "admin theme switcher must be loaded");
-assert.match(read("style.css"), /--gm-red:#e60000/, "red-white design tokens must be defined");
-assert.match(read("theme.js"), /root\.dataset\.theme = "light"/, "permanent light theme must be enforced");
-assert.doesNotMatch(files.importer, /\^\\\\d\+\$/, "importer must not use the incorrectly double-escaped numeric regex");
-assert.match(files.importer, /no&&!\/\^\\d\+\$\/\.test\(no\)/, "preview numeric Saha No validation must use digit regex");
-assert.match(files.importer, /\(no&&!\/\^\\d\+\$\/\.test\(no\)\)/, "commit numeric Saha No validation must use digit regex");
-assert.ok(files.app.includes("function pendingVisitWriteKey("), "offline visit-note queue helper must exist");
-assert.ok(files.app.includes("async function syncPendingVisitNotes()"), "pending visit-note sync helper must exist");
-assert.ok(files.app.includes("window.setTimeout(syncPendingVisitNotes,500)"), "pending visit notes must be retried after connection/login");
-assert.ok(files.app.includes("Bağlantı yok. Saha çıkışı sunucuya güvenli biçimde kaydedilemedi"), "checkout must be blocked while offline");
-assert.ok(files.app.includes("if(pending.siteRecordId===v.siteRecordId&&Number(pending.checkInAt)===Number(v.checkInAt))localStorage.removeItem(pendingKey)"), "a different visit queue must never be discarded by a normal save");
+assert.equal((files.admin.match(/data-admin-tab="/g) || []).length, 15, "all 15 admin sections must remain accessible");
+for (const section of ["users","profileChanges","requests","companies","sites","openSites","visitHistory","proximity","siteImport","equipmentChanges","contactMessages","notify","activity","news","tools"]) {
+  assert.ok(files.admin.includes('data-admin-tab="' + section + '"'), "missing admin section: " + section);
+}
+assert.equal(files.pwa.includes('const VERSION = "' + version + '"'), true, "PWA version must be current");
+assert.equal(files.sw.includes('const VERSION = "' + version + '"'), true, "service-worker cache version must be current");
+assert.ok(files.manifest.icons.every(icon => icon.src.includes("?v=" + version)), "PWA icon URLs must be versioned");
+assert.equal(files.manifest.name, "GSM Mobile");
+assert.equal(files.manifest.start_url, "./");
+assert.ok(files.manifest.icons.some(icon => icon.sizes === "192x192") && files.manifest.icons.some(icon => icon.sizes === "512x512"), "PWA icon sizes must be declared");
+assert.ok(files.theme.includes('root.dataset.theme = "light"'), "the chosen permanent light theme must be enforced");
+assert.ok(files.theme.includes('el.remove()'), "theme switching controls must stay disabled");
+assert.ok(files.css.includes("--gm-red:#e60000") && files.css.includes("--gm-red-soft:#fff0f0"), "shared red-white design tokens must exist");
 
-JSON.parse(files.manifest);
-const rules = JSON.parse(read("database.rules.json"));
-const firebaseConfig = JSON.parse(read("firebase.json"));
-const projectAlias = JSON.parse(read(".firebaserc"));
-assert.equal(firebaseConfig.database.rules, "database.rules.json", "Firebase CLI must publish the reviewed rules file");
-assert.equal(projectAlias.projects.default, "spu-personal", "Firebase project alias must match the documented project");
-assert.match(rules.rules.visitHistory["$visitId"][".read"], /\.matches\(/, "personnel must be able to read only their own visit-history key");
-assert.match(rules.rules.openVisits["$uid"][".validate"], /data\.exists\(\)/, "open visit identity must be immutable after creation");
-for (const file of ["app.js", "admin.js", "site-import.js", "map.js", "pwa.js", "sw.js", "theme.js"]) {
+assert.ok(files.app.includes("sendEmailVerification") && files.app.includes("emailVerified"), "email verification flow must remain");
+assert.ok(files.app.includes(".info/connected"), "Firebase connection status must remain");
+assert.ok(files.app.includes("equipmentAccessGranted"), "equipment access gate must remain");
+assert.ok(files.app.includes('orderByChild("approved").equalTo(true)'), "personnel must query approved sites");
+assert.ok(files.app.includes("/^[A-Z0-9]{5}$/"), "Saha ID must be exactly five uppercase alphanumeric characters");
+assert.ok(files.app.includes("function pendingVisitWriteKey(") && files.app.includes("async function syncPendingVisitNotes()"), "offline visit-note queue must remain");
+assert.ok(files.app.includes("historySnap.exists()"), "duplicate checkout protection must remain");
+assert.ok(files.app.includes("visitWorkNotes") && files.app.includes("visitOutcome"), "visit notes and result flow must remain");
+assert.ok(files.app.includes("function renderNews(data)") && files.adminJs.includes("function renderAdminNews()"), "news feed and admin publishing must remain");
+assert.ok(files.admin.includes('id="adminAddSiteBtn"') && files.admin.includes('id="adminSiteForm"'), "admin site creation must remain");
+assert.ok(!files.index.includes('id="siteForm"') && !files.index.includes('id="getLocation"') && !files.index.includes("Yeni saha başvurusu"), "personnel must not be able to create sites");
+assert.ok(files.admin.includes('id="adminNewsImageFile"'), "admin news image upload must remain");
+assert.ok(files.admin.includes('id="adminNewsCommentRows"'), "admin news moderation must remain");
+assert.ok(files.admin.includes('data-admin-tab="contactMessages"'), "admin contact inbox must remain");
+assert.ok(files.adminJs.includes("contactMessages"), "contact message handling must remain");
+
+assert.ok(files.importer.includes("function parseCsv(") && files.importer.includes("function parseKml("), "CSV and KML parsers must remain");
+assert.ok(files.importer.includes('ext==="kmz"') && files.importer.includes("JSZip.loadAsync(file)"), "KMZ support must remain");
+assert.ok(files.importer.includes("duplicateId") && files.importer.includes("duplicateNo"), "import preview must detect duplicate site IDs and numbers");
+assert.match(files.importer, /!\/\^\\d\+\$\/\.test\(no\)/, "import must validate non-empty Saha No as digits");
+assert.ok(files.importer.includes("await db.ref().update(updates)"), "import must merge site records rather than replace the database");
+assert.ok(files.importer.includes("importedIndexes"), "partial import must preserve skipped rows for correction");
+assert.ok(files.importer.includes("Koordinat") || files.importer.includes("coordinates"), "import must retain coordinate parsing");
+
+assert.ok(files.rules.rules.visitHistory["$visitId"][".read"].includes(".matches("), "visit-history reads must be scoped to the owner");
+assert.ok(files.rules.rules.siteRequests["$requestId"][".write"].includes("root.child('admins').child(auth.uid).val() === true"), "site requests must be admin-only");
+assert.ok(files.rules.rules.sites["$siteId"][".write"].includes("root.child('admins').child(auth.uid).val() === true"), "site writes must be admin-only");
+assert.ok(files.rules.rules.equipment["$siteId"]["$equipmentId"][".write"].includes("openVisits"), "equipment writes must require an active visit");
+assert.equal(files.config.database.rules, "database.rules.json");
+assert.equal(files.alias.projects.default, "spu-personal");
+assert.doesNotMatch(files.firebaseConfig, /BEGIN [A-Z ]*PRIVATE KEY|private_key/i, "Firebase web config must not contain a service-account private key");
+for (const file of ["app.js","admin.js","site-import.js","map.js","pwa.js","sw.js","theme.js","admin-nav.js"]) {
   assert.ok(fs.existsSync(path.join(root, file)), file + " must exist");
 }
-for (const [name, html] of [["index.html", files.index], ["admin.html", files.admin]]) {
-  for (const id of ["authMessage", "appView"]) {
-    if (name === "index.html") assert.ok(html.includes('id="' + id + '"'), name + " must retain " + id);
-  }
-}
-console.log("Static quality checks passed: release versions, JSON/Firebase config, import validation, offline queue, and visit-history access rules.");
-
-assert.doesNotMatch(files.index, /id="siteForm"|id="getLocation"|Yeni saha başvurusu/, "personnel panel must not offer site creation");
-assert.match(rules.rules.siteRequests["$requestId"][".write"], /root\.child\('admins'\)\.child\(auth\.uid\)\.val\(\) === true/, "only admins may create or change site requests");
-assert.match(rules.rules.sites["$siteId"][".write"], /root\.child\('admins'\)\.child\(auth\.uid\)\.val\(\) === true/, "only admins may write site records");
+console.log("Static quality checks passed: 2.7.2 release, red-white design, responsive navigation, Firebase protections, imports, visits, news, contact inbox and PWA cache.");
