@@ -3,7 +3,7 @@
  const nav = document.querySelector("#adminAppView .admin-sidebar");
  if (!nav) return;
  const groups = [...nav.querySelectorAll(".admin-nav-group")];
- const isNarrow = () => window.matchMedia("(max-width: 900px)").matches;\n const syncViewport = () => { groups.forEach(group => { if (isNarrow()) setExpanded(group, false); }); };
+ const isNarrow = () => window.matchMedia("(max-width: 900px)").matches;
  const setExpanded = (group, expanded) => {
    const trigger = group.querySelector("[data-nav-toggle]");
    const items = group.querySelector(".admin-nav-items");
