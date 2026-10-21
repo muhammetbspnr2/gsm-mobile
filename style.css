@@ -1112,3 +1112,92 @@ html[data-theme="dark"] #siteDetailModal .site-map-note {
 html[data-theme="dark"] #siteDetailModal .site-detail-close {
   color: #fff !important;
 }
+
+
+/* 2.5.8 — Aydınlık temada yönetici paneli renk/kontrast dengesi */
+html[data-theme="light"] {
+  color-scheme: light;
+  --ink: #202938;
+  --muted: #68758a;
+  --line: #dfe4eb;
+  --bg: #f4f6f9;
+  --nav: #202938;
+}
+html[data-theme="light"] body {
+  background: #f4f6f9 !important;
+  color: #202938 !important;
+}
+html[data-theme="light"] #adminAppView,
+html[data-theme="light"] #adminAppView .admin-shell,
+html[data-theme="light"] #adminAppView .admin-content {
+  color: #202938 !important;
+}
+html[data-theme="light"] #adminAppView .content-panel,
+html[data-theme="light"] #adminAppView .stat-card,
+html[data-theme="light"] #adminAppView .table-wrap,
+html[data-theme="light"] #adminAppView .panel,
+html[data-theme="light"] #adminAppView .notification-popover,
+html[data-theme="light"] #adminAppView .stock-group,
+html[data-theme="light"] #adminAppView .admin-site-form-panel {
+  background: #fff !important;
+  color: #202938 !important;
+  border-color: #dfe4eb !important;
+}
+html[data-theme="light"] #adminAppView h1,
+html[data-theme="light"] #adminAppView h2,
+html[data-theme="light"] #adminAppView h3,
+html[data-theme="light"] #adminAppView h4,
+html[data-theme="light"] #adminAppView p,
+html[data-theme="light"] #adminAppView strong,
+html[data-theme="light"] #adminAppView td,
+html[data-theme="light"] #adminAppView label,
+html[data-theme="light"] #adminAppView .stock-row,
+html[data-theme="light"] #adminAppView .stock-name {
+  color: #202938 !important;
+}
+html[data-theme="light"] #adminAppView .muted,
+html[data-theme="light"] #adminAppView .hint,
+html[data-theme="light"] #adminAppView small,
+html[data-theme="light"] #adminAppView .stat-card > span,
+html[data-theme="light"] #adminAppView .stat-card > small,
+html[data-theme="light"] #adminAppView .notification-item p,
+html[data-theme="light"] #adminAppView .side-label {
+  color: #68758a !important;
+}
+html[data-theme="light"] #adminAppView th {
+  background: #f0f2f5 !important;
+  color: #586579 !important;
+  border-color: #dfe4eb !important;
+}
+html[data-theme="light"] #adminAppView td,
+html[data-theme="light"] #adminAppView th {
+  border-color: #e1e5eb !important;
+}
+html[data-theme="light"] #adminAppView tbody tr,
+html[data-theme="light"] #adminAppView #section-sites tbody tr,
+html[data-theme="light"] #adminAppView #section-openSites tbody tr {
+  background: #fff !important;
+  color: #202938 !important;
+}
+html[data-theme="light"] #adminAppView tbody tr:hover {
+  background: #f5f7fa !important;
+}
+html[data-theme="light"] #adminAppView input,
+html[data-theme="light"] #adminAppView select,
+html[data-theme="light"] #adminAppView textarea {
+  background: #fff !important;
+  color: #202938 !important;
+  border-color: #cfd6e0 !important;
+}
+html[data-theme="light"] #adminAppView .admin-sidebar {
+  background: #202938 !important;
+  color: #f4f6fa !important;
+  border-color: #303b4d !important;
+}
+html[data-theme="light"] #adminAppView .admin-sidebar button:not(.active) {
+  color: #d2dae6 !important;
+}
+html[data-theme="light"] #adminAppView .admin-sidebar button.active {
+  background: #34445b !important;
+  color: #fff !important;
+}
