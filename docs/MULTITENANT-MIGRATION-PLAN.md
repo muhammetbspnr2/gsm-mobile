@@ -1,0 +1,89 @@
+# GSM Mobile Çok Firmalı Mimari ve Güvenli Geçiş Planı
+
+Durum: Tasarım/ön hazırlık. Bu belge canlı Firebase verisini veya uygulamanın çalışan davranışını değiştirmez.
+
+## Sabit ürün kararları
+- Bir firma bir veya birden fazla operatörle çalışabilir.
+- Firmalar kendi saha kayıtlarını görür.
+- Mevcut sahalar ilk firma olan **Turkcell Ankara Bölge** ile ilişkilendirilecek; ilişkilendirme yalnızca kayıt sahipliği doğrulandıktan sonra yapılır.
+- Ekip şefi yalnızca kendisine atanmış ekipleri yönetir.
+- CSV/KML/KMZ içe aktarma, önizleme/doğrulama, 5 karakterli büyük harf/rakam Saha ID kuralı ve mevcut Saha No kuralları korunur.
+- Canlı veri taşıması ve yayımlanmış Firebase kuralları, yedek ve doğrulama olmadan değiştirilmez.
+
+## Kod incelemesinde görülen mevcut durum
+- Personel profilleri `profiles/{uid}` altında; `company` serbest metin alanı olarak kullanılıyor.
+- Firma kayıtları `companies` altında mevcut.
+- Sahalar `sites` altında ortak tutuluyor ve istemci `approved=true` sorgusuyla saha listeliyor.
+- Rol kontrolü ağırlıklı olarak `admins/{uid} === true` ve `access/{uid}/active` üzerinden yapılıyor.
+- Google Maps CSV içe aktarma kodu `site-import.js` içinde `company: "Mikrolink"` sabit değerini yazıyor.
+- `database.rules.json` depo dosyasında saha okuma kuralı aktif personellerin onaylı sahaları okuyabilmesine izin veriyor. Firebase Console'daki yayımlanmış kuralların bununla aynı olduğu henüz doğrulanmadı.
+- Bu yüzden sadece arayüz filtresi eklemek yeterli veya güvenli değildir.
+
+## Önerilen kimlik ve yetki modeli
+- `companies/{companyId}`: ad, durum, `operatorIds`, oluşturulma bilgileri.
+- `companyMembers/{companyId}/{uid}`: rol, aktiflik, atanma bilgileri. Firma üyeliği kullanıcı tarafından kendi kendine yükseltilemez.
+- `teams/{teamId}`: `companyId`, ad, durum, oluşturulma bilgileri.
+- `teamMembers/{teamId}/{uid}`: aktif üyelik ve görev.
+- `teamLeaders/{uid}/{teamId}`: yalnızca yetkili atamayı ifade eden kayıt; yazma yalnızca firma yöneticisi/merkezi yönetici üzerinden.
+- `sites/{siteId}`: mevcut kayıt kimliği korunur; `companyId` eklenir. Firma kapsamındaki benzersiz Saha ID/Saha No kontrolleri yazma yolunda ve uygulama doğrulamasında yapılır.
+- Ziyaret, ekipman değişiklik talebi, günlük plan ve mesaj kayıtlarında uygun `companyId`; ekip göreviyle ilişkili kayıtlar için ayrıca `teamId` tutulur.
+- Rol adları: `system_admin`, `company_admin`, `team_leader`, `personnel`. Eski `admins/{uid}` kaydı geçiş sırasında merkezi yönetici uyumluluğu için korunur; yetki kaynağına geçiş açıkça test edilir.
+
+## Veri erişim ilkeleri
+1. Her yazma işlemi istemcinin gönderdiği `companyId` değerine güvenerek yetki vermez; üyelik/rol verisi Firebase tarafında doğrulanır.
+2. Firma yöneticisi yalnızca kendi firmasındaki ekipleri, personelleri, sahaları ve operasyon kayıtlarını yönetebilir.
+3. Ekip şefi yalnızca kendisine atanmış ekiplerin personel ve görevlerini okuyup değiştirebilir; ekip veya firma üyeliği oluşturamaz.
+4. Personel kendi profili, kendi ziyaret kaydı ve kendisine atanmış görevlerle sınırlıdır.
+5. Firebase Realtime Database kuralları sorgu bazlı okumada bütün çocuk kayıtlarını güvenli biçimde filtreleyemez. Bu nedenle tenant verileri sorgu/erişim desenlerine uygun yollar altında ayrılmalı veya mevcut yollar için uyumlu bir geçiş katmanı kurulmalıdır. Kural testleri yapılmadan geniş okuma izni eklenmemelidir.
+6. Merkezi ortak haberler gibi gerçekten ortak içerik ile firma özelindeki içerikler ayrı tutulur.
+7. Firma üyeliği ve rol değişiklikleri denetim günlüğüne kaydedilir.
+
+## Güvenli geçiş aşamaları
+### A. Salt okunur envanter ve yedek
+- Firebase Console'dan JSON yedeği alınır ve erişimi sınırlandırılır.
+- `profiles`, `access`, `companies`, `sites`, `siteRequests`, `openVisits`, `visitHistory`, `equipment`, bildirim ve denetim kayıtlarının sayıları/anahtarları çıkarılır.
+- Mevcut kullanıcı-firma ve saha-firma eşleşmeleri raporlanır; belirsiz kayıtlar otomatik atanmaz.
+- Gerçek kişi bilgileri veya hassas veriler rapor/commit içine eklenmez.
+
+### B. Geriye uyumlu şema hazırlığı
+- Yeni kimlik alanları ve üyelik yapısı test ortamında oluşturulur.
+- Eski `company` alanı hemen silinmez; `companyId` ile eşleştirme doğrulanana kadar geçici uyumluluk alanı olarak kalır.
+- Önce okuma uyumluluğu ve hata raporlaması test edilir; canlı veri taşıması yapılmaz.
+
+### C. Test verisiyle firma izolasyonu
+- İki örnek firma, iki ekip şefi ve birden çok personel içeren sahte veriler hazırlanır.
+- Başarılı ve reddedilmesi gereken okuma/yazma istekleri Firebase Emulator veya ayrı test projesinde doğrulanır.
+- Kuralların varsayılanı erişimi reddetmek olmalıdır; eski genel erişim izinleri yeni izolasyonu delmemelidir.
+
+### D. İçe aktarma uyumluluğu
+- `site-import.js` içinde sabit `Mikrolink` değeri yerine yetkili kullanıcının seçili firma bağlamı kullanılır.
+- CSV, KML, KMZ ayrıştırma, önizleme, doğrulama, koordinat/adres eşleme ve hata raporlama davranışı değiştirilmeden test edilir.
+- Saha ID'nin tam 5 karakter, büyük harf/rakam olması; benzersizlik kontrolü ve Saha No'nun mevcut kuralları korunur.
+- İçe aktarma işlemi, yetkili kullanıcının firma kapsamı dışında kayıt yazamaz.
+
+### E. Operasyon verileri ve ekip şefi paneli
+- Ziyaret, ekipman, değişiklik talepleri, bildirimler ve raporlara firma kapsamı eklenir.
+- Ekip şefi paneli günlük plan, görev durumu, açık saha ziyareti ve ekip raporlarını sadece atandığı ekipler için sunar.
+- Eski kayıtlar için firma/ekip ilişkisi kanıtlanamıyorsa tahminle taşınmaz; inceleme kuyruğunda kalır.
+
+### F. Devreye alma ve geri dönüş
+- Test sonuçları, kayıt sayıları ve import örnekleri onaylanmadan üretime geçilmez.
+- Kurallar ve uygulama sürümü eş zamanlı ve kontrollü yayımlanır.
+- Geri dönüş adımları, yedek konumu, önceki kurallar ve önceki uygulama sürümü önceden belgelenir.
+
+## Zorunlu kabul testleri
+- Firma A kullanıcısı Firma B sahalarını, ziyaretlerini, envanterini, mesajlarını ve personellerini okuyamaz/değiştiremez.
+- Ekip şefi atanmadığı ekipteki görevleri okuyamaz/değiştiremez.
+- Personel kendi kendini yönetici/ekip şefi yapamaz ve `companyId` değiştirmekle başka firmaya geçemez.
+- Firma yöneticisi başka firma üyeliği veya ekip üyeliği oluşturamaz.
+- CSV/KML/KMZ örnek dosyaları eski önizleme ve doğrulama sonuçlarını korur; kayıt alanları kaybolmaz.
+- Mevcut saha kimlikleri, koordinatlar, adresler, Saha ID ve Saha No kayıt sayıları ve değerleri karşılaştırılır.
+- Açık ziyaretler ve ziyaret geçmişi, yetki geçişinden sonra doğru kullanıcı ve firmayla ilişkilendirilir.
+- Bağlantı hatası/izin reddi durumları kullanıcıya anlaşılır gösterilir; hassas veri konsola dökülmez.
+
+## Henüz yapılmayanlar
+- Canlı Firebase verisi okunmadı veya değiştirilmedi.
+- Firebase Console'daki yayımlanmış kurallar doğrulanmadı.
+- Hiçbir kullanıcı ya da saha otomatik olarak firmaya atanmadı.
+- Uygulama kodu veya üretim güvenlik kuralları değiştirilmedi.
+- Bu plan uygulama değişikliği ve testlerin yerine geçmez; canlıya geçmeden önce ayrı test projesi ve yedek gereklidir.
