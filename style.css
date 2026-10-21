@@ -1735,3 +1735,18 @@ html,body{color-scheme:light!important}
     background:#e60000!important;color:#fff!important;
   }
 }
+
+
+/* 2.6.7 — Red background for personal work-history site details */
+#reportsArea #visitReportRows tr,
+#reportsArea #visitReportRows td{
+  background:#e60000!important;
+  color:#fff!important;
+  border-color:#c90000!important;
+}
+#reportsArea #visitReportRows tr:nth-child(even) td,
+#reportsArea #visitReportRows tr:hover td{
+  background:#c90000!important;
+  color:#fff!important;
+}
+#reportsArea #visitReportRows td::before{color:#fff!important}
