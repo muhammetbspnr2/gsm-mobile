@@ -60,8 +60,10 @@ function getOrCreate(collection, preferredId, name, extras = {}) {
 }
 
 const operatorId = getOrCreate(migrated.operators, "turkcell", "Turkcell");
+if (migrated.operators[operatorId].active === false) throw new Error("Turkcell operatör kaydı pasif; otomatik olarak etkinleştirilmeyecek.");
 const companyId = getOrCreate(migrated.companies, "turkcell-ankara-bolge", "Turkcell Ankara Bölge", { operatorIds: { [operatorId]: true } });
 const company = migrated.companies[companyId];
+if (company.active === false) throw new Error("Turkcell Ankara Bölge firma kaydı pasif; otomatik olarak etkinleştirilmeyecek.");
 company.operatorIds ||= {};
 if (Array.isArray(company.operatorIds)) {
   const legacy = company.operatorIds;
